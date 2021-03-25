@@ -1,4 +1,4 @@
-package com.onboarding.payu.model;
+package com.onboarding.payu.model.tokenization;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

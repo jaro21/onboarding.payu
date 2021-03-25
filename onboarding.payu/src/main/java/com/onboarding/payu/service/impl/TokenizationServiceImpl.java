@@ -1,12 +1,12 @@
 package com.onboarding.payu.service.impl;
 
-import com.onboarding.payu.model.CommandType;
-import com.onboarding.payu.model.CreditCardToken;
 import com.onboarding.payu.model.Merchant;
-import com.onboarding.payu.model.TokenizationRequest;
-import com.onboarding.payu.model.TokenizationResponse;
+import com.onboarding.payu.model.tokenization.CreditCardToken;
+import com.onboarding.payu.model.tokenization.TokenizationRequest;
+import com.onboarding.payu.model.tokenization.TokenizationResponse;
 import com.onboarding.payu.provider.IPaymentProvider;
 import com.onboarding.payu.service.ITokenizationService;
+import com.onboarding.payu.util.ConstantValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class TokenizationServiceImpl implements ITokenizationService {
 	private TokenizationRequest getTokenizationRequest(final CreditCardToken creditCardToken){
 		return TokenizationRequest.builder().creditCardToken(creditCardToken)
 				.merchant(getMerchant())
-				.command(CommandType.CREATE_TOKEN.toString())
+				.command(ConstantValues.CREATE_TOKEN)
 				.language("es").build();
 	}
 

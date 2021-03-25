@@ -1,5 +1,7 @@
-package com.onboarding.payu.model;
+package com.onboarding.payu.model.tokenization;
 
+import com.onboarding.payu.model.Merchant;
+import com.onboarding.payu.model.tokenization.CreditCardToken;
 import lombok.Builder;
 import lombok.Getter;
 

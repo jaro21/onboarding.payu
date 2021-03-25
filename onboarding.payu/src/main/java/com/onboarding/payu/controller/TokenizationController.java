@@ -1,7 +1,7 @@
 package com.onboarding.payu.controller;
 
-import com.onboarding.payu.model.CreditCardToken;
-import com.onboarding.payu.model.TokenizationResponse;
+import com.onboarding.payu.model.tokenization.CreditCardToken;
+import com.onboarding.payu.model.tokenization.TokenizationResponse;
 import com.onboarding.payu.service.ITokenizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
