@@ -21,6 +21,8 @@ spring:
 logging:
   pattern:
     console: "%d %-5level %logger : %msg%n"
+    file: "%d %p %c{1.} [%t] %m%n"
+  file: onboarding.log
   level:
     org.springframework: info
     org.hibernate: debug
@@ -39,6 +41,6 @@ feign:
       default:
         connectionTimeout: 5000
         readTimeout: 5000
-      "[onboarding]":
+      "[payment]":
         connectionTimeout: 5000
         readTimeout: 5000

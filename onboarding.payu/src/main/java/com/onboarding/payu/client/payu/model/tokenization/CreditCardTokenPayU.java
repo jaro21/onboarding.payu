@@ -1,4 +1,4 @@
-package com.onboarding.payu.model.tokenization;
+package com.onboarding.payu.client.payu.model.tokenization;
 
 import java.util.UUID;
 
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreditCardTokenResponse {
+public class CreditCardTokenPayU {
 	private UUID creditCardTokenId;
     private String name;
     private String payerId;

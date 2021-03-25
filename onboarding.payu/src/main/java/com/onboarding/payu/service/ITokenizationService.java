@@ -1,8 +1,8 @@
 package com.onboarding.payu.service;
 
-import com.onboarding.payu.model.tokenization.CreditCardToken;
-import com.onboarding.payu.model.tokenization.TokenizationResponse;
+import com.onboarding.payu.model.tokenization.CreditCard;
+import com.onboarding.payu.model.tokenization.TokenResponse;
 
 public interface ITokenizationService {
-	public TokenizationResponse tokenizationCard(final CreditCardToken creditCardToken);
+	TokenResponse tokenizationCard(CreditCard creditCard);
 }

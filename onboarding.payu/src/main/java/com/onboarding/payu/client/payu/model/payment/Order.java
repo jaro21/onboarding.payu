@@ -1,4 +1,4 @@
-package com.onboarding.payu.model.payment;
+package com.onboarding.payu.client.payu.model.payment;
 
 import lombok.Builder;
 import lombok.Getter;

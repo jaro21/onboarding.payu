@@ -1,6 +1,6 @@
-package com.onboarding.payu.model.payment;
+package com.onboarding.payu.client.payu.model.payment;
 
-import com.onboarding.payu.model.Merchant;
+import com.onboarding.payu.client.payu.model.Merchant;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,6 +10,6 @@ public class PaymentWithTokenRequest {
     private String language;
     private String command;
     private Merchant merchant;
-    private Transaction transaction;
+    private TransactionPayU transaction;
     private boolean test;
 }

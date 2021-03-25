@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class PaymentWithTokenResponse {
     private String code;
-    private Object error;
+    private String error;
     private TransactionResponse transactionResponse;
 }
