@@ -33,11 +33,11 @@ public class ProductController {
 	 */
 	private void validateProduct(final Product product) {
 		Validate.notNull(product, "Product is required");
-		Validate.notNull(product.getCode(), "The code is null");
-		Validate.notNull(product.getName(), "The name is null");
-		Validate.notNull(product.getDescription(), "The description is null");
-		Validate.notNull(product.getPrice(), "The price is null");
-		Validate.notNull(product.getStock(), "The stock is null");
+		Validate.notEmpty(product.getCode(), "The code is required");
+		Validate.notEmpty(product.getName(), "The name is required");
+		Validate.notEmpty(product.getDescription(), "The description is required");
+		Validate.notNull(product.getPrice(), "The price is required");
+		Validate.notNull(product.getStock(), "The stock is required");
 	}
 
 	@PostMapping
@@ -63,11 +63,14 @@ public class ProductController {
 
 	@PutMapping
 	public ResponseEntity updateProduct(@RequestBody Product product) {
+		Validate.notNull(product.getIdProduct(), "Product identification is required");
+		validateProduct(product);
 		return new ResponseEntity(iProductService.updateProduct(product), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity deleteProduct(@PathVariable int id) {
+		Validate.notNull(id, "Product identification is required to remove");
 		return new ResponseEntity(iProductService.deleteProduct(id), HttpStatus.OK);
 	}
 

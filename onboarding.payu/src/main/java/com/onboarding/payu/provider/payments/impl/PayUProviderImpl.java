@@ -3,6 +3,7 @@ package com.onboarding.payu.provider.payments.impl;
 import com.onboarding.payu.client.payu.PaymentClient;
 import com.onboarding.payu.client.payu.model.CommanType;
 import com.onboarding.payu.client.payu.model.Merchant;
+import com.onboarding.payu.client.payu.model.TransactionType;
 import com.onboarding.payu.client.payu.model.payment.PaymentWithTokenPayUResponse;
 import com.onboarding.payu.client.payu.model.payment.PaymentWithTokenRequest;
 import com.onboarding.payu.client.payu.model.payment.TransactionPayU;
@@ -94,7 +95,7 @@ public class PayUProviderImpl implements IPaymentProvider {
 	private TransactionPayU getTransaccion(final Transaction transaction) {
 		return TransactionPayU.builder()
 				.creditCardTokenId(transaction.getCreditCardTokenId())
-				.type(transaction.getType())
+				.type(TransactionType.AUTHORIZATION_AND_CAPTURE.toString())
 				.paymentMethod(transaction.getPaymentMethod())
 				.paymentCountry(transaction.getPaymentCountry())
 				.deviceSessionId(transaction.getDeviceSessionId())
