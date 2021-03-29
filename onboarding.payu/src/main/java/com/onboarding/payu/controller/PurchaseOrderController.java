@@ -1,5 +1,7 @@
 package com.onboarding.payu.controller;
 
+import com.onboarding.payu.repository.entity.PurchaseOrder;
+import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.purchase.PurchaseOrderDTO;
 import com.onboarding.payu.service.IPurchaseOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/purchase-order")
+@RequestMapping("/v1.0/purchase-orders")
 public class PurchaseOrderController {
 
 	@Autowired
 	private IPurchaseOrder iPurchaseOrder;
 
 	@PostMapping
-	public ResponseEntity addOrder(@RequestBody final PurchaseOrderDTO purchaseOrder){
-		return new ResponseEntity(iPurchaseOrder.addPurchaseOrder(purchaseOrder), HttpStatus.CREATED);
+	public ResponseEntity<PurchaseOrder> addPurchaseOrder(@RequestBody final PurchaseOrderDTO purchaseOrderDTO) throws RestApplicationException {
+		return new ResponseEntity(iPurchaseOrder.addPurchaseOrder(purchaseOrderDTO), HttpStatus.CREATED);
 	}
 }

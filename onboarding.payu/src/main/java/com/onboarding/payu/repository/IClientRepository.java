@@ -1,6 +1,8 @@
 package com.onboarding.payu.repository;
 
-import com.onboarding.payu.entity.Client;
+import java.util.Optional;
+
+import com.onboarding.payu.repository.entity.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -9,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
  */
 public interface IClientRepository extends JpaRepository<Client, Integer> {
+	Optional<Client> findByDniNumber(String dniNumber);
 }

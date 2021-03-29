@@ -7,8 +7,8 @@ import com.onboarding.payu.model.payment.Transaction;
 import com.onboarding.payu.model.tokenization.CreditCard;
 import com.onboarding.payu.model.tokenization.TokenResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
-import com.onboarding.payu.provider.payments.convert.PaymentConvert;
-import com.onboarding.payu.provider.payments.convert.TokenizationConvert;
+import com.onboarding.payu.provider.payments.mapper.PaymentMapper;
+import com.onboarding.payu.provider.payments.mapper.TokenizationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,15 +26,15 @@ public class PayUProviderImpl implements IPaymentProvider {
 
 	@Override public TokenResponse tokenizationCard(final CreditCard creditCard) {
 
-		return TokenizationConvert.getTokenResponse(paymentClient.tokenizationCard(TokenizationConvert.getTokenizationRequest(creditCard,
-																															  getMerchant())));
+		return TokenizationMapper.getTokenResponse(paymentClient.tokenizationCard(TokenizationMapper.getTokenizationRequest(creditCard,
+																															getMerchant())));
 	}
 
 	@Override public PaymentWithTokenResponse paymentWithToken(final Transaction transaction) {
 
-		return PaymentConvert
-				.getPaymentWithTokenResponse(paymentClient.paymentWithToken(PaymentConvert.getPaymentWithTokenRequest(transaction,
-																													  getMerchant())));
+		return PaymentMapper
+				.getPaymentWithTokenResponse(paymentClient.paymentWithToken(PaymentMapper.getPaymentWithTokenRequest(transaction,
+																													 getMerchant())));
 	}
 
 	/**

@@ -1,21 +1,21 @@
-package com.onboarding.payu.provider.payments.convert;
+package com.onboarding.payu.provider.payments.mapper;
 
 import com.onboarding.payu.client.payu.model.CommanType;
 import com.onboarding.payu.client.payu.model.Merchant;
 import com.onboarding.payu.client.payu.model.tokenization.CreditCardPayU;
 import com.onboarding.payu.client.payu.model.tokenization.CreditCardTokenPayU;
-import com.onboarding.payu.client.payu.model.tokenization.TokenizationRequest;
-import com.onboarding.payu.client.payu.model.tokenization.TokenizationResponse;
+import com.onboarding.payu.client.payu.model.tokenization.TokenizationPayURequest;
+import com.onboarding.payu.client.payu.model.tokenization.TokenizationPayUResponse;
 import com.onboarding.payu.model.tokenization.CreditCard;
 import com.onboarding.payu.model.tokenization.CreditCardToken;
 import com.onboarding.payu.model.tokenization.TokenResponse;
 
-public class TokenizationConvert {
-	public static TokenizationRequest getTokenizationRequest(final CreditCard creditCard, final Merchant merchant){
-		return TokenizationRequest.builder().creditCardToken(getCreditCardToken(creditCard))
-								  .merchant(merchant)
-								  .command(CommanType.CREATE_TOKEN.toString())
-								  .language("es").build();
+public class TokenizationMapper {
+	public static TokenizationPayURequest getTokenizationRequest(final CreditCard creditCard, final Merchant merchant){
+		return TokenizationPayURequest.builder().creditCardToken(getCreditCardToken(creditCard))
+									  .merchant(merchant)
+									  .command(CommanType.CREATE_TOKEN.toString())
+									  .language("es").build();
 	}
 
 	public static CreditCardPayU getCreditCardToken(final CreditCard creditCard){
@@ -27,7 +27,7 @@ public class TokenizationConvert {
 							 .expirationDate(creditCard.getExpirationDate()).build();
 	}
 
-	public static TokenResponse getTokenResponse(final TokenizationResponse tokenizationResponse){
+	public static TokenResponse getTokenResponse(final TokenizationPayUResponse tokenizationResponse){
 		return TokenResponse.builder().code(tokenizationResponse.getCode())
 							.error(tokenizationResponse.getError())
 							.creditCardToken(getCreditCardToken(tokenizationResponse.getCreditCardToken())).build();

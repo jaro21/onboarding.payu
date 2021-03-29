@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenizationResponse {
+public class TokenizationPayUResponse {
 	private String code;
     private String error;
     private CreditCardTokenPayU creditCardToken;

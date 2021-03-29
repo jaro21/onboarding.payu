@@ -2,7 +2,7 @@ package com.onboarding.payu.service;
 
 import java.util.List;
 
-import com.onboarding.payu.entity.Product;
+import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.exception.RestApplicationException;
 
 /**
@@ -14,7 +14,9 @@ public interface IProductService {
 
 	List<Product> getProducts();
 
-	Product getProductById(int id);
+	List<Product> getProductsByIds(List<Integer> ids);
+
+	Product getProductById(int id) throws RestApplicationException;
 
 	String deleteProduct(int id);
 

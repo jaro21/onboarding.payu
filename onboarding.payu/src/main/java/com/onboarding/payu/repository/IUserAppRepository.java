@@ -1,6 +1,6 @@
 package com.onboarding.payu.repository;
 
-import com.onboarding.payu.entity.UserApp;
+import com.onboarding.payu.repository.entity.UserApp;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

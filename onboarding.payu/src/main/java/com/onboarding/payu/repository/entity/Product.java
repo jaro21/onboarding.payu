@@ -1,4 +1,4 @@
-package com.onboarding.payu.entity;
+package com.onboarding.payu.repository.entity;
 
 import java.math.BigDecimal;
 import javax.persistence.Column;
@@ -8,26 +8,34 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 
-@Data
+@Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "product")
 public class Product {
+
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_product")
 	private Integer idProduct;
-	//@NotBlank(message = "Name is mandatory")
+	@NotBlank(message = "Product name is mandatory")
 	private String name;
+	@NotBlank(message = "Product code is mandatory")
 	private String code;
+	@NotBlank(message = "Product description is mandatory")
 	private String description;
+	@NotNull(message = "Product price is mandatory")
 	private BigDecimal price;
+	@NotNull(message = "Product stock is mandatory")
 	private Integer stock;
 }

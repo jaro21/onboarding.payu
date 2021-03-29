@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TokenizationRequest {
+public class TokenizationPayURequest {
 	private String language;
     private String command;
     private Merchant merchant;

@@ -1,25 +1,25 @@
-package com.onboarding.payu.provider.payments.convert;
+package com.onboarding.payu.provider.payments.mapper;
 
 import com.onboarding.payu.client.payu.model.CommanType;
 import com.onboarding.payu.client.payu.model.Merchant;
 import com.onboarding.payu.client.payu.model.TransactionType;
+import com.onboarding.payu.client.payu.model.payment.PaymentWithTokenPayURequest;
 import com.onboarding.payu.client.payu.model.payment.PaymentWithTokenPayUResponse;
-import com.onboarding.payu.client.payu.model.payment.PaymentWithTokenRequest;
 import com.onboarding.payu.client.payu.model.payment.TransactionPayU;
 import com.onboarding.payu.client.payu.model.payment.TransactionPayUResponse;
 import com.onboarding.payu.model.payment.PaymentWithTokenResponse;
 import com.onboarding.payu.model.payment.Transaction;
 import com.onboarding.payu.model.payment.TransactionResponse;
 
-public class PaymentConvert {
+public class PaymentMapper {
 
-	public static PaymentWithTokenRequest getPaymentWithTokenRequest(final Transaction transaction, final Merchant merchant) {
+	public static PaymentWithTokenPayURequest getPaymentWithTokenRequest(final Transaction transaction, final Merchant merchant) {
 
-		return PaymentWithTokenRequest.builder().language("es")
-									  .command(CommanType.SUBMIT_TRANSACTION.toString())
-									  .merchant(merchant)
-									  .test(true)
-									  .transaction(getTransaccion(transaction)).build();
+		return PaymentWithTokenPayURequest.builder().language("es")
+										  .command(CommanType.SUBMIT_TRANSACTION.toString())
+										  .merchant(merchant)
+										  .test(true)
+										  .transaction(getTransaccion(transaction)).build();
 	}
 
 	public static TransactionPayU getTransaccion(final Transaction transaction) {

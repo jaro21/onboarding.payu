@@ -2,8 +2,8 @@ package com.onboarding.payu.controller;
 
 import javax.validation.Valid;
 
-import com.onboarding.payu.entity.Product;
 import com.onboarding.payu.exception.RestApplicationException;
+import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.IProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.Validate;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/v1.0/products")
 public class ProductController {
 
 	@Autowired
@@ -42,8 +43,12 @@ public class ProductController {
 
 	@PostMapping
 	public ResponseEntity addProduct(@Valid @RequestBody Product product) throws RestApplicationException {
-		validateProduct(product);
-		return new ResponseEntity(iProductService.saveProduct(product), HttpStatus.CREATED);
+		try {
+			validateProduct(product);
+			return new ResponseEntity(iProductService.saveProduct(product), HttpStatus.CREATED);
+		}catch (Exception e){
+			return manageException(e);
+		}
 	}
 
 	@GetMapping
@@ -52,7 +57,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity findProductById(@PathVariable int id) {
+	public ResponseEntity findProductById(@PathVariable int id) throws RestApplicationException {
 		Validate.notNull(id, "Product identification is mandatory");
 		return ResponseEntity.ok(iProductService.getProductById(id));
 	}
@@ -76,4 +81,13 @@ public class ProductController {
 		}
 		return new ResponseEntity(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+
+	/**
+	 * Handler the illegal argument exception
+	 */
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity handlerIllegalArgumentException(IllegalArgumentException e) {
+		return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
 }

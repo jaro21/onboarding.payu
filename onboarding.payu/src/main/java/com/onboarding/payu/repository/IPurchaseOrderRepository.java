@@ -1,6 +1,6 @@
 package com.onboarding.payu.repository;
 
-import com.onboarding.payu.entity.PurchaseOrder;
+import com.onboarding.payu.repository.entity.PurchaseOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

@@ -11,7 +11,7 @@ public class RestApplicationException  extends Exception {
 	/**
 	 * Constructor that receive the exception's message
 	 *
-	 * @param message The exception's message
+	 * @param message {@link String} The exception's message
 	 */
 	public RestApplicationException(String message) {
 		super(message);
@@ -20,7 +20,7 @@ public class RestApplicationException  extends Exception {
 	/**
 	 * Constructor that receive the exception's cause
 	 *
-	 * @param cause The exception's cause
+	 * @param cause {@link Throwable} The exception's cause
 	 */
 	public RestApplicationException(Throwable cause) {
 		super(cause);
@@ -29,8 +29,8 @@ public class RestApplicationException  extends Exception {
 	/**
 	 * Constructor that receive the exception's message and cause
 	 *
-	 * @param message The exception's message
-	 * @param cause The exception's cause
+	 * @param message {@link String} The exception's message
+	 * @param cause {@link Throwable} The exception's cause
 	 */
 	public RestApplicationException(String message, Throwable cause) {
 		super(message, cause);
