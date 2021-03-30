@@ -9,7 +9,7 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-public class ProductDTO {
+public class ProductDto {
 	private Integer idProduct;
 	private Integer quantity;
 	private BigDecimal unitValue;

@@ -1,8 +1,10 @@
 package com.onboarding.payu.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 
 import com.onboarding.payu.exception.RestApplicationException;
+import com.onboarding.payu.model.product.ProductDto;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.IProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,49 +29,35 @@ public class ProductController {
 	@Autowired
 	private IProductService iProductService;
 
-	/**
-	 * Validate the required product data
-	 * @param product {@linkplain Product}
-	 */
-	private void validateProduct(final Product product) {
-		Validate.notNull(product, "Product is mandatory");
-		Validate.notEmpty(product.getCode(), "Code is mandatory");
-		Validate.notEmpty(product.getName(), "Name is mandatory");
-		Validate.notEmpty(product.getDescription(), "Description is mandatory");
-		Validate.notNull(product.getPrice(), "Price is mandatory");
-		Validate.notNull(product.getStock(), "Stock is mandatory");
-	}
-
 	@PostMapping
-	public ResponseEntity addProduct(@Valid @RequestBody Product product) throws RestApplicationException {
-		try {
-			validateProduct(product);
-			return new ResponseEntity(iProductService.saveProduct(product), HttpStatus.CREATED);
-		}catch (Exception e){
-			return manageException(e);
-		}
+	public ResponseEntity<Product> addProduct(@Valid @RequestBody ProductDto productDto) throws RestApplicationException {
+		//try {
+			//validateProduct(productDto);
+			return new ResponseEntity(iProductService.saveProduct(productDto), HttpStatus.CREATED);
+		//}catch (Exception e){
+		//	return manageException(e);
+		//}
 	}
 
 	@GetMapping
-	public ResponseEntity findAllProducts() {
+	public ResponseEntity<List<Product>> findAllProducts() {
 		return ResponseEntity.ok(iProductService.getProducts());
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity findProductById(@PathVariable int id) throws RestApplicationException {
+	public ResponseEntity<Product> findProductById(@PathVariable Integer id) throws RestApplicationException {
 		Validate.notNull(id, "Product identification is mandatory");
 		return ResponseEntity.ok(iProductService.getProductById(id));
 	}
 
 	@PutMapping
-	public ResponseEntity updateProduct(@RequestBody Product product) throws RestApplicationException {
-		Validate.notNull(product.getIdProduct(), "Product identification is mandatory");
-		validateProduct(product);
-		return ResponseEntity.ok(iProductService.updateProduct(product));
+	public ResponseEntity<Product> updateProduct(@Valid @RequestBody ProductDto productDto) throws RestApplicationException {
+		Validate.notNull(productDto.getIdProduct(), "Product identification is mandatory");
+		return ResponseEntity.ok(iProductService.updateProduct(productDto));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity deleteProduct(@PathVariable int id) {
+	public ResponseEntity deleteProduct(@PathVariable Integer id) {
 		Validate.notNull(id, "Product identification is mandatory to remove");
 		return ResponseEntity.ok(iProductService.deleteProduct(id));
 	}
@@ -80,14 +67,6 @@ public class ProductController {
 			return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
-	/**
-	 * Handler the illegal argument exception
-	 */
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity handlerIllegalArgumentException(IllegalArgumentException e) {
-		return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 }

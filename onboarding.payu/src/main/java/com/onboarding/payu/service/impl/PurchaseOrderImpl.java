@@ -9,14 +9,15 @@ import java.util.stream.Collectors;
 
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.StatusType;
-import com.onboarding.payu.model.purchase.ProductDTO;
-import com.onboarding.payu.model.purchase.PurchaseOrderDTO;
+import com.onboarding.payu.model.purchase.ProductDto;
+import com.onboarding.payu.model.purchase.PurchaseOrderDto;
 import com.onboarding.payu.repository.IClientRepository;
 import com.onboarding.payu.repository.IPurchaseOrderRepository;
 import com.onboarding.payu.repository.entity.Client;
 import com.onboarding.payu.repository.entity.OrderProduct;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
+import com.onboarding.payu.service.IOrderProductService;
 import com.onboarding.payu.service.IProductService;
 import com.onboarding.payu.service.IPurchaseOrder;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of {@link IPurchaseOrder} interface.
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Alberto Ramirez Osorio</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Slf4j
 @Service
 public class PurchaseOrderImpl implements IPurchaseOrder {
@@ -34,27 +42,28 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	@Autowired
 	private IProductService iProductService;
 
-	//@Autowired
-	//private IOrderProductService iOrderProductService;
+	@Autowired
+	private IOrderProductService iOrderProductService;
 
 	@Autowired
 	private IClientRepository iClientRepository;
 
 	@Transactional
-	@Override public PurchaseOrder addPurchaseOrder(final PurchaseOrderDTO purchaseOrderDTO) throws RestApplicationException {
+	@Override public PurchaseOrder addPurchaseOrder(final PurchaseOrderDto purchaseOrderDTO) throws RestApplicationException {
 
 		log.debug("addPurchaseOrder(PurchaseOrderDTO)", purchaseOrderDTO.toString());
 		final List<Product> productList = getProductsByIds(purchaseOrderDTO.getProductList());
 		final Client client =
-				iClientRepository.findById(purchaseOrderDTO.getIdClient()).orElseThrow(() ->
-						new RestApplicationException(String.format("Client id %d does not exist.", purchaseOrderDTO.getIdClient())));
+				iClientRepository.findById(purchaseOrderDTO.getClientDto().getIdClient()).orElseThrow(() ->
+																							   new RestApplicationException(String.format(
+																									   "Client id %d does not exist.",
+																									   purchaseOrderDTO.getClientDto().getIdClient())));
 		isValidOrder(productList, purchaseOrderDTO.getProductList());
 		updateStock(productList, purchaseOrderDTO.getProductList());
 		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(getPurchaseOrder(client, productList,
 																						   purchaseOrderDTO.getProductList()));
-		//List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderDTO, purchaseOrder.getIdPurchaseOrder(), productList);
-		//iOrderProductService.saveAll(orderProductList);
-		//BigDecimal sum = getTotalValue(orderProductList);
+		List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderDTO.getProductList(), productList, purchaseOrder);
+		iOrderProductService.saveAll(orderProductList);
 
 		return purchaseOrder;
 	}
@@ -66,7 +75,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 							   .reduce(new BigDecimal(0.0), (a, b) -> a.add(b));
 	}
 
-	private BigDecimal getTotalValue(final List<Product> productList, final List<ProductDTO> productDTOList) {
+	private BigDecimal getTotalValue(final List<Product> productList, final List<ProductDto> productDTOList) {
 
 		return productDTOList.stream().map(productDTO -> BigDecimal.valueOf(productDTO.getQuantity()).multiply(
 				productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get()
@@ -74,28 +83,27 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 										  ).reduce(new BigDecimal(0.0), (a, b) -> a.add(b));
 	}
 
-
-
-	private List<OrderProduct> getOrderProducts(final List<ProductDTO> productDTOList,
-												final List<Product> productList) {
+	private List<OrderProduct> getOrderProducts(final List<ProductDto> productDTOList,
+												final List<Product> productList,
+												final PurchaseOrder purchaseOrder) {
 
 		return productDTOList.stream().map(productDTO -> {
-			return OrderProduct.builder().product(productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get())
+			final Product productRes =
+					productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get();
+			return OrderProduct.builder().product(productRes)
 							   .quantity(productDTO.getQuantity())
-							   .unitValue(productList.stream().filter(product -> productDTO.getIdProduct()
-																						   .equals(productDTO.getIdProduct()))
-													 .findFirst().get().getPrice())
-							   //.idPurchaseOrder(idPurchaseOrder)
+							   .unitValue(productRes.getPrice())
+							   .purchaseOrder(purchaseOrder)
 							   .build();
 		}).collect(Collectors.toList());
 	}
 
-	private PurchaseOrder getPurchaseOrder(final Client client, final List<Product> productList, final List<ProductDTO> productDTOList) {
+	private PurchaseOrder getPurchaseOrder(final Client client, final List<Product> productList, final List<ProductDto> productDTOList) {
 
 		return PurchaseOrder.builder().client(client)
 							.status(StatusType.PENDING.name())
 							.date(LocalDate.now())
-							//.value(getTotalValue(productList, productDTOList))
+							.value(getTotalValue(productList, productDTOList))
 							.referenceCode("CodeReference")
 							.languaje("es")
 							//.street1(client.getAddressList())
@@ -105,13 +113,11 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 							//.country()
 							//.postalCode()
 							//.productList(productList)
-							.orderProductList(getOrderProducts(productDTOList, productList))
+							//.orderProductList(getOrderProducts(productDTOList, productList))
 							.build();
-
-
 	}
 
-	private void isValidOrder(final List<Product> productList, final List<ProductDTO> productDTOList) throws RestApplicationException {
+	private void isValidOrder(final List<Product> productList, final List<ProductDto> productDTOList) throws RestApplicationException {
 
 		/*
 		productList.stream().map(product -> {
@@ -123,11 +129,11 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		 */
 
 		for (Product product : productList) {
-			for (ProductDTO productDTO : productDTOList) {
+			for (ProductDto productDTO : productDTOList) {
 				if (productDTO.getIdProduct().equals(product.getIdProduct())
 						&& !isValidQuantity.apply(product.getStock(),
 												  productDTO.getQuantity()).booleanValue()) {
-					throw new RestApplicationException(String.format("Product %s - %s quantity is not available.", product.getCode(),
+					throw new RestApplicationException(String.format("Product quantity (%s-%s) is not available.", product.getCode(),
 																	 product.getName()));
 				}
 			}
@@ -156,7 +162,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		 */
 	}
 
-	private void updateStock(final List<Product> productList, final List<ProductDTO> productDTOList) {
+	private void updateStock(final List<Product> productList, final List<ProductDto> productDTOList) {
 
 		List<Product> products = getNewProductList(productList, productDTOList);
 		products.forEach(product -> {
@@ -168,7 +174,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		});
 	}
 
-	private List<Product> getNewProductList(final List<Product> productList, final List<ProductDTO> productDTOList) {
+	private List<Product> getNewProductList(final List<Product> productList, final List<ProductDto> productDTOList) {
 
 		return productList.stream().map(product -> {
 			return Product.builder().idProduct(product.getIdProduct())
@@ -186,15 +192,15 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	/**
 	 * get list products
 	 *
-	 * @param productDTOList {@link List<ProductDTO>}
+	 * @param productDTOList {@link List< ProductDto >}
 	 * @return {@link List<Product>}
 	 */
-	private List<Product> getProductsByIds(final List<ProductDTO> productDTOList) {
+	private List<Product> getProductsByIds(final List<ProductDto> productDTOList) {
 
 		return iProductService.getProductsByIds(getProductsList(productDTOList));
 	}
 
-	private List<Integer> getProductsList(final List<ProductDTO> productDTOList) {
+	private List<Integer> getProductsList(final List<ProductDto> productDTOList) {
 
 		return productDTOList.stream().map(productDTO -> productDTO.getIdProduct()).collect(Collectors.toList());
 	}

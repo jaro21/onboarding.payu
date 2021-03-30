@@ -1,31 +1,23 @@
-package com.onboarding.payu.repository.entity;
+package com.onboarding.payu.model.product;
 
 import java.math.BigDecimal;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Builder
 @Getter
+@EqualsAndHashCode
+@ToString
 @AllArgsConstructor
-@NoArgsConstructor
-@Entity
-@Table(name = "product")
-public class Product {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_product")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class ProductDto {
 	private Integer idProduct;
 	@NotBlank(message = "Product name is mandatory")
 	private String name;

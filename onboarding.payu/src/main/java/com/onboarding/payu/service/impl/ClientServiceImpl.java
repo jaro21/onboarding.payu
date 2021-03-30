@@ -1,12 +1,19 @@
 package com.onboarding.payu.service.impl;
 
-import com.onboarding.payu.repository.entity.Client;
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.repository.IClientRepository;
+import com.onboarding.payu.repository.entity.Client;
 import com.onboarding.payu.service.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of {@link IClientService} interface.
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Alberto Ramirez Osorio</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Service
 public class ClientServiceImpl implements IClientService {
 

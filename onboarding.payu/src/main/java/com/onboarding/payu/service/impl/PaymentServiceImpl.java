@@ -7,6 +7,13 @@ import com.onboarding.payu.service.IPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of {@link IPaymentService} interface.
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Alberto Ramirez Osorio</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Service
 public class PaymentServiceImpl implements IPaymentService {
 

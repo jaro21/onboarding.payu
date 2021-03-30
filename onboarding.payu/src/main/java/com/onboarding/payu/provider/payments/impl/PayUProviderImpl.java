@@ -13,6 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implementation of {@link IPaymentProvider} interface.
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Alberto Ramirez Osorio</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Component
 public class PayUProviderImpl implements IPaymentProvider {
 
