@@ -17,10 +17,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClientServiceImpl implements IClientService {
 
-	@Autowired IClientRepository iClientRepository;
+	private IClientRepository iClientRepository;
+
+	@Autowired
+	public ClientServiceImpl(final IClientRepository iClientRepository) {
+
+		this.iClientRepository = iClientRepository;
+	}
 
 	@Override public Client findByDniNumber(final String dniNumber) throws RestApplicationException {
 
-		return iClientRepository.findByDniNumber(dniNumber).orElseThrow(() -> new RestApplicationException("Client does not exist"));
+		return iClientRepository.findByDniNumber(dniNumber).orElseThrow(
+				() -> new RestApplicationException(String.format("Client with identification %s does not exist", dniNumber)));
 	}
 }

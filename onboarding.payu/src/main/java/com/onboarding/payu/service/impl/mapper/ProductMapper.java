@@ -1,8 +1,17 @@
 package com.onboarding.payu.service.impl.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.onboarding.payu.model.product.ProductDto;
 import com.onboarding.payu.repository.entity.Product;
 
+/**
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Alberto Ramirez Osorio</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public class ProductMapper {
 	public static Product toProduct(final ProductDto productDto){
 		return Product.builder().idProduct(productDto.getIdProduct())
@@ -20,5 +29,9 @@ public class ProductMapper {
 					  .description(product.getDescription())
 					  .price(product.getPrice())
 					  .stock(product.getStock()).build();
+	}
+
+	public static List<ProductDto> toProductDtoList(final List<Product> productList){
+		return productList.stream().map(product -> toProductDto(product)).collect(Collectors.toList());
 	}
 }

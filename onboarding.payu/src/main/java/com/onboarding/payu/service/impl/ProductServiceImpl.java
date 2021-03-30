@@ -23,7 +23,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceImpl implements IProductService {
 
-	@Autowired private IProductRepository iProductRepository;
+	private IProductRepository iProductRepository;
+
+	@Autowired
+	public ProductServiceImpl(final IProductRepository iProductRepository) {
+
+		this.iProductRepository = iProductRepository;
+	}
 
 	/**
 	 * {@inheritDoc}

@@ -27,13 +27,9 @@ public class OrderProduct {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_order_product")
 	private Integer idOrderProduct;
-	//@Column(name = "id_purchase_order")
-	//private Integer idPurchaseOrder;
 	@ManyToOne
 	@JoinColumn(name = "id_purchase_order")
 	private PurchaseOrder purchaseOrder;
-	//@Column(name = "id_product")
-	//private Integer idProduct;
 	@ManyToOne
 	@JoinColumn(name = "id_product")
 	private Product product;

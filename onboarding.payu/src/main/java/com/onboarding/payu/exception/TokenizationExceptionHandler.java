@@ -2,7 +2,7 @@ package com.onboarding.payu.exception;
 
 import java.time.LocalDateTime;
 
-import com.onboarding.payu.controller.TokenizationController;
+import com.onboarding.payu.controller.CreditCardController;
 import com.onboarding.payu.model.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
-@ControllerAdvice(assignableTypes = TokenizationController.class)
+@ControllerAdvice(assignableTypes = CreditCardController.class)
 public class TokenizationExceptionHandler extends ResponseEntityExceptionHandler {
 
 	/**

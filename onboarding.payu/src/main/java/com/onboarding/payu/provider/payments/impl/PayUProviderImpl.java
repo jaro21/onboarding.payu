@@ -3,8 +3,8 @@ package com.onboarding.payu.provider.payments.impl;
 import com.onboarding.payu.client.payu.PaymentClient;
 import com.onboarding.payu.client.payu.model.Merchant;
 import com.onboarding.payu.model.payment.PaymentWithTokenResponse;
-import com.onboarding.payu.model.payment.Transaction;
-import com.onboarding.payu.model.tokenization.CreditCard;
+import com.onboarding.payu.model.payment.TransactionDto;
+import com.onboarding.payu.model.tokenization.CreditCardDto;
 import com.onboarding.payu.model.tokenization.TokenResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
 import com.onboarding.payu.provider.payments.mapper.PaymentMapper;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PayUProviderImpl implements IPaymentProvider {
 
-	@Autowired
 	private PaymentClient paymentClient;
 
 	@Value("${payment-api.apiKey}")
@@ -31,17 +30,23 @@ public class PayUProviderImpl implements IPaymentProvider {
 	@Value("${payment-api.apiLogin}")
 	private String apiLogin;
 
-	@Override public TokenResponse tokenizationCard(final CreditCard creditCard) {
+	@Autowired
+	public PayUProviderImpl(final PaymentClient paymentClient) {
 
-		return TokenizationMapper.getTokenResponse(paymentClient.tokenizationCard(TokenizationMapper.getTokenizationRequest(creditCard,
+		this.paymentClient = paymentClient;
+	}
+
+	@Override public TokenResponse tokenizationCard(final CreditCardDto creditCardDto) {
+
+		return TokenizationMapper.getTokenResponse(paymentClient.tokenizationCard(TokenizationMapper.getTokenizationRequest(creditCardDto,
 																															getMerchant())));
 	}
 
-	@Override public PaymentWithTokenResponse paymentWithToken(final Transaction transaction) {
+	@Override public PaymentWithTokenResponse paymentWithToken(final TransactionDto transactionDto) {
 
 		return PaymentMapper
-				.getPaymentWithTokenResponse(paymentClient.paymentWithToken(PaymentMapper.getPaymentWithTokenRequest(transaction,
-																													 getMerchant())));
+				.toPaymentWithTokenResponse(paymentClient.paymentWithToken(PaymentMapper.toPaymentWithTokenRequest(transactionDto,
+																												   getMerchant())));
 	}
 
 	/**

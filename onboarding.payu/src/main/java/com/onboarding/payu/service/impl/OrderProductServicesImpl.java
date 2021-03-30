@@ -18,8 +18,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderProductServicesImpl implements IOrderProductService {
 
-	@Autowired
 	private IOrderProductRepository iOrderProductRepository;
+
+	@Autowired
+	public OrderProductServicesImpl(final IOrderProductRepository iOrderProductRepository) {
+
+		this.iOrderProductRepository = iOrderProductRepository;
+	}
 
 	@Override public List<OrderProduct> saveAll(final List<OrderProduct> orderProductList) {
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "payment", url = "${onboarding.uri}")
 public interface PaymentClient {
-	//@PostMapping(value = "/payments-api/4.0/service.cgi", consumes = "application/json", produces = "application/json")
+
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	TokenizationPayUResponse tokenizationCard(@RequestBody TokenizationPayURequest registrationCardRequest);
 

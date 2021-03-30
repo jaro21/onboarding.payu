@@ -1,8 +1,11 @@
 package com.onboarding.payu.service.impl;
 
+import static java.lang.String.format;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
@@ -36,17 +39,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PurchaseOrderImpl implements IPurchaseOrder {
 
-	@Autowired
 	private IPurchaseOrderRepository iPurchaseOrderRepository;
 
-	@Autowired
 	private IProductService iProductService;
 
-	@Autowired
 	private IOrderProductService iOrderProductService;
 
-	@Autowired
 	private IClientRepository iClientRepository;
+
+	@Autowired
+	public PurchaseOrderImpl(final IPurchaseOrderRepository iPurchaseOrderRepository,
+							 final IProductService iProductService,
+							 final IOrderProductService iOrderProductService,
+							 final IClientRepository iClientRepository) {
+
+		this.iPurchaseOrderRepository = iPurchaseOrderRepository;
+		this.iProductService = iProductService;
+		this.iOrderProductService = iOrderProductService;
+		this.iClientRepository = iClientRepository;
+	}
 
 	@Transactional
 	@Override public PurchaseOrder addPurchaseOrder(final PurchaseOrderDto purchaseOrderDTO) throws RestApplicationException {
@@ -54,14 +65,14 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		log.debug("addPurchaseOrder(PurchaseOrderDTO)", purchaseOrderDTO.toString());
 		final List<Product> productList = getProductsByIds(purchaseOrderDTO.getProductList());
 		final Client client =
-				iClientRepository.findById(purchaseOrderDTO.getClientDto().getIdClient()).orElseThrow(() ->
-																							   new RestApplicationException(String.format(
-																									   "Client id %d does not exist.",
-																									   purchaseOrderDTO.getClientDto().getIdClient())));
+				iClientRepository.findById(purchaseOrderDTO.getClientDto().getIdClient()).orElseThrow(
+						() -> new RestApplicationException(format("Client id %d does not exist.",
+																  purchaseOrderDTO.getClientDto().getIdClient())));
+
 		isValidOrder(productList, purchaseOrderDTO.getProductList());
 		updateStock(productList, purchaseOrderDTO.getProductList());
 		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(getPurchaseOrder(client, productList,
-																						   purchaseOrderDTO.getProductList()));
+																						   purchaseOrderDTO));
 		List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderDTO.getProductList(), productList, purchaseOrder);
 		iOrderProductService.saveAll(orderProductList);
 
@@ -80,9 +91,15 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		return productDTOList.stream().map(productDTO -> BigDecimal.valueOf(productDTO.getQuantity()).multiply(
 				productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get()
 						   .getPrice())
-										  ).reduce(new BigDecimal(0.0), (a, b) -> a.add(b));
+										  ).reduce(BigDecimal.valueOf(0.0), (a, b) -> a.add(b));
 	}
 
+	/**
+	 * @param productDTOList
+	 * @param productList
+	 * @param purchaseOrder
+	 * @return
+	 */
 	private List<OrderProduct> getOrderProducts(final List<ProductDto> productDTOList,
 												final List<Product> productList,
 												final PurchaseOrder purchaseOrder) {
@@ -98,58 +115,61 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		}).collect(Collectors.toList());
 	}
 
-	private PurchaseOrder getPurchaseOrder(final Client client, final List<Product> productList, final List<ProductDto> productDTOList) {
+	private PurchaseOrder getPurchaseOrder(final Client client, final List<Product> productList, final PurchaseOrderDto purchaseOrderDTO) {
 
 		return PurchaseOrder.builder().client(client)
 							.status(StatusType.PENDING.name())
 							.date(LocalDate.now())
-							.value(getTotalValue(productList, productDTOList))
-							.referenceCode("CodeReference")
+							.value(getTotalValue(productList, purchaseOrderDTO.getProductList()))
+							.referenceCode(UUID.randomUUID().toString())
 							.languaje("es")
-							//.street1(client.getAddressList())
-							//.street2()
-							//.city()
-							//.state()
-							//.country()
-							//.postalCode()
-							//.productList(productList)
-							//.orderProductList(getOrderProducts(productDTOList, productList))
+							.street1(purchaseOrderDTO.getClientDto().getStreet1())
+							.street2(purchaseOrderDTO.getClientDto().getStreet2())
+							.city(purchaseOrderDTO.getClientDto().getCity())
+							.state(purchaseOrderDTO.getClientDto().getState())
+							.country(purchaseOrderDTO.getClientDto().getCountry())
+							.postalCode(purchaseOrderDTO.getClientDto().getPostalCode())
 							.build();
 	}
 
-	private void isValidOrder(final List<Product> productList, final List<ProductDto> productDTOList) throws RestApplicationException {
-
-		/*
-		productList.stream().map(product -> {
-				!isValidQuantity.apply(product.getStock(), productDTOList.stream().filter(productDTO -> productDTO.getIdProduct()
-																												 .equals(product.getIdProduct()))
-																		.findFirst().get().getQuantity());
-		});
-
-		 */
+	private void isValidOrder(final List<Product> productList, final List<ProductDto> productDtoList) throws RestApplicationException {
 
 		for (Product product : productList) {
-			for (ProductDto productDTO : productDTOList) {
+			for (ProductDto productDTO : productDtoList) {
 				if (productDTO.getIdProduct().equals(product.getIdProduct())
 						&& !isValidQuantity.apply(product.getStock(),
 												  productDTO.getQuantity()).booleanValue()) {
-					throw new RestApplicationException(String.format("Product quantity (%s-%s) is not available.", product.getCode(),
-																	 product.getName()));
+					throw new RestApplicationException(format("Product quantity (%s-%s) is not available.", product.getCode(),
+															  product.getName()));
 				}
 			}
 		}
 
-		//iProductService.updateProduct(getNewProductList(productList, productDTOList));
 		/*
-		getProductsByIds(productDTOList).stream().forEach(product -> {
-			//product.getStock() >= productDTOList.get()
+		productDtoList.stream().filter(productDTO -> {
+			final Product productRes =
+					productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get();
+			if(!isValidQuantity.apply(productRes.getStock(),
+								  productDTO.getQuantity()).booleanValue()){
+				throw new RestApplicationException(format("Product quantity (%s-%s) is not available.", productRes.getCode(),
+														  productRes.getName()));
+			}
+		});
+
+		 */
+
+
+		//iProductService.updateProduct(getNewProductList(productList, productDtoList));
+		/*
+		getProductsByIds(productDtoList).stream().forEach(product -> {
+			//product.getStock() >= productDtoList.get()
 		});
 
 		 */
 
 		/*
-		getProductsByIds(productDTOList).stream().map(product->product.getIdProduct())
-			 .flatMap(productDTOList -> productDTOList.stream())
+		getProductsByIds(productDtoList).stream().map(product->product.getIdProduct())
+			 .flatMap(productDtoList -> productDtoList.stream())
 			 .forEach(new Consumer<Viaje>() {
 				 @Override
 				 public void accept(Viaje t) {

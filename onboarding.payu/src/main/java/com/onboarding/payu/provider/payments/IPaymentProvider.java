@@ -1,8 +1,8 @@
 package com.onboarding.payu.provider.payments;
 
 import com.onboarding.payu.model.payment.PaymentWithTokenResponse;
-import com.onboarding.payu.model.payment.Transaction;
-import com.onboarding.payu.model.tokenization.CreditCard;
+import com.onboarding.payu.model.payment.TransactionDto;
+import com.onboarding.payu.model.tokenization.CreditCardDto;
 import com.onboarding.payu.model.tokenization.TokenResponse;
 
 /**
@@ -12,10 +12,11 @@ public interface IPaymentProvider {
 
 	/**
 	 *
-	 * @param creditCard {@link CreditCard}
+	 * @param creditCardDto {@link CreditCardDto}
 	 * @return {@link TokenResponse}
 	 */
-	TokenResponse tokenizationCard(CreditCard creditCard);
+	TokenResponse tokenizationCard(CreditCardDto creditCardDto);
 
-	PaymentWithTokenResponse paymentWithToken(Transaction transaction);
+	PaymentWithTokenResponse paymentWithToken(TransactionDto transactionDto);
+
 }

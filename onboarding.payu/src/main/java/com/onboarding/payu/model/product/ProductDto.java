@@ -5,7 +5,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +14,6 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
-@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ProductDto {
 	private Integer idProduct;

@@ -1,6 +1,5 @@
 package com.onboarding.payu.repository.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,10 +28,7 @@ public class CreditCard {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_credit_card")
 	private Integer idCreditCard;
-	//@Column(name = "id_client")
-	//@NotBlank(message = "Client Id is mandatory")
-	//private Integer idClient;
-	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="id_client")
 	private Client client;
 	@Column(name = "masked_number", length = 20)

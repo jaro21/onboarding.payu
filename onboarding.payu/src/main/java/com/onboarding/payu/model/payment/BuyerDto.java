@@ -1,16 +1,17 @@
 package com.onboarding.payu.model.payment;
 
-import com.onboarding.payu.model.payment.IngAddress;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
-public class Payer {
-    private String merchantPayerId;
+@Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class BuyerDto {
+    private String merchantBuyerId;
     private String fullName;
     private String emailAddress;
     private String contactPhone;
     private String dniNumber;
-    private IngAddress billingAddress;
+    private IngAddressDto shippingAddressDto;
 }

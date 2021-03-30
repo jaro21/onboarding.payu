@@ -2,18 +2,14 @@ package com.onboarding.payu.model.tokenization;
 
 import javax.validation.constraints.NotBlank;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
 
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @ToString
-public class CreditCard {
+public class CreditCardDto {
 	@NotBlank(message = "Credit card payerId is mandatory")
 	private String payerId;
 	@ToString.Exclude

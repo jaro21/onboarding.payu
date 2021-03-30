@@ -18,11 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1.0/purchase-orders")
 public class PurchaseOrderController {
 
-	@Autowired
 	private IPurchaseOrder iPurchaseOrder;
 
+	@Autowired
+	public PurchaseOrderController(final IPurchaseOrder iPurchaseOrder) {
+		this.iPurchaseOrder = iPurchaseOrder;
+	}
+
 	@PostMapping
-	public ResponseEntity<PurchaseOrder> addPurchaseOrder(@Valid @RequestBody final PurchaseOrderDto purchaseOrderDTO) throws RestApplicationException {
+	public ResponseEntity<PurchaseOrder> addPurchaseOrder(@Valid @RequestBody final PurchaseOrderDto purchaseOrderDTO)
+			throws RestApplicationException {
+
 		return new ResponseEntity(iPurchaseOrder.addPurchaseOrder(purchaseOrderDTO), HttpStatus.CREATED);
 	}
 }

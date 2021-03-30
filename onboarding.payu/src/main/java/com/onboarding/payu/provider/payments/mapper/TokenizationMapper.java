@@ -6,25 +6,25 @@ import com.onboarding.payu.client.payu.model.tokenization.CreditCardPayU;
 import com.onboarding.payu.client.payu.model.tokenization.CreditCardTokenPayU;
 import com.onboarding.payu.client.payu.model.tokenization.TokenizationPayURequest;
 import com.onboarding.payu.client.payu.model.tokenization.TokenizationPayUResponse;
-import com.onboarding.payu.model.tokenization.CreditCard;
+import com.onboarding.payu.model.tokenization.CreditCardDto;
 import com.onboarding.payu.model.tokenization.CreditCardToken;
 import com.onboarding.payu.model.tokenization.TokenResponse;
 
 public class TokenizationMapper {
-	public static TokenizationPayURequest getTokenizationRequest(final CreditCard creditCard, final Merchant merchant){
-		return TokenizationPayURequest.builder().creditCardToken(getCreditCardToken(creditCard))
+	public static TokenizationPayURequest getTokenizationRequest(final CreditCardDto creditCardDto, final Merchant merchant){
+		return TokenizationPayURequest.builder().creditCardToken(getCreditCardToken(creditCardDto))
 									  .merchant(merchant)
 									  .command(CommanType.CREATE_TOKEN.toString())
 									  .language("es").build();
 	}
 
-	public static CreditCardPayU getCreditCardToken(final CreditCard creditCard){
-		return CreditCardPayU.builder().payerId(creditCard.getPayerId())
-							 .name(creditCard.getName())
-							 .identificationNumber(creditCard.getIdentificationNumber())
-							 .paymentMethod(creditCard.getPaymentMethod())
-							 .number(creditCard.getNumber())
-							 .expirationDate(creditCard.getExpirationDate()).build();
+	public static CreditCardPayU getCreditCardToken(final CreditCardDto creditCardDto){
+		return CreditCardPayU.builder().payerId(creditCardDto.getPayerId())
+							 .name(creditCardDto.getName())
+							 .identificationNumber(creditCardDto.getIdentificationNumber())
+							 .paymentMethod(creditCardDto.getPaymentMethod())
+							 .number(creditCardDto.getNumber())
+							 .expirationDate(creditCardDto.getExpirationDate()).build();
 	}
 
 	public static TokenResponse getTokenResponse(final TokenizationPayUResponse tokenizationResponse){

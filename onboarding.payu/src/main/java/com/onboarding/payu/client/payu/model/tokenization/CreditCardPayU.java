@@ -1,14 +1,10 @@
 package com.onboarding.payu.client.payu.model.tokenization;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class CreditCardPayU {
 	private String payerId;
 	private String name;

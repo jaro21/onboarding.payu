@@ -4,8 +4,8 @@ import com.onboarding.payu.client.payu.model.Merchant;
 import lombok.Builder;
 import lombok.Getter;
 
-@Getter
 @Builder
+@Getter
 public class TokenizationPayURequest {
 	private String language;
     private String command;

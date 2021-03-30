@@ -1,11 +1,13 @@
 package com.onboarding.payu.model.payment;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class IngAddress {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class IngAddressDto {
     private String street1;
     private String street2;
     private String city;

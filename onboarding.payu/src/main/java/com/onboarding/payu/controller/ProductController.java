@@ -26,8 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1.0/products")
 public class ProductController {
 
-	@Autowired
 	private IProductService iProductService;
+
+	@Autowired
+	public ProductController(final IProductService iProductService) {
+
+		this.iProductService = iProductService;
+	}
 
 	@PostMapping
 	public ResponseEntity<Product> addProduct(@Valid @RequestBody ProductDto productDto) throws RestApplicationException {

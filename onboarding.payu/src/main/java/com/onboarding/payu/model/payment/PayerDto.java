@@ -3,13 +3,13 @@ package com.onboarding.payu.model.payment;
 import lombok.Builder;
 import lombok.Getter;
 
-@Getter
 @Builder
-public class Buyer {
-    private String merchantBuyerId;
+@Getter
+public class PayerDto {
+    private String merchantPayerId;
     private String fullName;
     private String emailAddress;
     private String contactPhone;
     private String dniNumber;
-    private IngAddress shippingAddress;
+    private IngAddressDto billingAddressDto;
 }
