@@ -1,5 +1,7 @@
 package com.onboarding.payu.service.impl;
 
+import static java.lang.String.format;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -62,7 +64,7 @@ public class ProductServiceImpl implements IProductService {
 	@Override public Product getProductById(final Integer id) throws RestApplicationException {
 
 		return iProductRepository.findById(id)
-								 .orElseThrow(() -> new RestApplicationException(String.format("Product id (%d) does not exist",
+								 .orElseThrow(() -> new RestApplicationException(format("Product id (%d) does not exist",
 																							   id)));
 	}
 
@@ -90,7 +92,7 @@ public class ProductServiceImpl implements IProductService {
 	@Override public Product updateProduct(final Product product) throws RestApplicationException {
 		//productValidation(product);
 		iProductRepository.findById(product.getIdProduct())
-						  .orElseThrow(() -> new RestApplicationException(String.format("Product id (%d) does not exist",
+						  .orElseThrow(() -> new RestApplicationException(format("Product id (%d) does not exist",
 																						product.getIdProduct())));
 
 		return iProductRepository.save(product);
@@ -99,7 +101,7 @@ public class ProductServiceImpl implements IProductService {
 	private void productCreateValidation(final ProductDto product) throws RestApplicationException {
 
 		if (iProductRepository.findByCode(product.getCode()).isPresent()) {
-			throw new RestApplicationException(String.format("Duplicate product code %s ", product.getCode()));
+			throw new RestApplicationException(format("Duplicate product code %s ", product.getCode()));
 		}
 		productValidation(product);
 	}

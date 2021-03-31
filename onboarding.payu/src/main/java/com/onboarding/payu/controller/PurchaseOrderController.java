@@ -1,6 +1,7 @@
 package com.onboarding.payu.controller;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.purchase.PurchaseOrderDto;
@@ -26,7 +27,7 @@ public class PurchaseOrderController {
 	}
 
 	@PostMapping
-	public ResponseEntity<PurchaseOrder> addPurchaseOrder(@Valid @RequestBody final PurchaseOrderDto purchaseOrderDTO)
+	public ResponseEntity<PurchaseOrder> addPurchaseOrder(@Valid @NotNull @RequestBody final PurchaseOrderDto purchaseOrderDTO)
 			throws RestApplicationException {
 
 		return new ResponseEntity(iPurchaseOrder.addPurchaseOrder(purchaseOrderDTO), HttpStatus.CREATED);

@@ -10,15 +10,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+/**
+ * Entity that represents a product order relation.
+ */
 @Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "order_product")
 public class OrderProduct {

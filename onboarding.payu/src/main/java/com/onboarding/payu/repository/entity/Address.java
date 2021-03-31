@@ -7,15 +7,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+/**
+ * Entity that represents an address object.
+ */
 @Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "address")
 public class Address {

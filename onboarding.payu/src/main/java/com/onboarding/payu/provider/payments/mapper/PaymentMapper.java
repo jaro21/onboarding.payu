@@ -29,6 +29,10 @@ public class PaymentMapper {
 
 	public static PaymentWithTokenPayURequest toPaymentWithTokenRequest(final TransactionDto transactionDto, final Merchant merchant) {
 
+		if (transactionDto == null) {
+			return null;
+		}
+
 		return PaymentWithTokenPayURequest.builder().language("es")
 										  .command(CommanType.SUBMIT_TRANSACTION.toString())
 										  .merchant(merchant)
@@ -37,6 +41,10 @@ public class PaymentMapper {
 	}
 
 	public static TransactionPayU toTransaccion(final TransactionDto transactionDto) {
+
+		if (transactionDto == null) {
+			return null;
+		}
 
 		return TransactionPayU.builder()
 							  .creditCardTokenId(transactionDto.getCreditCardTokenId())
@@ -54,10 +62,18 @@ public class PaymentMapper {
 
 	private static ExtraParameters toExtraParameter(final ExtraParametersDto extraParametersDto) {
 
+		if (extraParametersDto == null) {
+			return null;
+		}
+
 		return ExtraParameters.builder().installmentsNumber(extraParametersDto.getInstallmentsNumber()).build();
 	}
 
 	private static Payer toPayer(final PayerDto payerDto) {
+
+		if (payerDto == null) {
+			return null;
+		}
 
 		return Payer.builder().merchantPayerId(payerDto.getMerchantPayerId())
 					.fullName(payerDto.getFullName())
@@ -69,6 +85,10 @@ public class PaymentMapper {
 
 	private static IngAddress toIngAddress(final IngAddressDto billingAddressDto) {
 
+		if (billingAddressDto == null) {
+			return null;
+		}
+
 		return IngAddress.builder().street1(billingAddressDto.getStreet1())
 						 .street2(billingAddressDto.getStreet2())
 						 .city(billingAddressDto.getCity())
@@ -79,6 +99,10 @@ public class PaymentMapper {
 	}
 
 	private static Order toOrder(final OrderDto orderDto) {
+
+		if (orderDto == null) {
+			return null;
+		}
 
 		return Order.builder().accountId(orderDto.getAccountId())
 					.referenceCode(orderDto.getReferenceCode())
@@ -93,6 +117,10 @@ public class PaymentMapper {
 
 	private static Buyer toBuyer(final BuyerDto buyerDto) {
 
+		if (buyerDto == null) {
+			return null;
+		}
+
 		return Buyer.builder()
 					.merchantBuyerId(buyerDto.getMerchantBuyerId())
 					.fullName(buyerDto.getFullName())
@@ -104,16 +132,28 @@ public class PaymentMapper {
 
 	private static AdditionalValues toAdditionalValues(final AdditionalValuesDto additionalValuesDto) {
 
+		if (additionalValuesDto == null) {
+			return null;
+		}
+
 		return AdditionalValues.builder().txValue(toTxValue(additionalValuesDto.getTxValueDto())).build();
 	}
 
 	private static TxValue toTxValue(final TxValueDto txValueDto) {
+
+		if (txValueDto == null) {
+			return null;
+		}
 
 		return TxValue.builder().value(txValueDto.getValue())
 					  .currency(txValueDto.getCurrency()).build();
 	}
 
 	public static PaymentWithTokenResponse toPaymentWithTokenResponse(final PaymentWithTokenPayUResponse paymentWithToken) {
+
+		if (paymentWithToken == null) {
+			return null;
+		}
 
 		return PaymentWithTokenResponse.builder().code(paymentWithToken.getCode())
 									   .error(paymentWithToken.getError())
@@ -122,8 +162,11 @@ public class PaymentMapper {
 
 	public static TransactionResponse toTransactionResponse(final TransactionPayUResponse transactionPayUResponse) {
 
-		return transactionPayUResponse != null ?
-			   TransactionResponse.builder().orderId(transactionPayUResponse.getOrderId())
+		if (transactionPayUResponse == null) {
+			return null;
+		}
+
+		return TransactionResponse.builder().orderId(transactionPayUResponse.getOrderId())
 								  .transactionId(transactionPayUResponse.getTransactionId())
 								  .state(transactionPayUResponse.getState())
 								  .paymentNetworkResponseCode(transactionPayUResponse.getPaymentNetworkResponseCode())
@@ -137,7 +180,6 @@ public class PaymentMapper {
 								  .transactionDate(transactionPayUResponse.getTransactionDate())
 								  .transactionTime(transactionPayUResponse.getTransactionTime())
 								  .operationDate(transactionPayUResponse.getOperationDate())
-								  .extraParameters(transactionPayUResponse.getExtraParameters()).build() :
-			   TransactionResponse.builder().build();
+								  .extraParameters(transactionPayUResponse.getExtraParameters()).build();
 	}
 }

@@ -1,7 +1,6 @@
 package com.onboarding.payu.repository.entity;
 
 import java.math.BigDecimal;
-import java.sql.Ref;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,15 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+/**
+ * Entity that represents a payment object.
+ */
 @Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "payment")
 public class Payment {

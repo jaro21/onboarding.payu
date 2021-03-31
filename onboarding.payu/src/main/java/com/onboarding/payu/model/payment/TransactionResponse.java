@@ -2,11 +2,13 @@ package com.onboarding.payu.model.payment;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TransactionResponse {
     private Long orderId;
     private UUID transactionId;

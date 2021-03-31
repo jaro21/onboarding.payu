@@ -25,6 +25,9 @@ public class PaymentServiceImpl implements IPaymentService {
 		this.iPaymentProvider = iPaymentProvider;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public PaymentWithTokenResponse paymentWithToken(final TransactionDto transactionDto) {
 		return iPaymentProvider.paymentWithToken(transactionDto);
 	}

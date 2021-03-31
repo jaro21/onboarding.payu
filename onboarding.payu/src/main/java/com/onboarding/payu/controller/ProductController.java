@@ -2,6 +2,7 @@ package com.onboarding.payu.controller;
 
 import java.util.List;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.product.ProductDto;
@@ -35,7 +36,7 @@ public class ProductController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Product> addProduct(@Valid @RequestBody ProductDto productDto) throws RestApplicationException {
+	public ResponseEntity<Product> addProduct(@Valid @NotNull @RequestBody ProductDto productDto) throws RestApplicationException {
 		//try {
 			//validateProduct(productDto);
 			return new ResponseEntity(iProductService.saveProduct(productDto), HttpStatus.CREATED);
@@ -50,19 +51,19 @@ public class ProductController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Product> findProductById(@PathVariable Integer id) throws RestApplicationException {
+	public ResponseEntity<Product> findProductById(@NotNull @PathVariable Integer id) throws RestApplicationException {
 		Validate.notNull(id, "Product identification is mandatory");
 		return ResponseEntity.ok(iProductService.getProductById(id));
 	}
 
 	@PutMapping
-	public ResponseEntity<Product> updateProduct(@Valid @RequestBody ProductDto productDto) throws RestApplicationException {
+	public ResponseEntity<Product> updateProduct(@Valid @NotNull @RequestBody ProductDto productDto) throws RestApplicationException {
 		Validate.notNull(productDto.getIdProduct(), "Product identification is mandatory");
 		return ResponseEntity.ok(iProductService.updateProduct(productDto));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity deleteProduct(@PathVariable Integer id) {
+	public ResponseEntity deleteProduct(@NotNull @PathVariable Integer id) {
 		Validate.notNull(id, "Product identification is mandatory to remove");
 		return ResponseEntity.ok(iProductService.deleteProduct(id));
 	}

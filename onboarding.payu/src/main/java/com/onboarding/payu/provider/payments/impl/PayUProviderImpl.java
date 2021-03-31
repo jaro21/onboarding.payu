@@ -36,12 +36,18 @@ public class PayUProviderImpl implements IPaymentProvider {
 		this.paymentClient = paymentClient;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public TokenResponse tokenizationCard(final CreditCardDto creditCardDto) {
 
 		return TokenizationMapper.getTokenResponse(paymentClient.tokenizationCard(TokenizationMapper.getTokenizationRequest(creditCardDto,
 																															getMerchant())));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public PaymentWithTokenResponse paymentWithToken(final TransactionDto transactionDto) {
 
 		return PaymentMapper

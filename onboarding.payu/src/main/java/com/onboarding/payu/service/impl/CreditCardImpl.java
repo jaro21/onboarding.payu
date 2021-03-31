@@ -42,6 +42,9 @@ public class CreditCardImpl implements ICreditCard {
 		this.iClientService = iClientService;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public TokenResponse tokenizationCard(final CreditCardDto creditCardDto) throws RestApplicationException {
 
 		log.debug("TokenizationCard : ", creditCardDto.toString());
@@ -50,14 +53,23 @@ public class CreditCardImpl implements ICreditCard {
 		return iPaymentProvider.tokenizationCard(creditCardDto);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public TokenResponse saveCreditCard(final TokenResponse tokenResponse) throws RestApplicationException {
+
 		log.debug("Save Credit Card", tokenResponse.toString());
-		final Client client = iClientService.findByDniNumber(tokenResponse.getCreditCardToken().getIdentificationNumber());
-		final CreditCard creditCard = CreditCardMapper.toCreditCard(tokenResponse, client);
-		iCreditCardRepository.save(creditCard);
+		if (tokenResponse != null && tokenResponse.getCreditCardToken() != null) {
+			final Client client = iClientService.findByDniNumber(tokenResponse.getCreditCardToken().getIdentificationNumber());
+			final CreditCard creditCard = CreditCardMapper.toCreditCard(tokenResponse, client);
+			iCreditCardRepository.save(creditCard);
+		}
 		return tokenResponse;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public CreditCardToken findAllCardsByClient(final String dniNumber) {
 
 		return (CreditCardToken) iCreditCardRepository.findAll();

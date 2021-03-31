@@ -26,6 +26,9 @@ public class OrderProductServicesImpl implements IOrderProductService {
 		this.iOrderProductRepository = iOrderProductRepository;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public List<OrderProduct> saveAll(final List<OrderProduct> orderProductList) {
 
 		return iOrderProductRepository.saveAll(orderProductList);

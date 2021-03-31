@@ -59,6 +59,9 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		this.iClientRepository = iClientRepository;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Transactional
 	@Override public PurchaseOrder addPurchaseOrder(final PurchaseOrderDto purchaseOrderDTO) throws RestApplicationException {
 
@@ -79,26 +82,27 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		return purchaseOrder;
 	}
 
-	private BigDecimal getTotalValue(final List<OrderProduct> orderProductList) {
-
-		return orderProductList.stream()
-							   .map(orderProduct -> orderProduct.getUnitValue().multiply(BigDecimal.valueOf(orderProduct.getQuantity())))
-							   .reduce(new BigDecimal(0.0), (a, b) -> a.add(b));
-	}
-
+	/**
+	 * Get the total value of the purchase order
+	 *
+	 * @param productList {@link List<Product>}
+	 * @param productDTOList {@link List<ProductDto>}
+	 * @return {@link BigDecimal}
+	 */
 	private BigDecimal getTotalValue(final List<Product> productList, final List<ProductDto> productDTOList) {
 
 		return productDTOList.stream().map(productDTO -> BigDecimal.valueOf(productDTO.getQuantity()).multiply(
 				productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get()
-						   .getPrice())
-										  ).reduce(BigDecimal.valueOf(0.0), (a, b) -> a.add(b));
+						   .getPrice())).reduce(BigDecimal.valueOf(0.0), (a, b) -> a.add(b));
 	}
 
 	/**
-	 * @param productDTOList
-	 * @param productList
-	 * @param purchaseOrder
-	 * @return
+	 * Get list of orderProduct to register them in database
+	 *
+	 * @param productDTOList {@link List<ProductDto>}
+	 * @param productList {@link List<Product>}
+	 * @param purchaseOrder {@link PurchaseOrder}
+	 * @return {@link List<OrderProduct>}
 	 */
 	private List<OrderProduct> getOrderProducts(final List<ProductDto> productDTOList,
 												final List<Product> productList,
@@ -107,14 +111,35 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		return productDTOList.stream().map(productDTO -> {
 			final Product productRes =
 					productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get();
-			return OrderProduct.builder().product(productRes)
-							   .quantity(productDTO.getQuantity())
-							   .unitValue(productRes.getPrice())
-							   .purchaseOrder(purchaseOrder)
-							   .build();
+			return getOrderProduct(purchaseOrder, productDTO, productRes);
 		}).collect(Collectors.toList());
 	}
 
+	/**
+	 * Get new OrdenProduct to register them in database
+	 *
+	 * @param purchaseOrder {@link PurchaseOrder}
+	 * @param productDto {@link ProductDto}
+	 * @param productRes {@link Product}
+	 * @return {@link OrderProduct}
+	 */
+	private OrderProduct getOrderProduct(final PurchaseOrder purchaseOrder, final ProductDto productDto, final Product productRes) {
+
+		return OrderProduct.builder().product(productRes)
+						   .quantity(productDto.getQuantity())
+						   .unitValue(productRes.getPrice())
+						   .purchaseOrder(purchaseOrder)
+						   .build();
+	}
+
+	/**
+	 * Get PurchaseOrder to register them in database
+	 *
+	 * @param client {@link Client}
+	 * @param productList {@link List<Product>}
+	 * @param purchaseOrderDTO {@link PurchaseOrder}
+	 * @return {@link PurchaseOrder}
+	 */
 	private PurchaseOrder getPurchaseOrder(final Client client, final List<Product> productList, final PurchaseOrderDto purchaseOrderDTO) {
 
 		return PurchaseOrder.builder().client(client)
@@ -158,7 +183,6 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 		 */
 
-
 		//iProductService.updateProduct(getNewProductList(productList, productDtoList));
 		/*
 		getProductsByIds(productDtoList).stream().forEach(product -> {
@@ -197,22 +221,27 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	private List<Product> getNewProductList(final List<Product> productList, final List<ProductDto> productDTOList) {
 
 		return productList.stream().map(product -> {
-			return Product.builder().idProduct(product.getIdProduct())
-						  .name(product.getName())
-						  .code(product.getCode())
-						  .price(product.getPrice())
-						  .description(product.getDescription())
-						  .stock(subtract.apply(product.getStock(),
-												productDTOList.stream().filter(productDTO -> productDTO.getIdProduct()
-																									   .equals(product.getIdProduct()))
-															  .findFirst().get().getQuantity())).build();
+			return getProduct(productDTOList, product);
 		}).collect(Collectors.toList());
 	}
 
+	private Product getProduct(final List<ProductDto> productDTOList, final Product product) {
+
+		return Product.builder().idProduct(product.getIdProduct())
+					  .name(product.getName())
+					  .code(product.getCode())
+					  .price(product.getPrice())
+					  .description(product.getDescription())
+					  .stock(subtract.apply(product.getStock(),
+											productDTOList.stream().filter(productDTO -> productDTO.getIdProduct()
+																								   .equals(product.getIdProduct()))
+														  .findFirst().get().getQuantity())).build();
+	}
+
 	/**
-	 * get list products
+	 * get list products by ids
 	 *
-	 * @param productDTOList {@link List< ProductDto >}
+	 * @param productDTOList {@link List<ProductDto>}
 	 * @return {@link List<Product>}
 	 */
 	private List<Product> getProductsByIds(final List<ProductDto> productDTOList) {

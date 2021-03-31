@@ -11,15 +11,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+/**
+ * Entity that represents an user app object.
+ */
 @Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "user_app")
 public class UserApp {
@@ -31,8 +30,6 @@ public class UserApp {
 	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name="id_client")
 	private Client client;
-	//@Column(name = "id_client")
-	//private Integer idClient;
 	@Column(name = "username")
 	private String username;
 	@Column(name = "password_hash")

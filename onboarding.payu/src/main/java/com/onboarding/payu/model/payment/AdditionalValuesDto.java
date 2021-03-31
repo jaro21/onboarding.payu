@@ -1,15 +1,15 @@
 package com.onboarding.payu.model.payment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Getter
-@EqualsAndHashCode
-@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdditionalValuesDto {
     @JsonProperty("TX_VALUE")
     private TxValueDto txValueDto;

@@ -1,5 +1,8 @@
 package com.onboarding.payu.controller;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import com.onboarding.payu.model.payment.PaymentWithTokenResponse;
 import com.onboarding.payu.model.payment.TransactionDto;
 import com.onboarding.payu.service.IPaymentService;
@@ -23,7 +26,7 @@ public class PaymentController {
 	}
 
 	@PostMapping
-	public ResponseEntity<PaymentWithTokenResponse> applyPayment(@RequestBody final TransactionDto transactionDto){
+	public ResponseEntity<PaymentWithTokenResponse> applyPayment(@Valid @NotNull @RequestBody final TransactionDto transactionDto){
 		return ResponseEntity.ok(iPaymentService.paymentWithToken(transactionDto));
 	}
 }
