@@ -1,12 +1,13 @@
 package com.onboarding.payu.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.tokenization.CreditCardDto;
-import com.onboarding.payu.model.tokenization.CreditCardToken;
 import com.onboarding.payu.model.tokenization.TokenResponse;
+import com.onboarding.payu.repository.entity.CreditCard;
 import com.onboarding.payu.service.ICreditCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for the Credit Card's services
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping("/v1.0/credit-card")
 public class CreditCardController {
@@ -35,9 +43,9 @@ public class CreditCardController {
 		return iCreditCard.tokenizationCard(creditCardDto);
 	}
 
-	@GetMapping
-	public ResponseEntity<CreditCardToken> findAllCardsByClient(@NotNull @PathVariable String dniNumber) {
+	@GetMapping("/{dni}")
+	public ResponseEntity<List<CreditCard>> findAllCardsByClient(@NotNull @PathVariable String dni) throws RestApplicationException {
 
-		return ResponseEntity.ok(iCreditCard.findAllCardsByClient(dniNumber));
+		return ResponseEntity.ok(iCreditCard.findAllCardsByClient(dni));
 	}
 }

@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/**
+ * Product's Exception handler
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Slf4j
 @ControllerAdvice(assignableTypes = ProductController.class)
 public class ProductExceptionHandler extends ResponseEntityExceptionHandler {

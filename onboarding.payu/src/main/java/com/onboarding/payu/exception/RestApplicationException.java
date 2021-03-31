@@ -1,39 +1,27 @@
 package com.onboarding.payu.exception;
 
+import lombok.Getter;
+
+/**
+ * Exception thrown by business services
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+@Getter
 public class RestApplicationException  extends Exception {
-	/**
-	 * Constructor by default
-	 */
-	public RestApplicationException() {
-		super();
-	}
+
+	private String code;
 
 	/**
 	 * Constructor that receive the exception's message
 	 *
+	 * @param code {@link String} The exception's code
 	 * @param message {@link String} The exception's message
-	 */
-	public RestApplicationException(String message) {
+	 * */
+	public RestApplicationException(final String code, final String message) {
 		super(message);
+		this.code = code;
 	}
-
-	/**
-	 * Constructor that receive the exception's cause
-	 *
-	 * @param cause {@link Throwable} The exception's cause
-	 */
-	public RestApplicationException(Throwable cause) {
-		super(cause);
-	}
-
-	/**
-	 * Constructor that receive the exception's message and cause
-	 *
-	 * @param message {@link String} The exception's message
-	 * @param cause {@link Throwable} The exception's cause
-	 */
-	public RestApplicationException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 }

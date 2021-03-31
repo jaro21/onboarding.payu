@@ -5,6 +5,7 @@ import static java.lang.String.format;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.product.ProductDto;
 import com.onboarding.payu.repository.IProductRepository;
@@ -63,16 +64,17 @@ public class ProductServiceImpl implements IProductService {
 	 */
 	@Override public Product getProductById(final Integer id) throws RestApplicationException {
 
-		return iProductRepository.findById(id)
-								 .orElseThrow(() -> new RestApplicationException(format("Product id (%d) does not exist",
-																							   id)));
+		return iProductRepository.findById(id).orElseThrow(
+				() -> new RestApplicationException(ExceptionCodes.PRODUCT_ID_NOT_EXIST.getCode(),
+												   format(ExceptionCodes.PRODUCT_ID_NOT_EXIST.getMessage(), id)));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public String deleteProduct(final Integer id) {
+	@Override public String deleteProduct(final Integer id) throws RestApplicationException {
 
+		getProductById(id);
 		iProductRepository.deleteById(id);
 		return "product removed !! " + id;
 	}
@@ -90,22 +92,32 @@ public class ProductServiceImpl implements IProductService {
 	 * {@inheritDoc}
 	 */
 	@Override public Product updateProduct(final Product product) throws RestApplicationException {
-		//productValidation(product);
-		iProductRepository.findById(product.getIdProduct())
-						  .orElseThrow(() -> new RestApplicationException(format("Product id (%d) does not exist",
-																						product.getIdProduct())));
 
+		getProductById(product.getIdProduct());
 		return iProductRepository.save(product);
 	}
 
+	/**
+	 * Run validations on the product to create
+	 *
+	 * @param product {@link ProductDto}
+	 * @throws RestApplicationException
+	 */
 	private void productCreateValidation(final ProductDto product) throws RestApplicationException {
 
 		if (iProductRepository.findByCode(product.getCode()).isPresent()) {
-			throw new RestApplicationException(format("Duplicate product code %s ", product.getCode()));
+			throw new RestApplicationException(ExceptionCodes.DUPLICATE_PRODUCT_CODE.getCode(),
+											   format(ExceptionCodes.DUPLICATE_PRODUCT_CODE.getMessage(), product.getCode()));
 		}
+
 		productValidation(product);
 	}
 
+	/**
+	 * Run validations on the product to create or update
+	 *
+	 * @param product {@link ProductDto}
+	 */
 	private void productValidation(final ProductDto product) {
 
 		Validate.isTrue(product.getStock() >= 0, "Stock must be greater than zero !!!");

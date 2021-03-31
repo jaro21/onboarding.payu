@@ -7,6 +7,7 @@ import com.onboarding.payu.model.product.ProductDto;
 import com.onboarding.payu.repository.entity.Product;
 
 /**
+ * Interface that define of Product's services
  *
  * @author <a href='julian.ramirez@payu.com'>Julian Alberto Ramirez Osorio</a>
  * @version 1.0.0
@@ -52,7 +53,7 @@ public interface IProductService {
 	 * @param id {@link Integer}
 	 * @return {@link String}
 	 */
-	String deleteProduct(Integer id);
+	String deleteProduct(Integer id) throws RestApplicationException;
 
 	/**
 	 * Method to update product

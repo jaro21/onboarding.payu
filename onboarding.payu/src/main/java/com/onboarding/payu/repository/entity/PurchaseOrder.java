@@ -14,14 +14,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Entity that represents a purchase order object.
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
  */
 @Builder
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "purchase_order")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)

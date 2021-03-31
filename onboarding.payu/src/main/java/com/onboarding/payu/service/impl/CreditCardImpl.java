@@ -1,8 +1,10 @@
 package com.onboarding.payu.service.impl;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.tokenization.CreditCardDto;
-import com.onboarding.payu.model.tokenization.CreditCardToken;
 import com.onboarding.payu.model.tokenization.TokenResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
 import com.onboarding.payu.repository.ICreditCardRepository;
@@ -59,7 +61,7 @@ public class CreditCardImpl implements ICreditCard {
 	@Override public TokenResponse saveCreditCard(final TokenResponse tokenResponse) throws RestApplicationException {
 
 		log.debug("Save Credit Card", tokenResponse.toString());
-		if (tokenResponse != null && tokenResponse.getCreditCardToken() != null) {
+		if (isValidRegistration(tokenResponse)) {
 			final Client client = iClientService.findByDniNumber(tokenResponse.getCreditCardToken().getIdentificationNumber());
 			final CreditCard creditCard = CreditCardMapper.toCreditCard(tokenResponse, client);
 			iCreditCardRepository.save(creditCard);
@@ -68,10 +70,23 @@ public class CreditCardImpl implements ICreditCard {
 	}
 
 	/**
+	 * Identify if the card should be registered
+	 *
+	 * @param tokenResponse {@link TokenResponse}
+	 * @return
+	 */
+	private boolean isValidRegistration(final TokenResponse tokenResponse) {
+
+		return tokenResponse != null && tokenResponse.getCreditCardToken() != null
+				&& !iCreditCardRepository.findByToken(tokenResponse.getCreditCardToken().getCreditCardTokenId().toString()).isPresent();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
-	@Override public CreditCardToken findAllCardsByClient(final String dniNumber) {
+	@Override public List<CreditCard> findAllCardsByClient(final String dniNumber) throws RestApplicationException {
 
-		return (CreditCardToken) iCreditCardRepository.findAll();
+		final Client client = iClientService.findByDniNumber(dniNumber);
+		return iCreditCardRepository.findByIdClient(client.getIdClient()).orElse(Collections.emptyList());
 	}
 }

@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/**
+ * Credit Card's Exception handler
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Slf4j
 @ControllerAdvice(assignableTypes = CreditCardController.class)
 public class CreditCardExceptionHandler extends ResponseEntityExceptionHandler {
@@ -30,7 +38,6 @@ public class CreditCardExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return a {@code ResponseEntity} instance
 	 */
 	@Override
-	@NonNull
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
 																  final @NonNull HttpHeaders headers,
 																  final @NonNull HttpStatus status,
@@ -42,6 +49,20 @@ public class CreditCardExceptionHandler extends ResponseEntityExceptionHandler {
 											  .message(ex.getBindingResult().getFieldError().getDefaultMessage())
 											  .responseCode(HttpStatus.BAD_REQUEST.value())
 											  .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
+											  .timestamp(LocalDateTime.now())
+											  .build());
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers,
+																		 HttpStatus status, WebRequest request) {
+
+		log.info(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+							 .body(ResponseDto.builder()
+											  .message(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
+											  .responseCode(HttpStatus.METHOD_NOT_ALLOWED.value())
+											  .status(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
 											  .timestamp(LocalDateTime.now())
 											  .build());
 	}

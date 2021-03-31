@@ -25,6 +25,13 @@ import com.onboarding.payu.model.payment.TransactionDto;
 import com.onboarding.payu.model.payment.TransactionResponse;
 import com.onboarding.payu.model.payment.TxValueDto;
 
+/**
+ * Mapper for the Payment's objects
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public class PaymentMapper {
 
 	public static PaymentWithTokenPayURequest toPaymentWithTokenRequest(final TransactionDto transactionDto, final Merchant merchant) {

@@ -7,6 +7,7 @@ import com.onboarding.payu.model.product.ProductDto;
 import com.onboarding.payu.repository.entity.Product;
 
 /**
+ * Mapper for the Payment's objects
  *
  * @author <a href='julian.ramirez@payu.com'>Julian Alberto Ramirez Osorio</a>
  * @version 1.0.0

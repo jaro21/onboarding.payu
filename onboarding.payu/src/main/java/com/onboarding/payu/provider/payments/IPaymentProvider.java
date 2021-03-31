@@ -7,6 +7,10 @@ import com.onboarding.payu.model.tokenization.TokenResponse;
 
 /**
  * Payment Provider interface used to define payment methods.
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
  */
 public interface IPaymentProvider {
 

@@ -2,6 +2,7 @@ package com.onboarding.payu.service.impl;
 
 import static java.lang.String.format;
 
+import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.repository.IClientRepository;
 import com.onboarding.payu.repository.entity.Client;
@@ -33,6 +34,17 @@ public class ClientServiceImpl implements IClientService {
 	@Override public Client findByDniNumber(final String dniNumber) throws RestApplicationException {
 
 		return iClientRepository.findByDniNumber(dniNumber).orElseThrow(
-				() -> new RestApplicationException(format("Client with identification %s does not exist", dniNumber)));
+				() -> new RestApplicationException(ExceptionCodes.CLIENT_NUMBER_NOT_EXIST.getCode(),
+												   format(ExceptionCodes.CLIENT_NUMBER_NOT_EXIST.getMessage(), dniNumber)));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public Client findById(final Integer idClient) throws RestApplicationException {
+
+		return iClientRepository.findById(idClient).orElseThrow(
+				() -> new RestApplicationException(ExceptionCodes.CLIENT_ID_NOT_EXIST.getCode(),
+												   format(ExceptionCodes.CLIENT_ID_NOT_EXIST.getMessage(), idClient)));
 	}
 }

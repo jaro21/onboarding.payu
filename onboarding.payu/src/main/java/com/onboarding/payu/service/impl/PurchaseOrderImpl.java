@@ -10,16 +10,17 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
+import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.purchase.ProductDto;
 import com.onboarding.payu.model.purchase.PurchaseOrderDto;
-import com.onboarding.payu.repository.IClientRepository;
 import com.onboarding.payu.repository.IPurchaseOrderRepository;
 import com.onboarding.payu.repository.entity.Client;
 import com.onboarding.payu.repository.entity.OrderProduct;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
+import com.onboarding.payu.service.IClientService;
 import com.onboarding.payu.service.IOrderProductService;
 import com.onboarding.payu.service.IProductService;
 import com.onboarding.payu.service.IPurchaseOrder;
@@ -45,18 +46,18 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 	private IOrderProductService iOrderProductService;
 
-	private IClientRepository iClientRepository;
+	private IClientService iClientService;
 
 	@Autowired
 	public PurchaseOrderImpl(final IPurchaseOrderRepository iPurchaseOrderRepository,
 							 final IProductService iProductService,
 							 final IOrderProductService iOrderProductService,
-							 final IClientRepository iClientRepository) {
+							 final IClientService iClientService) {
 
 		this.iPurchaseOrderRepository = iPurchaseOrderRepository;
 		this.iProductService = iProductService;
 		this.iOrderProductService = iOrderProductService;
-		this.iClientRepository = iClientRepository;
+		this.iClientService = iClientService;
 	}
 
 	/**
@@ -67,10 +68,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 		log.debug("addPurchaseOrder(PurchaseOrderDTO)", purchaseOrderDTO.toString());
 		final List<Product> productList = getProductsByIds(purchaseOrderDTO.getProductList());
-		final Client client =
-				iClientRepository.findById(purchaseOrderDTO.getClientDto().getIdClient()).orElseThrow(
-						() -> new RestApplicationException(format("Client id %d does not exist.",
-																  purchaseOrderDTO.getClientDto().getIdClient())));
+		final Client client = iClientService.findById(purchaseOrderDTO.getClientDto().getIdClient());
 
 		isValidOrder(productList, purchaseOrderDTO.getProductList());
 		updateStock(productList, purchaseOrderDTO.getProductList());
@@ -164,8 +162,9 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 				if (productDTO.getIdProduct().equals(product.getIdProduct())
 						&& !isValidQuantity.apply(product.getStock(),
 												  productDTO.getQuantity()).booleanValue()) {
-					throw new RestApplicationException(format("Product quantity (%s-%s) is not available.", product.getCode(),
-															  product.getName()));
+					throw new RestApplicationException(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(), format(ExceptionCodes.PRODUCT_NOT_AVAILABLE
+																															   .getMessage(), product.getCode(),
+																											  product.getName()));
 				}
 			}
 		}
