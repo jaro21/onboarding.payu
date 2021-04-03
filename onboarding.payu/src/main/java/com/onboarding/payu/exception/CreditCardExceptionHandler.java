@@ -81,6 +81,7 @@ public class CreditCardExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(HttpStatus.CONFLICT)
 							 .body(ResponseDto.builder()
 											  .message(ex.getMessage())
+											  .exceptionCode(ex.getCode())
 											  .responseCode(HttpStatus.CONFLICT.value())
 											  .status(HttpStatus.CONFLICT.getReasonPhrase())
 											  .timestamp(LocalDateTime.now())

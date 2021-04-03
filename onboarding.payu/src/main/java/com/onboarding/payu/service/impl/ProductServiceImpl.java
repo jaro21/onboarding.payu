@@ -12,7 +12,7 @@ import com.onboarding.payu.repository.IProductRepository;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.IProductService;
 import com.onboarding.payu.service.impl.mapper.ProductMapper;
-import org.apache.commons.lang.Validate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Service
 public class ProductServiceImpl implements IProductService {
 
@@ -39,6 +40,7 @@ public class ProductServiceImpl implements IProductService {
 	 */
 	@Override public Product saveProduct(final ProductDto product) throws RestApplicationException {
 
+		log.debug("saveProduct : ",product.toString());
 		productCreateValidation(product);
 		return iProductRepository.save(ProductMapper.toProduct(product));
 	}
@@ -84,6 +86,7 @@ public class ProductServiceImpl implements IProductService {
 	 */
 	@Override public Product updateProduct(final ProductDto product) throws RestApplicationException {
 
+		log.debug("updateProduct : ",product.toString());
 		productValidation(product);
 		return updateProduct(ProductMapper.toProduct(product));
 	}
@@ -93,6 +96,7 @@ public class ProductServiceImpl implements IProductService {
 	 */
 	@Override public Product updateProduct(final Product product) throws RestApplicationException {
 
+		log.debug("updateProduct : ",product.toString());
 		getProductById(product.getIdProduct());
 		return iProductRepository.save(product);
 	}
@@ -118,9 +122,15 @@ public class ProductServiceImpl implements IProductService {
 	 *
 	 * @param product {@link ProductDto}
 	 */
-	private void productValidation(final ProductDto product) {
+	private void productValidation(final ProductDto product) throws RestApplicationException {
 
-		Validate.isTrue(product.getStock() >= 0, "Stock must be greater than zero !!!");
-		Validate.isTrue(product.getPrice().compareTo(BigDecimal.ZERO) > 0, "Price must be greater than zero !!!");
+		if(product.getStock() < 0){
+			throw new RestApplicationException(ExceptionCodes.PRODUCT_STOCK_INVALID.getCode(),
+											   ExceptionCodes.PRODUCT_STOCK_INVALID.getMessage());
+		}
+		if(product.getPrice().compareTo(BigDecimal.ZERO) <= 0){
+			throw new RestApplicationException(ExceptionCodes.PRODUCT_PRICE_INVALID.getCode(),
+											   ExceptionCodes.PRODUCT_PRICE_INVALID.getMessage());
+		}
 	}
 }

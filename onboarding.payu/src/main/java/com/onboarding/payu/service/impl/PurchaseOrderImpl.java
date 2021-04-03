@@ -10,6 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
+import com.onboarding.payu.client.payu.model.LanguageType;
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.StatusType;
@@ -80,10 +81,17 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		return purchaseOrder;
 	}
 
+	@Override public PurchaseOrder findById(final Integer idPurchaseOrder) throws RestApplicationException {
+
+		return iPurchaseOrderRepository.findById(idPurchaseOrder).orElseThrow(
+				() -> new RestApplicationException(ExceptionCodes.PURCHASE_ORDER_INVALID.getCode(),
+												   ExceptionCodes.PURCHASE_ORDER_INVALID.getMessage()));
+	}
+
 	/**
 	 * Get the total value of the purchase order
 	 *
-	 * @param productList {@link List<Product>}
+	 * @param productList    {@link List<Product>}
 	 * @param productDTOList {@link List<ProductDto>}
 	 * @return {@link BigDecimal}
 	 */
@@ -98,8 +106,8 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	 * Get list of orderProduct to register them in database
 	 *
 	 * @param productDTOList {@link List<ProductDto>}
-	 * @param productList {@link List<Product>}
-	 * @param purchaseOrder {@link PurchaseOrder}
+	 * @param productList    {@link List<Product>}
+	 * @param purchaseOrder  {@link PurchaseOrder}
 	 * @return {@link List<OrderProduct>}
 	 */
 	private List<OrderProduct> getOrderProducts(final List<ProductDto> productDTOList,
@@ -117,8 +125,8 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	 * Get new OrdenProduct to register them in database
 	 *
 	 * @param purchaseOrder {@link PurchaseOrder}
-	 * @param productDto {@link ProductDto}
-	 * @param productRes {@link Product}
+	 * @param productDto    {@link ProductDto}
+	 * @param productRes    {@link Product}
 	 * @return {@link OrderProduct}
 	 */
 	private OrderProduct getOrderProduct(final PurchaseOrder purchaseOrder, final ProductDto productDto, final Product productRes) {
@@ -133,8 +141,8 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	/**
 	 * Get PurchaseOrder to register them in database
 	 *
-	 * @param client {@link Client}
-	 * @param productList {@link List<Product>}
+	 * @param client           {@link Client}
+	 * @param productList      {@link List<Product>}
 	 * @param purchaseOrderDTO {@link PurchaseOrder}
 	 * @return {@link PurchaseOrder}
 	 */
@@ -145,7 +153,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 							.date(LocalDate.now())
 							.value(getTotalValue(productList, purchaseOrderDTO.getProductList()))
 							.referenceCode(UUID.randomUUID().toString())
-							.languaje("es")
+							.languaje(LanguageType.ES.getLanguage())
 							.street1(purchaseOrderDTO.getClientDto().getStreet1())
 							.street2(purchaseOrderDTO.getClientDto().getStreet2())
 							.city(purchaseOrderDTO.getClientDto().getCity())
@@ -162,9 +170,10 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 				if (productDTO.getIdProduct().equals(product.getIdProduct())
 						&& !isValidQuantity.apply(product.getStock(),
 												  productDTO.getQuantity()).booleanValue()) {
-					throw new RestApplicationException(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(), format(ExceptionCodes.PRODUCT_NOT_AVAILABLE
-																															   .getMessage(), product.getCode(),
-																											  product.getName()));
+					throw new RestApplicationException(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(),
+													   format(ExceptionCodes.PRODUCT_NOT_AVAILABLE
+																	  .getMessage(), product.getCode(),
+															  product.getName()));
 				}
 			}
 		}

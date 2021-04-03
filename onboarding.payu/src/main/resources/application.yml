@@ -23,6 +23,13 @@ onboarding.uri: https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi
 payment-api:
   apiKey: 4Vj8eK4rloUd272L48hsrarnUA
   apiLogin: pRRXKOl8ikMmt9u
+  order:
+    accountId: 512322
+    notifyUrl: http://prueba-pago.com.co
+    signature: 95d7e92b23cae0cae6a98e34cc54be39
+  amount:
+    minimum: 11000
+    maximum: 18308500
 
 feign:
   hystrix:

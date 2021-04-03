@@ -1,11 +1,12 @@
 package com.onboarding.payu.provider.payments.mapper;
 
 import com.onboarding.payu.client.payu.model.CommanType;
+import com.onboarding.payu.client.payu.model.LanguageType;
 import com.onboarding.payu.client.payu.model.Merchant;
-import com.onboarding.payu.client.payu.model.tokenization.CreditCardPayU;
-import com.onboarding.payu.client.payu.model.tokenization.CreditCardTokenPayU;
-import com.onboarding.payu.client.payu.model.tokenization.TokenizationPayURequest;
-import com.onboarding.payu.client.payu.model.tokenization.TokenizationPayUResponse;
+import com.onboarding.payu.client.payu.model.tokenization.request.CreditCardPayU;
+import com.onboarding.payu.client.payu.model.tokenization.response.CreditCardTokenPayU;
+import com.onboarding.payu.client.payu.model.tokenization.request.TokenizationPayURequest;
+import com.onboarding.payu.client.payu.model.tokenization.response.TokenizationPayUResponse;
 import com.onboarding.payu.model.tokenization.CreditCardDto;
 import com.onboarding.payu.model.tokenization.CreditCardToken;
 import com.onboarding.payu.model.tokenization.TokenResponse;
@@ -24,7 +25,7 @@ public class TokenizationMapper {
 		return TokenizationPayURequest.builder().creditCardToken(getCreditCardToken(creditCardDto))
 									  .merchant(merchant)
 									  .command(CommanType.CREATE_TOKEN.toString())
-									  .language("es").build();
+									  .language(LanguageType.ES.getLanguage()).build();
 	}
 
 	public static CreditCardPayU getCreditCardToken(final CreditCardDto creditCardDto) {

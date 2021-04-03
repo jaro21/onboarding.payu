@@ -3,8 +3,11 @@ package com.onboarding.payu.controller;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.model.payment.PaymentWithTokenResponse;
-import com.onboarding.payu.model.payment.TransactionDto;
+import com.onboarding.payu.exception.RestApplicationException;
+import com.onboarding.payu.model.payment.request.PaymentTransationRequest;
+import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
+import com.onboarding.payu.model.refund.request.RefundDtoRequest;
+import com.onboarding.payu.model.refund.response.RefundDtoResponse;
 import com.onboarding.payu.service.IPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +36,15 @@ public class PaymentController {
 	}
 
 	@PostMapping
-	public ResponseEntity<PaymentWithTokenResponse> applyPayment(@Valid @NotNull @RequestBody final TransactionDto transactionDto){
-		return ResponseEntity.ok(iPaymentService.paymentWithToken(transactionDto));
+	public ResponseEntity<PaymentWithTokenResponse> applyPayment(@Valid @NotNull @RequestBody final PaymentTransationRequest paymentTransationRequest)
+			throws RestApplicationException {
+
+		return ResponseEntity.ok(iPaymentService.paymentWithToken(paymentTransationRequest));
+	}
+
+	@PostMapping("/refund")
+	public ResponseEntity<RefundDtoResponse> applyRefund(@Valid @NotNull @RequestBody final RefundDtoRequest refundDtoRequest){
+
+		return ResponseEntity.ok(iPaymentService.appyRefund(refundDtoRequest));
 	}
 }

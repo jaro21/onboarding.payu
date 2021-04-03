@@ -18,7 +18,7 @@ public class CreditCardMapper {
 		return CreditCard.builder().idClient(client.getIdClient())
 						 .maskedNumber(tokenResponse.getCreditCardToken().getMaskedNumber())
 						 .paymentMethod(tokenResponse.getCreditCardToken().getPaymentMethod())
-						 .token(tokenResponse.getCreditCardToken().getCreditCardTokenId().toString())
+						 .token(tokenResponse.getCreditCardToken().getCreditCardTokenId())
 						 .name(tokenResponse.getCreditCardToken().getName()).build();
 	}
 }

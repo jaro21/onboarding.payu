@@ -1,5 +1,6 @@
 package com.onboarding.payu.repository.entity;
 
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +42,7 @@ public class CreditCard {
 	@NotBlank(message = "Payment Method is mandatory")
 	private String paymentMethod;
 	@Column(name = "token", length = 45)
-	private String token;
+	private UUID token;
 	@Column(name = "name", length = 15)
 	private String name;
 }

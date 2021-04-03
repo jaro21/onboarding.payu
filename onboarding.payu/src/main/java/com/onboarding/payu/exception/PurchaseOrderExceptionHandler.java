@@ -57,7 +57,7 @@ public class PurchaseOrderExceptionHandler extends ResponseEntityExceptionHandle
 	 * Handle an {@link RestApplicationException}.
 	 *
 	 * @param ex of {@link RestApplicationException} with the information about the error.
-	 * @return {@link ResponseEntity< ResponseDto >} object with the formatted error information.
+	 * @return {@link ResponseEntity<ResponseDto>} object with the formatted error information.
 	 */
 	@ResponseBody
 	@ExceptionHandler(RestApplicationException.class)
@@ -67,6 +67,7 @@ public class PurchaseOrderExceptionHandler extends ResponseEntityExceptionHandle
 		return ResponseEntity.status(HttpStatus.CONFLICT)
 							 .body(ResponseDto.builder()
 											  .message(ex.getMessage())
+											  .exceptionCode(ex.getCode())
 											  .responseCode(HttpStatus.CONFLICT.value())
 											  .status(HttpStatus.CONFLICT.getReasonPhrase())
 											  .timestamp(LocalDateTime.now())
@@ -77,7 +78,7 @@ public class PurchaseOrderExceptionHandler extends ResponseEntityExceptionHandle
 	 * Handler the generic exception.
 	 *
 	 * @param e {@link Exception} with the information about the error.
-	 * @return {@link ResponseEntity< ResponseDto >} object with the formatted error information.
+	 * @return {@link ResponseEntity<ResponseDto>} object with the formatted error information.
 	 */
 	@ResponseBody
 	@ExceptionHandler(Exception.class)
@@ -97,7 +98,7 @@ public class PurchaseOrderExceptionHandler extends ResponseEntityExceptionHandle
 	 * Handler the generic exception.
 	 *
 	 * @param e {@link RuntimeException} with the information about the error.
-	 * @return {@link ResponseEntity< ResponseDto >} object with the formatted error information.
+	 * @return {@link ResponseEntity<ResponseDto>} object with the formatted error information.
 	 */
 	@ResponseBody
 	@ExceptionHandler(RuntimeException.class)

@@ -1,29 +1,32 @@
 package com.onboarding.payu.provider.payments.mapper;
 
 import com.onboarding.payu.client.payu.model.CommanType;
+import com.onboarding.payu.client.payu.model.CountryType;
+import com.onboarding.payu.client.payu.model.ExtraParameterType;
+import com.onboarding.payu.client.payu.model.LanguageType;
 import com.onboarding.payu.client.payu.model.Merchant;
 import com.onboarding.payu.client.payu.model.TransactionType;
-import com.onboarding.payu.client.payu.model.payment.AdditionalValues;
-import com.onboarding.payu.client.payu.model.payment.Buyer;
-import com.onboarding.payu.client.payu.model.payment.ExtraParameters;
-import com.onboarding.payu.client.payu.model.payment.IngAddress;
-import com.onboarding.payu.client.payu.model.payment.Order;
-import com.onboarding.payu.client.payu.model.payment.Payer;
-import com.onboarding.payu.client.payu.model.payment.PaymentWithTokenPayURequest;
-import com.onboarding.payu.client.payu.model.payment.PaymentWithTokenPayUResponse;
-import com.onboarding.payu.client.payu.model.payment.TransactionPayU;
-import com.onboarding.payu.client.payu.model.payment.TransactionPayUResponse;
-import com.onboarding.payu.client.payu.model.payment.TxValue;
-import com.onboarding.payu.model.payment.AdditionalValuesDto;
-import com.onboarding.payu.model.payment.BuyerDto;
-import com.onboarding.payu.model.payment.ExtraParametersDto;
-import com.onboarding.payu.model.payment.IngAddressDto;
-import com.onboarding.payu.model.payment.OrderDto;
-import com.onboarding.payu.model.payment.PayerDto;
-import com.onboarding.payu.model.payment.PaymentWithTokenResponse;
-import com.onboarding.payu.model.payment.TransactionDto;
-import com.onboarding.payu.model.payment.TransactionResponse;
-import com.onboarding.payu.model.payment.TxValueDto;
+import com.onboarding.payu.client.payu.model.payment.request.AdditionalValues;
+import com.onboarding.payu.client.payu.model.payment.request.Buyer;
+import com.onboarding.payu.client.payu.model.payment.request.ExtraParameters;
+import com.onboarding.payu.client.payu.model.payment.request.IngAddress;
+import com.onboarding.payu.client.payu.model.payment.request.Order;
+import com.onboarding.payu.client.payu.model.payment.request.Payer;
+import com.onboarding.payu.client.payu.model.payment.request.PaymentWithTokenPayURequest;
+import com.onboarding.payu.client.payu.model.payment.request.TransactionPayU;
+import com.onboarding.payu.client.payu.model.payment.request.TxValue;
+import com.onboarding.payu.client.payu.model.payment.response.PaymentWithTokenPayUResponse;
+import com.onboarding.payu.client.payu.model.payment.response.TransactionPayUResponse;
+import com.onboarding.payu.model.payment.request.AdditionalValuesDto;
+import com.onboarding.payu.model.payment.request.BuyerDto;
+import com.onboarding.payu.model.payment.request.IngAddressDto;
+import com.onboarding.payu.model.payment.request.OrderDto;
+import com.onboarding.payu.model.payment.request.PayerDto;
+import com.onboarding.payu.model.payment.request.TransactionRequest;
+import com.onboarding.payu.model.payment.request.TxValueDto;
+import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
+import com.onboarding.payu.model.payment.response.TransactionResponse;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Mapper for the Payment's objects
@@ -34,46 +37,48 @@ import com.onboarding.payu.model.payment.TxValueDto;
  */
 public class PaymentMapper {
 
-	public static PaymentWithTokenPayURequest toPaymentWithTokenRequest(final TransactionDto transactionDto, final Merchant merchant) {
+	@Value("${payment-api.order.accountId}")
+	private static String accountId;
 
-		if (transactionDto == null) {
+	@Value("${payment-api.order.notifyUrl}")
+	private static String notifyUrl;
+
+	public static PaymentWithTokenPayURequest toPaymentWithTokenRequest(final TransactionRequest transactionRequest, final Merchant merchant) {
+
+		if (transactionRequest == null) {
 			return null;
 		}
 
-		return PaymentWithTokenPayURequest.builder().language("es")
+		return PaymentWithTokenPayURequest.builder().language(LanguageType.ES.getLanguage())
 										  .command(CommanType.SUBMIT_TRANSACTION.toString())
 										  .merchant(merchant)
 										  .test(true)
-										  .transaction(toTransaccion(transactionDto)).build();
+										  .transaction(toTransaccion(transactionRequest)).build();
 	}
 
-	public static TransactionPayU toTransaccion(final TransactionDto transactionDto) {
+	public static TransactionPayU toTransaccion(final TransactionRequest transactionRequest) {
 
-		if (transactionDto == null) {
+		if (transactionRequest == null) {
 			return null;
 		}
 
 		return TransactionPayU.builder()
-							  .creditCardTokenId(transactionDto.getCreditCardTokenId())
+							  .creditCardTokenId(transactionRequest.getCreditCardTokenId())
 							  .type(TransactionType.AUTHORIZATION_AND_CAPTURE.toString())
-							  .paymentMethod(transactionDto.getPaymentMethod())
-							  .paymentCountry(transactionDto.getPaymentCountry())
-							  .deviceSessionId(transactionDto.getDeviceSessionId())
-							  .ipAddress(transactionDto.getIpAddress())
-							  .cookie(transactionDto.getCookie())
-							  .userAgent(transactionDto.getUserAgent())
-							  .order(toOrder(transactionDto.getOrderDto()))
-							  .payer(toPayer(transactionDto.getPayerDto()))
-							  .extraParameters(toExtraParameter(transactionDto.getExtraParametersDto())).build();
+							  .paymentMethod(transactionRequest.getPaymentMethod())
+							  .paymentCountry(CountryType.COLOMBIA.getCountry())
+							  .deviceSessionId(transactionRequest.getDeviceSessionId())
+							  .ipAddress(transactionRequest.getIpAddress())
+							  .cookie(transactionRequest.getCookie())
+							  .userAgent(transactionRequest.getUserAgent())
+							  .order(toOrder(transactionRequest.getOrderDto()))
+							  .payer(toPayer(transactionRequest.getPayerDto()))
+							  .extraParameters(getExtraParameter()).build();
 	}
 
-	private static ExtraParameters toExtraParameter(final ExtraParametersDto extraParametersDto) {
+	private static ExtraParameters getExtraParameter() {
 
-		if (extraParametersDto == null) {
-			return null;
-		}
-
-		return ExtraParameters.builder().installmentsNumber(extraParametersDto.getInstallmentsNumber()).build();
+		return ExtraParameters.builder().installmentsNumber(ExtraParameterType.INSTALLMENTS_NUMBER.getId()).build();
 	}
 
 	private static Payer toPayer(final PayerDto payerDto) {
@@ -111,12 +116,12 @@ public class PaymentMapper {
 			return null;
 		}
 
-		return Order.builder().accountId(orderDto.getAccountId())
+		return Order.builder().accountId(accountId)
 					.referenceCode(orderDto.getReferenceCode())
 					.description(orderDto.getDescription())
-					.language(orderDto.getLanguage())
+					.language(LanguageType.ES.getLanguage())
 					.signature(orderDto.getSignature())
-					.notifyUrl(orderDto.getNotifyUrl())
+					.notifyUrl(notifyUrl)
 					.additionalValues(toAdditionalValues(orderDto.getAdditionalValuesDto()))
 					.buyer(toBuyer(orderDto.getBuyerDto()))
 					.shippingAddress(toIngAddress(orderDto.getShippingAddressDto())).build();
@@ -152,8 +157,7 @@ public class PaymentMapper {
 			return null;
 		}
 
-		return TxValue.builder().value(txValueDto.getValue())
-					  .currency(txValueDto.getCurrency()).build();
+		return TxValue.builder().value(txValueDto.getValue()).currency(txValueDto.getCurrency()).build();
 	}
 
 	public static PaymentWithTokenResponse toPaymentWithTokenResponse(final PaymentWithTokenPayUResponse paymentWithToken) {

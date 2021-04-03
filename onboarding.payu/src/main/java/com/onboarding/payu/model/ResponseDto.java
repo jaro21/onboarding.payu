@@ -11,6 +11,7 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ResponseDto {
 	private String message;
+	private String exceptionCode;
 	private int responseCode;
 	private String status;
 	private LocalDateTime timestamp;

@@ -2,12 +2,15 @@ package com.onboarding.payu.provider.payments.impl;
 
 import com.onboarding.payu.client.payu.PaymentClient;
 import com.onboarding.payu.client.payu.model.Merchant;
-import com.onboarding.payu.model.payment.PaymentWithTokenResponse;
-import com.onboarding.payu.model.payment.TransactionDto;
+import com.onboarding.payu.model.payment.request.TransactionRequest;
+import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
+import com.onboarding.payu.model.refund.request.RefundDtoRequest;
+import com.onboarding.payu.model.refund.response.RefundDtoResponse;
 import com.onboarding.payu.model.tokenization.CreditCardDto;
 import com.onboarding.payu.model.tokenization.TokenResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
 import com.onboarding.payu.provider.payments.mapper.PaymentMapper;
+import com.onboarding.payu.provider.payments.mapper.RefundMapper;
 import com.onboarding.payu.provider.payments.mapper.TokenizationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,11 +51,16 @@ public class PayUProviderImpl implements IPaymentProvider {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public PaymentWithTokenResponse paymentWithToken(final TransactionDto transactionDto) {
+	@Override public PaymentWithTokenResponse paymentWithToken(final TransactionRequest transactionRequest) {
 
 		return PaymentMapper
-				.toPaymentWithTokenResponse(paymentClient.paymentWithToken(PaymentMapper.toPaymentWithTokenRequest(transactionDto,
+				.toPaymentWithTokenResponse(paymentClient.paymentWithToken(PaymentMapper.toPaymentWithTokenRequest(transactionRequest,
 																												   getMerchant())));
+	}
+
+	@Override public RefundDtoResponse appyRefundPayU(final RefundDtoRequest refundDtoRequest) {
+
+		return RefundMapper.toRefundDtoResponse(paymentClient.applyRefund(RefundMapper.toRefundPayURequest(refundDtoRequest, getMerchant())));
 	}
 
 	/**

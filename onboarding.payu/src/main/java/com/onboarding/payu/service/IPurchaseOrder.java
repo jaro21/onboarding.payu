@@ -1,8 +1,8 @@
 package com.onboarding.payu.service;
 
-import com.onboarding.payu.repository.entity.PurchaseOrder;
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.purchase.PurchaseOrderDto;
+import com.onboarding.payu.repository.entity.PurchaseOrder;
 
 /**
  * Interface that define of Purchase Order's services
@@ -21,4 +21,13 @@ public interface IPurchaseOrder {
 	 * @throws RestApplicationException
 	 */
 	PurchaseOrder addPurchaseOrder(PurchaseOrderDto purchaseOrder) throws RestApplicationException;
+
+	/**
+	 * Method to get Client by idClient
+	 *
+	 * @param idPurchaseOrder {@link Integer}
+	 * @return {@link PurchaseOrder}
+	 * @throws RestApplicationException
+	 */
+	PurchaseOrder findById(Integer idPurchaseOrder) throws RestApplicationException;
 }
