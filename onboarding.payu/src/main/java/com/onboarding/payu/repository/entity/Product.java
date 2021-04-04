@@ -34,7 +34,7 @@ public class Product {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_product")
+	@Column(name = "id_product", updatable = false, nullable = false)
 	private Integer idProduct;
 	@NotBlank(message = "Product name is mandatory")
 	private String name;

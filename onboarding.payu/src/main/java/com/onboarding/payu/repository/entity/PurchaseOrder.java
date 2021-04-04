@@ -37,7 +37,7 @@ public class PurchaseOrder {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_purchase_order", updatable = false)
+	@Column(name = "id_purchase_order", updatable = false, nullable = false)
 	private Integer idPurchaseOrder;
 	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name="id_client")
@@ -64,20 +64,4 @@ public class PurchaseOrder {
 	private LocalDate date;
 	@Column(name = "value")
 	private BigDecimal value;
-	/*@ManyToMany(cascade = {CascadeType.ALL })
-	@JoinTable(
-			name = "order_product",
-			joinColumns = { @JoinColumn(name = "id_purchase_order") },
-			inverseJoinColumns = { @JoinColumn(name = "id_product") }
-	)
-	private List<Product> productList;*/
-	//@OneToMany(fetch = FetchType.LAZY, mappedBy = "purchaseOrder")
-	/*
-	@OneToMany(
-			cascade = CascadeType.ALL,
-			orphanRemoval = true,
-			mappedBy = "purchaseOrder"
-	)
-	private List<OrderProduct> orderProductList;
-	 */
 }

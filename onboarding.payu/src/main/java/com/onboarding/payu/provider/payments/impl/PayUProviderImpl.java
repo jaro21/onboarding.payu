@@ -12,6 +12,7 @@ import com.onboarding.payu.provider.payments.IPaymentProvider;
 import com.onboarding.payu.provider.payments.mapper.PaymentMapper;
 import com.onboarding.payu.provider.payments.mapper.RefundMapper;
 import com.onboarding.payu.provider.payments.mapper.TokenizationMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,13 @@ import org.springframework.stereotype.Component;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
 @Component
 public class PayUProviderImpl implements IPaymentProvider {
 
 	private PaymentClient paymentClient;
+
+	private PaymentMapper paymentMapper;
 
 	@Value("${payment-api.apiKey}")
 	private String apiKey;
@@ -34,9 +38,11 @@ public class PayUProviderImpl implements IPaymentProvider {
 	private String apiLogin;
 
 	@Autowired
-	public PayUProviderImpl(final PaymentClient paymentClient) {
+	public PayUProviderImpl(final PaymentClient paymentClient,
+							final PaymentMapper paymentMapper) {
 
 		this.paymentClient = paymentClient;
+		this.paymentMapper = paymentMapper;
 	}
 
 	/**
@@ -44,8 +50,8 @@ public class PayUProviderImpl implements IPaymentProvider {
 	 */
 	@Override public TokenResponse tokenizationCard(final CreditCardDto creditCardDto) {
 
-		return TokenizationMapper.getTokenResponse(paymentClient.tokenizationCard(TokenizationMapper.getTokenizationRequest(creditCardDto,
-																															getMerchant())));
+		return TokenizationMapper.getTokenResponse(paymentClient.tokenizationCard(
+													TokenizationMapper.getTokenizationRequest(creditCardDto, getMerchant())));
 	}
 
 	/**
@@ -53,14 +59,17 @@ public class PayUProviderImpl implements IPaymentProvider {
 	 */
 	@Override public PaymentWithTokenResponse paymentWithToken(final TransactionRequest transactionRequest) {
 
-		return PaymentMapper
-				.toPaymentWithTokenResponse(paymentClient.paymentWithToken(PaymentMapper.toPaymentWithTokenRequest(transactionRequest,
+		log.debug("paymentWithToken : ", transactionRequest.toString());
+		return paymentMapper
+				.toPaymentWithTokenResponse(paymentClient.paymentWithToken(paymentMapper.toPaymentWithTokenRequest(transactionRequest,
 																												   getMerchant())));
 	}
 
 	@Override public RefundDtoResponse appyRefundPayU(final RefundDtoRequest refundDtoRequest) {
 
-		return RefundMapper.toRefundDtoResponse(paymentClient.applyRefund(RefundMapper.toRefundPayURequest(refundDtoRequest, getMerchant())));
+		log.debug("appyRefundPayU : ", refundDtoRequest.toString());
+		return RefundMapper
+				.toRefundDtoResponse(paymentClient.applyRefund(RefundMapper.toRefundPayURequest(refundDtoRequest, getMerchant())));
 	}
 
 	/**

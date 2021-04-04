@@ -29,9 +29,9 @@ public class Address {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_address")
+	@Column(name = "id_address", updatable = false, nullable = false)
 	private Integer idAddress;
-	@Column(name = "id_client")
+	@Column(name = "id_client", updatable = false, nullable = false)
 	private Integer idClient;
 	@Column(name = "street1", length = 100)
 	private String street1;

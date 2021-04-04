@@ -20,7 +20,8 @@ public enum ExceptionCodes {
 	PRODUCT_PRICE_INVALID("P005","Price must be greater than zero !!!"),
 	PURCHASE_ORDER_INVALID("PO001","Purchase Order does not exist"),
 	MINIMUM_AMOUNT_INVALID("A001","Minimum amount must be greater than or equal to $ %s"),
-	MAXIMUM_AMOUNT_INVALID("A002","Maximum amount must be less than or equal to $ %s");
+	MAXIMUM_AMOUNT_INVALID("A002","Maximum amount must be less than or equal to $ %s"),
+	PAYMENT_NOT_EXIST("PA001","Payment id %d does not exist.");
 
 	private final String code;
 	private final String message;

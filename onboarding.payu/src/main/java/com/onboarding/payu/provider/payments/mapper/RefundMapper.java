@@ -20,7 +20,7 @@ public class RefundMapper {
 		return RefundPayURequest.builder().language(LanguageType.ES.getLanguage())
 								.command(CommanType.SUBMIT_TRANSACTION.name())
 								.merchant(merchant)
-								.transactionPayU(toTransactionPayU(refundDtoRequest))
+								.transaction(toTransactionPayU(refundDtoRequest))
 								.test(false).build();
 	}
 
@@ -28,11 +28,11 @@ public class RefundMapper {
 
 		return TransactionPayU.builder().type(TransactionType.REFUND.name())
 							  .reason(refundDtoRequest.getReason())
-							  .parentTransactionID(refundDtoRequest.getParentTransactionID())
-							  .orderPayU(toOrderPayU(refundDtoRequest.getOrderID())).build();
+							  .parentTransactionId(refundDtoRequest.getTransactionId())
+							  .order(toOrderPayU(refundDtoRequest.getOrderId())).build();
 	}
 
-	private static OrderPayU toOrderPayU(final Integer orderId) {
+	private static OrderPayU toOrderPayU(final Long orderId) {
 
 		return OrderPayU.builder().id(orderId).build();
 	}
@@ -45,6 +45,10 @@ public class RefundMapper {
 	}
 
 	private static TransactionDtoResponse toTransactionDtoResponse(final TransactionPayUResponse transactionPayUResponse) {
+
+		if (transactionPayUResponse == null) {
+			return null;
+		}
 
 		return TransactionDtoResponse.builder().orderID(transactionPayUResponse.getOrderID())
 									 .transactionID(transactionPayUResponse.getTransactionID())

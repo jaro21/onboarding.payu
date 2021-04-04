@@ -10,6 +10,6 @@ public class RefundPayURequest {
     private String language;
     private String command;
     private Merchant merchant;
-    private TransactionPayU transactionPayU;
+    private TransactionPayU transaction;
     private boolean test;
 }

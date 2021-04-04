@@ -31,10 +31,10 @@ public class Refund {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_refund")
+	@Column(name = "id_refund", updatable = false, nullable = false)
 	private Integer idRefund;
 	@OneToOne
-	@JoinColumn(name = "fk_refund_payment2", updatable = false, nullable = false)
+	@JoinColumn(name = "id_payment", updatable = false, nullable = false)
 	private Payment payment;
 	@Column(name = "type")
 	private String type;

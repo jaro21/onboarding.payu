@@ -33,7 +33,7 @@ public class UserApp {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_user_app")
+	@Column(name = "id_user_app", updatable = false, nullable = false)
 	private Integer idUserApp;
 	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name="id_client")

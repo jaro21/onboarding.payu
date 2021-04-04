@@ -6,5 +6,5 @@ import lombok.Getter;
 @Builder
 @Getter
 public class OrderPayU {
-    private Integer id;
+    private Long id;
 }

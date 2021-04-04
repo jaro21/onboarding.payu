@@ -1,6 +1,5 @@
 package com.onboarding.payu.model.refund.request;
 
-import java.util.UUID;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -12,10 +11,10 @@ import lombok.ToString;
 @Getter
 @ToString
 public class RefundDtoRequest {
-    @NotNull(message = "Order Id is mandatory")
-    private Integer orderID;
+    @NotNull(message = "Payment Id is mandatory")
+    private Integer idPayment;
     @NotBlank(message = "Reason for refund is mandatory")
     private String reason;
-    @NotNull(message = "Parent Transaction Id is mandatory")
-    private UUID parentTransactionID;
+    private Long orderId;
+    private String transactionId;
 }

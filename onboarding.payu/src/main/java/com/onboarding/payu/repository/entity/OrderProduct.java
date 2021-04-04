@@ -32,13 +32,13 @@ public class OrderProduct {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_order_product")
+	@Column(name = "id_order_product", updatable = false, nullable = false)
 	private Integer idOrderProduct;
 	@ManyToOne
-	@JoinColumn(name = "id_purchase_order")
+	@JoinColumn(name = "id_purchase_order", updatable = false, nullable = false)
 	private PurchaseOrder purchaseOrder;
 	@ManyToOne
-	@JoinColumn(name = "id_product")
+	@JoinColumn(name = "id_product", updatable = false, nullable = false)
 	private Product product;
 	@Column(name = "quantity")
 	private Integer quantity;

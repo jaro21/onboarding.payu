@@ -26,7 +26,9 @@ import com.onboarding.payu.model.payment.request.TransactionRequest;
 import com.onboarding.payu.model.payment.request.TxValueDto;
 import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
 import com.onboarding.payu.model.payment.response.TransactionResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper for the Payment's objects
@@ -35,28 +37,32 @@ import org.springframework.beans.factory.annotation.Value;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Slf4j
+@Component
 public class PaymentMapper {
 
 	@Value("${payment-api.order.accountId}")
-	private static String accountId;
+	private String accountId;
 
 	@Value("${payment-api.order.notifyUrl}")
-	private static String notifyUrl;
+	private String notifyUrl;
 
-	public static PaymentWithTokenPayURequest toPaymentWithTokenRequest(final TransactionRequest transactionRequest, final Merchant merchant) {
+	public PaymentWithTokenPayURequest toPaymentWithTokenRequest(final TransactionRequest transactionRequest, final Merchant merchant) {
 
 		if (transactionRequest == null) {
 			return null;
 		}
 
-		return PaymentWithTokenPayURequest.builder().language(LanguageType.ES.getLanguage())
+		final PaymentWithTokenPayURequest paymentWithTokenPayURequest = PaymentWithTokenPayURequest.builder().language(LanguageType.ES.getLanguage())
 										  .command(CommanType.SUBMIT_TRANSACTION.toString())
 										  .merchant(merchant)
-										  .test(true)
+										  .test(false)
 										  .transaction(toTransaccion(transactionRequest)).build();
+		log.error(paymentWithTokenPayURequest.toString());
+		return paymentWithTokenPayURequest;
 	}
 
-	public static TransactionPayU toTransaccion(final TransactionRequest transactionRequest) {
+	public TransactionPayU toTransaccion(final TransactionRequest transactionRequest) {
 
 		if (transactionRequest == null) {
 			return null;
@@ -76,12 +82,12 @@ public class PaymentMapper {
 							  .extraParameters(getExtraParameter()).build();
 	}
 
-	private static ExtraParameters getExtraParameter() {
+	private ExtraParameters getExtraParameter() {
 
 		return ExtraParameters.builder().installmentsNumber(ExtraParameterType.INSTALLMENTS_NUMBER.getId()).build();
 	}
 
-	private static Payer toPayer(final PayerDto payerDto) {
+	private Payer toPayer(final PayerDto payerDto) {
 
 		if (payerDto == null) {
 			return null;
@@ -95,7 +101,7 @@ public class PaymentMapper {
 					.billingAddress(toIngAddress(payerDto.getBillingAddressDto())).build();
 	}
 
-	private static IngAddress toIngAddress(final IngAddressDto billingAddressDto) {
+	private IngAddress toIngAddress(final IngAddressDto billingAddressDto) {
 
 		if (billingAddressDto == null) {
 			return null;
@@ -110,7 +116,7 @@ public class PaymentMapper {
 						 .phone(billingAddressDto.getPhone()).build();
 	}
 
-	private static Order toOrder(final OrderDto orderDto) {
+	private Order toOrder(final OrderDto orderDto) {
 
 		if (orderDto == null) {
 			return null;
@@ -127,7 +133,7 @@ public class PaymentMapper {
 					.shippingAddress(toIngAddress(orderDto.getShippingAddressDto())).build();
 	}
 
-	private static Buyer toBuyer(final BuyerDto buyerDto) {
+	private Buyer toBuyer(final BuyerDto buyerDto) {
 
 		if (buyerDto == null) {
 			return null;
@@ -142,7 +148,7 @@ public class PaymentMapper {
 					.shippingAddress(toIngAddress(buyerDto.getShippingAddressDto())).build();
 	}
 
-	private static AdditionalValues toAdditionalValues(final AdditionalValuesDto additionalValuesDto) {
+	private AdditionalValues toAdditionalValues(final AdditionalValuesDto additionalValuesDto) {
 
 		if (additionalValuesDto == null) {
 			return null;
@@ -151,7 +157,7 @@ public class PaymentMapper {
 		return AdditionalValues.builder().txValue(toTxValue(additionalValuesDto.getTxValueDto())).build();
 	}
 
-	private static TxValue toTxValue(final TxValueDto txValueDto) {
+	private TxValue toTxValue(final TxValueDto txValueDto) {
 
 		if (txValueDto == null) {
 			return null;
@@ -160,7 +166,7 @@ public class PaymentMapper {
 		return TxValue.builder().value(txValueDto.getValue()).currency(txValueDto.getCurrency()).build();
 	}
 
-	public static PaymentWithTokenResponse toPaymentWithTokenResponse(final PaymentWithTokenPayUResponse paymentWithToken) {
+	public PaymentWithTokenResponse toPaymentWithTokenResponse(final PaymentWithTokenPayUResponse paymentWithToken) {
 
 		if (paymentWithToken == null) {
 			return null;
@@ -171,7 +177,7 @@ public class PaymentMapper {
 									   .transactionResponse(toTransactionResponse(paymentWithToken.getTransactionResponse())).build();
 	}
 
-	public static TransactionResponse toTransactionResponse(final TransactionPayUResponse transactionPayUResponse) {
+	public TransactionResponse toTransactionResponse(final TransactionPayUResponse transactionPayUResponse) {
 
 		if (transactionPayUResponse == null) {
 			return null;

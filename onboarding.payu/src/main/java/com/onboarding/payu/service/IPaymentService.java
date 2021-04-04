@@ -6,6 +6,7 @@ import com.onboarding.payu.model.payment.request.TransactionRequest;
 import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
 import com.onboarding.payu.model.refund.request.RefundDtoRequest;
 import com.onboarding.payu.model.refund.response.RefundDtoResponse;
+import com.onboarding.payu.repository.entity.Payment;
 
 /**
  * Interface that define of Payment's services
@@ -15,6 +16,14 @@ import com.onboarding.payu.model.refund.response.RefundDtoResponse;
  * @since 1.0.0
  */
 public interface IPaymentService {
+
+	/**
+	 *
+	 * @param idPayment {@link Integer}
+	 * @return {@link Payment}
+	 * @throws RestApplicationException
+	 */
+	Payment findById(Integer idPayment) throws RestApplicationException;
 
 	/**
 	 * Service to apply the payment of a purchase order
@@ -30,5 +39,5 @@ public interface IPaymentService {
 	 * @param refundDtoRequest {@link RefundDtoRequest}
 	 * @return {@link RefundDtoResponse}
 	 */
-	RefundDtoResponse appyRefund(RefundDtoRequest refundDtoRequest);
+	RefundDtoResponse appyRefund(RefundDtoRequest refundDtoRequest) throws RestApplicationException;
 }

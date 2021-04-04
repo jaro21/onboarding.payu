@@ -36,14 +36,16 @@ public class PaymentController {
 	}
 
 	@PostMapping
-	public ResponseEntity<PaymentWithTokenResponse> applyPayment(@Valid @NotNull @RequestBody final PaymentTransationRequest paymentTransationRequest)
+	public ResponseEntity<PaymentWithTokenResponse> applyPayment(
+			@Valid @NotNull @RequestBody final PaymentTransationRequest paymentTransationRequest)
 			throws RestApplicationException {
 
 		return ResponseEntity.ok(iPaymentService.paymentWithToken(paymentTransationRequest));
 	}
 
 	@PostMapping("/refund")
-	public ResponseEntity<RefundDtoResponse> applyRefund(@Valid @NotNull @RequestBody final RefundDtoRequest refundDtoRequest){
+	public ResponseEntity<RefundDtoResponse> applyRefund(@Valid @NotNull @RequestBody final RefundDtoRequest refundDtoRequest)
+			throws RestApplicationException {
 
 		return ResponseEntity.ok(iPaymentService.appyRefund(refundDtoRequest));
 	}

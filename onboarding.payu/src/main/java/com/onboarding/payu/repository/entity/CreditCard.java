@@ -1,6 +1,5 @@
 package com.onboarding.payu.repository.entity;
 
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,9 +30,9 @@ public class CreditCard {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_credit_card")
+	@Column(name = "id_credit_card", updatable = false, nullable = false)
 	private Integer idCreditCard;
-	@Column(name = "id_client")
+	@Column(name = "id_client", updatable = false, nullable = false)
 	private Integer idClient;
 	@Column(name = "masked_number", length = 20)
 	@NotBlank(message = "Masked Number is mandatory")
@@ -42,7 +41,7 @@ public class CreditCard {
 	@NotBlank(message = "Payment Method is mandatory")
 	private String paymentMethod;
 	@Column(name = "token", length = 45)
-	private UUID token;
+	private String token;
 	@Column(name = "name", length = 15)
 	private String name;
 }
