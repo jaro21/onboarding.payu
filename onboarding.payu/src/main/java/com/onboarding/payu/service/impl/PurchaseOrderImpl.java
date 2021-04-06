@@ -140,57 +140,24 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 						   .build();
 	}
 
-
-
 	private void isValidOrder(final List<Product> productList, final List<ProductDto> productDtoList) throws RestApplicationException {
 
 		for (Product product : productList) {
 			for (ProductDto productDTO : productDtoList) {
-				if (productDTO.getIdProduct().equals(product.getIdProduct())
-						&& !isValidQuantity.apply(product.getStock(),
-												  productDTO.getQuantity()).booleanValue()) {
-					throw new RestApplicationException(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(),
-													   format(ExceptionCodes.PRODUCT_NOT_AVAILABLE
-																	  .getMessage(), product.getCode(),
-															  product.getName()));
-				}
+				validateStock(product, productDTO);
 			}
 		}
+	}
 
-		/*
-		productDtoList.stream().filter(productDTO -> {
-			final Product productRes =
-					productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get();
-			if(!isValidQuantity.apply(productRes.getStock(),
-								  productDTO.getQuantity()).booleanValue()){
-				throw new RestApplicationException(format("Product quantity (%s-%s) is not available.", productRes.getCode(),
-														  productRes.getName()));
-			}
-		});
+	private void validateStock(final Product product, final ProductDto productDTO) throws RestApplicationException {
 
-		 */
-
-		//iProductService.updateProduct(getNewProductList(productList, productDtoList));
-		/*
-		getProductsByIds(productDtoList).stream().forEach(product -> {
-			//product.getStock() >= productDtoList.get()
-		});
-
-		 */
-
-		/*
-		getProductsByIds(productDtoList).stream().map(product->product.getIdProduct())
-			 .flatMap(productDtoList -> productDtoList.stream())
-			 .forEach(new Consumer<Viaje>() {
-				 @Override
-				 public void accept(Viaje t) {
-
-					 System.out.println(t.getPais());
-				 }
-
-			 });
-
-		 */
+		if (productDTO.getIdProduct().equals(product.getIdProduct())
+				&& product.getStock().compareTo(productDTO.getQuantity()) < 0) {
+			throw new RestApplicationException(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(),
+											   format(ExceptionCodes.PRODUCT_NOT_AVAILABLE
+															  .getMessage(), product.getCode(),
+													  product.getName()));
+		}
 	}
 
 	private void updateStock(final List<Product> productList, final List<ProductDto> productDTOList) {
@@ -201,9 +168,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 	private List<Product> getNewProductList(final List<Product> productList, final List<ProductDto> productDTOList) {
 
-		return productList.stream().map(product -> {
-			return getProduct(productDTOList, product);
-		}).collect(Collectors.toList());
+		return productList.stream().map(product -> getProduct(productDTOList, product)).collect(Collectors.toList());
 	}
 
 	private Product getProduct(final List<ProductDto> productDTOList, final Product product) {
@@ -232,7 +197,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 	private List<Integer> getProductsList(final List<ProductDto> productDTOList) {
 
-		return productDTOList.stream().map(productDTO -> productDTO.getIdProduct()).collect(Collectors.toList());
+		return productDTOList.stream().map(ProductDto::getIdProduct).collect(Collectors.toList());
 	}
 
 	BiFunction<Integer, Integer, Boolean> isValidQuantity = (s, i) -> s >= i;

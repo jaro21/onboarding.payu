@@ -115,6 +115,7 @@ public class PaymentServiceImpl implements IPaymentService {
 	private void updatePurchaseOrder(final String status, final PurchaseOrder purchaseOrder) {
 
 		if (status.equals(StatusType.APPROVED.name())) {
+
 			iPurchaseOrder.update(getPurchaseOrder(purchaseOrder, StatusType.PAID));
 		}
 	}
@@ -139,51 +140,57 @@ public class PaymentServiceImpl implements IPaymentService {
 	private Payment getPayment(final PaymentWithTokenResponse paymentWithTokenResponse,
 							   final PurchaseOrder purchaseOrder) {
 
-		return Payment.builder().idPurchaseOrder(purchaseOrder.getIdPurchaseOrder())
-					  .languaje(LanguageType.ES.getLanguage())
-					  .notify_url(notifyUrl)
-					  .value(purchaseOrder.getValue())
-					  .currency(CurrencyType.COP.name())
-					  .response_json(toJson(paymentWithTokenResponse))
-					  .status(getStatus(paymentWithTokenResponse))
-					  .orderId(getOrderId(paymentWithTokenResponse))
-					  .transactionId(getTransactionId(paymentWithTokenResponse)).build();
+		final Payment.PaymentBuilder paymentBuilder = Payment.builder().idPurchaseOrder(purchaseOrder.getIdPurchaseOrder())
+															 .languaje(LanguageType.ES.getLanguage())
+															 .notify_url(notifyUrl)
+															 .value(purchaseOrder.getValue())
+															 .currency(CurrencyType.COP.name());
+
+		toJson(paymentWithTokenResponse, paymentBuilder);
+		getStatus(paymentWithTokenResponse, paymentBuilder);
+		getOrderId(paymentWithTokenResponse, paymentBuilder);
+		getTransactionId(paymentWithTokenResponse, paymentBuilder);
+
+		return paymentBuilder.build();
 	}
 
-	private String getTransactionId(final PaymentWithTokenResponse paymentWithTokenResponse) {
+	private void getTransactionId(final PaymentWithTokenResponse paymentWithTokenResponse,
+								  final Payment.PaymentBuilder paymentBuilder) {
+
+		if (paymentWithTokenResponse != null && paymentWithTokenResponse.getTransactionResponse() != null) {
+
+			paymentBuilder.transactionId(paymentWithTokenResponse.getTransactionResponse().getTransactionId().toString());
+		}
+	}
+
+	private void getOrderId(final PaymentWithTokenResponse paymentWithTokenResponse,
+							final Payment.PaymentBuilder paymentBuilder) {
+
+		if (paymentWithTokenResponse != null && paymentWithTokenResponse.getTransactionResponse() != null) {
+
+			paymentBuilder.orderId(paymentWithTokenResponse.getTransactionResponse().getOrderId());
+		}
+	}
+
+	private void getStatus(final PaymentWithTokenResponse paymentWithTokenResponse,
+						   final Payment.PaymentBuilder paymentBuilder) {
 
 		if (paymentWithTokenResponse == null || paymentWithTokenResponse.getTransactionResponse() == null) {
-			return null;
-		}
 
-		return paymentWithTokenResponse.getTransactionResponse().getTransactionId().toString();
+			paymentBuilder.status(StatusType.ERROR.name());
+		} else {
+
+			paymentBuilder.status(paymentWithTokenResponse.getTransactionResponse().getState());
+		}
 	}
 
-	private Long getOrderId(final PaymentWithTokenResponse paymentWithTokenResponse) {
+	private void toJson(final PaymentWithTokenResponse paymentWithTokenResponse,
+						final Payment.PaymentBuilder paymentBuilder) {
 
-		if (paymentWithTokenResponse == null || paymentWithTokenResponse.getTransactionResponse() == null) {
-			return null;
+		if (paymentWithTokenResponse != null) {
+
+			paymentBuilder.response_json(new Gson().toJson(paymentWithTokenResponse));
 		}
-
-		return paymentWithTokenResponse.getTransactionResponse().getOrderId();
-	}
-
-	private String getStatus(final PaymentWithTokenResponse paymentWithTokenResponse) {
-
-		if (paymentWithTokenResponse == null || paymentWithTokenResponse.getTransactionResponse() == null) {
-			return StatusType.ERROR.name();
-		}
-
-		return paymentWithTokenResponse.getTransactionResponse().getState();
-	}
-
-	private String toJson(final PaymentWithTokenResponse paymentWithTokenResponse) {
-
-		if (paymentWithTokenResponse == null) {
-			return null;
-		}
-
-		return new Gson().toJson(paymentWithTokenResponse);
 	}
 
 	/**
@@ -207,23 +214,27 @@ public class PaymentServiceImpl implements IPaymentService {
 
 	private Refund getRefund(final RefundDtoResponse refundDtoResponse, final RefundDtoRequest refundDtoRequest, final Payment payment) {
 
-		return Refund.builder().reason(refundDtoRequest.getReason())
-					 .payment(payment)
-					 .response_json(getRefundDtoResponse(refundDtoResponse)).build();
+		final Refund.RefundBuilder refundBuilder = Refund.builder().reason(refundDtoRequest.getReason())
+														 .payment(payment);
+
+		getRefundDtoResponse(refundDtoResponse, refundBuilder);
+
+		return refundBuilder.build();
 	}
 
-	private String getRefundDtoResponse(final RefundDtoResponse refundDtoResponse) {
+	private void getRefundDtoResponse(final RefundDtoResponse refundDtoResponse,
+									  final Refund.RefundBuilder refundBuilder) {
 
-		if (refundDtoResponse == null) {
-			return null;
+		if (refundDtoResponse != null) {
+
+			refundBuilder.response_json(new Gson().toJson(refundDtoResponse));
 		}
-
-		return new Gson().toJson(refundDtoResponse);
 	}
 
 	private void updatePayment(final Payment payment, final String code) {
 
 		if (code.equals(StatusType.SUCCESS.name())) {
+
 			iPaymentRepository.save(getPayment(payment, StatusType.REFUNDED));
 		}
 	}
@@ -283,7 +294,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
 		paymentValidator.runValidations(purchaseOrder);
 
-		return TransactionRequest.builder().orderDto(buildOrderDto(client, purchaseOrder))
+		return TransactionRequest.builder().orderDto(buildOrderDto(purchaseOrder))
 								 .payerDto(buildPayerDto(client))
 								 .creditCardTokenId(creditCard.getToken())
 								 .paymentMethod(creditCard.getPaymentMethod())
@@ -321,11 +332,10 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	/**
-	 * @param client        {@link Client}
 	 * @param purchaseOrder {@link PurchaseOrder}
 	 * @return {@link OrderDto}
 	 */
-	private OrderDto buildOrderDto(final Client client, final PurchaseOrder purchaseOrder) {
+	private OrderDto buildOrderDto(final PurchaseOrder purchaseOrder) {
 
 		return OrderDto.builder().referenceCode(purchaseOrder.getReferenceCode())
 					   .description("Purchase Order")

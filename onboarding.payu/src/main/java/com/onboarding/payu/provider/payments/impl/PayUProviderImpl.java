@@ -32,6 +32,8 @@ public class PayUProviderImpl implements IPaymentProvider {
 
 	private PaymentMapper paymentMapper;
 
+	private RefundMapper refundMapper;
+
 	@Value("${payment-api.apiKey}")
 	private String apiKey;
 	@Value("${payment-api.apiLogin}")
@@ -39,10 +41,11 @@ public class PayUProviderImpl implements IPaymentProvider {
 
 	@Autowired
 	public PayUProviderImpl(final PaymentClient paymentClient,
-							final PaymentMapper paymentMapper) {
+							final PaymentMapper paymentMapper, final RefundMapper refundMapper) {
 
 		this.paymentClient = paymentClient;
 		this.paymentMapper = paymentMapper;
+		this.refundMapper = refundMapper;
 	}
 
 	/**
@@ -68,8 +71,8 @@ public class PayUProviderImpl implements IPaymentProvider {
 	@Override public RefundDtoResponse appyRefundPayU(final RefundDtoRequest refundDtoRequest) {
 
 		log.debug("appyRefundPayU : ", refundDtoRequest.toString());
-		return RefundMapper
-				.toRefundDtoResponse(paymentClient.applyRefund(RefundMapper.toRefundPayURequest(refundDtoRequest, getMerchant())));
+		return refundMapper
+				.toRefundDtoResponse(paymentClient.applyRefund(refundMapper.toRefundPayURequest(refundDtoRequest, getMerchant())));
 	}
 
 	/**
