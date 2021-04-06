@@ -2,20 +2,16 @@ package com.onboarding.payu.service.impl;
 
 import static java.lang.String.format;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
-import com.onboarding.payu.client.payu.model.LanguageType;
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.exception.RestApplicationException;
-import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.purchase.ProductDto;
 import com.onboarding.payu.model.purchase.PurchaseOrderDto;
+import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.repository.IPurchaseOrderRepository;
 import com.onboarding.payu.repository.entity.Client;
 import com.onboarding.payu.repository.entity.OrderProduct;
@@ -25,6 +21,7 @@ import com.onboarding.payu.service.IClientService;
 import com.onboarding.payu.service.IOrderProductService;
 import com.onboarding.payu.service.IProductService;
 import com.onboarding.payu.service.IPurchaseOrder;
+import com.onboarding.payu.service.impl.mapper.PurchaseOrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,7 +62,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	 * {@inheritDoc}
 	 */
 	@Transactional
-	@Override public PurchaseOrder addPurchaseOrder(final PurchaseOrderDto purchaseOrderDTO) throws RestApplicationException {
+	@Override public PurchaseOrderResponse addPurchaseOrder(final PurchaseOrderDto purchaseOrderDTO) throws RestApplicationException {
 
 		log.debug("addPurchaseOrder(PurchaseOrderDTO)", purchaseOrderDTO.toString());
 		final List<Product> productList = getProductsByIds(purchaseOrderDTO.getProductList());
@@ -73,14 +70,17 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 		isValidOrder(productList, purchaseOrderDTO.getProductList());
 		updateStock(productList, purchaseOrderDTO.getProductList());
-		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(getPurchaseOrder(client, productList,
-																						   purchaseOrderDTO));
+		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(PurchaseOrderMapper.toPurchaseOrder(client, productList,
+																											  purchaseOrderDTO));
 		List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderDTO.getProductList(), productList, purchaseOrder);
 		iOrderProductService.saveAll(orderProductList);
 
-		return purchaseOrder;
+		return PurchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public PurchaseOrder findById(final Integer idPurchaseOrder) throws RestApplicationException {
 
 		return iPurchaseOrderRepository.findById(idPurchaseOrder).orElseThrow(
@@ -89,17 +89,19 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	}
 
 	/**
-	 * Get the total value of the purchase order
-	 *
-	 * @param productList    {@link List<Product>}
-	 * @param productDTOList {@link List<ProductDto>}
-	 * @return {@link BigDecimal}
+	 * {@inheritDoc}
 	 */
-	private BigDecimal getTotalValue(final List<Product> productList, final List<ProductDto> productDTOList) {
+	@Override public Integer updateStatusById(final String status, final Integer id) {
 
-		return productDTOList.stream().map(productDTO -> BigDecimal.valueOf(productDTO.getQuantity()).multiply(
-				productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get()
-						   .getPrice())).reduce(BigDecimal.valueOf(0.0), (a, b) -> a.add(b));
+		return iPurchaseOrderRepository.updateStatusById(status, id);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public PurchaseOrder update(final PurchaseOrder purchaseOrder) {
+
+		return iPurchaseOrderRepository.save(purchaseOrder);
 	}
 
 	/**
@@ -138,30 +140,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 						   .build();
 	}
 
-	/**
-	 * Get PurchaseOrder to register them in database
-	 *
-	 * @param client           {@link Client}
-	 * @param productList      {@link List<Product>}
-	 * @param purchaseOrderDTO {@link PurchaseOrder}
-	 * @return {@link PurchaseOrder}
-	 */
-	private PurchaseOrder getPurchaseOrder(final Client client, final List<Product> productList, final PurchaseOrderDto purchaseOrderDTO) {
 
-		return PurchaseOrder.builder().client(client)
-							.status(StatusType.PENDING.name())
-							.date(LocalDate.now())
-							.value(getTotalValue(productList, purchaseOrderDTO.getProductList()))
-							.referenceCode(UUID.randomUUID().toString())
-							.languaje(LanguageType.ES.getLanguage())
-							.street1(purchaseOrderDTO.getClientDto().getStreet1())
-							.street2(purchaseOrderDTO.getClientDto().getStreet2())
-							.city(purchaseOrderDTO.getClientDto().getCity())
-							.state(purchaseOrderDTO.getClientDto().getState())
-							.country(purchaseOrderDTO.getClientDto().getCountry())
-							.postalCode(purchaseOrderDTO.getClientDto().getPostalCode())
-							.build();
-	}
 
 	private void isValidOrder(final List<Product> productList, final List<ProductDto> productDtoList) throws RestApplicationException {
 
@@ -217,13 +196,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	private void updateStock(final List<Product> productList, final List<ProductDto> productDTOList) {
 
 		List<Product> products = getNewProductList(productList, productDTOList);
-		products.forEach(product -> {
-			try {
-				iProductService.updateProduct(product);
-			} catch (RestApplicationException e) {
-				log.error("Failed to update product id {}", product.getIdProduct(), e);
-			}
-		});
+		products.forEach(product -> iProductService.updateStockById(product.getStock(), product.getIdProduct()));
 	}
 
 	private List<Product> getNewProductList(final List<Product> productList, final List<ProductDto> productDTOList) {

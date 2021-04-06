@@ -2,7 +2,9 @@ package com.onboarding.payu.service;
 
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.purchase.PurchaseOrderDto;
+import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Interface that define of Purchase Order's services
@@ -17,10 +19,10 @@ public interface IPurchaseOrder {
 	 * Service to save a purchase order
 	 *
 	 * @param purchaseOrder {@link PurchaseOrderDto}
-	 * @return {@link PurchaseOrder}
+	 * @return {@link PurchaseOrderResponse}
 	 * @throws RestApplicationException
 	 */
-	PurchaseOrder addPurchaseOrder(PurchaseOrderDto purchaseOrder) throws RestApplicationException;
+	PurchaseOrderResponse addPurchaseOrder(PurchaseOrderDto purchaseOrder) throws RestApplicationException;
 
 	/**
 	 * Method to get Client by idClient
@@ -30,4 +32,21 @@ public interface IPurchaseOrder {
 	 * @throws RestApplicationException
 	 */
 	PurchaseOrder findById(Integer idPurchaseOrder) throws RestApplicationException;
+
+	/**
+	 * Update Purchase Order's status by id
+	 *
+	 * @param status {@link String}
+	 * @param id {@link Integer}
+	 * @return {@link Integer}
+	 */
+	Integer updateStatusById(String status, Integer id);
+
+	/**
+	 * Update Purchase Order
+	 *
+	 * @param purchaseOrder {@link PurchaseOrder}
+	 * @return {@link PurchaseOrder}
+	 */
+	PurchaseOrder update(PurchaseOrder purchaseOrder);
 }

@@ -36,8 +36,6 @@ public class Payment {
 	private Integer idPurchaseOrder;
 	@Column(name = "languaje")
 	private String languaje;
-	@Column(name = "signature")
-	private String signature;
 	@Column(name = "notify_url")
 	private String notify_url;
 	@Column(name = "value")

@@ -12,7 +12,9 @@ import com.onboarding.payu.client.payu.model.refund.response.TransactionPayUResp
 import com.onboarding.payu.model.refund.request.RefundDtoRequest;
 import com.onboarding.payu.model.refund.response.RefundDtoResponse;
 import com.onboarding.payu.model.refund.response.TransactionDtoResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RefundMapper {
 
 	public static RefundPayURequest toRefundPayURequest(final RefundDtoRequest refundDtoRequest, final Merchant merchant) {
@@ -39,9 +41,11 @@ public class RefundMapper {
 
 	public static RefundDtoResponse toRefundDtoResponse(final RefundPayUResponse refundPayUResponse) {
 
+		log.error("toRefundDtoResponse : ",refundPayUResponse.toString());
 		return RefundDtoResponse.builder().code(refundPayUResponse.getCode())
 								.error(refundPayUResponse.getError())
-								.transactionDtoResponse(toTransactionDtoResponse(refundPayUResponse.getTransactionPayUResponse())).build();
+								.transactionDtoResponse(toTransactionDtoResponse(refundPayUResponse.getTransactionResponse()))
+								.build();
 	}
 
 	private static TransactionDtoResponse toTransactionDtoResponse(final TransactionPayUResponse transactionPayUResponse) {
@@ -51,19 +55,19 @@ public class RefundMapper {
 		}
 
 		return TransactionDtoResponse.builder().orderID(transactionPayUResponse.getOrderID())
-									 .transactionID(transactionPayUResponse.getTransactionID())
-									 .state(transactionPayUResponse.getState())
-									 .paymentNetworkResponseCode(transactionPayUResponse.getPaymentNetworkResponseCode())
-									 .paymentNetworkResponseErrorMessage(transactionPayUResponse.getPaymentNetworkResponseErrorMessage())
-									 .trazabilityCode(transactionPayUResponse.getTrazabilityCode())
-									 .authorizationCode(transactionPayUResponse.getAuthorizationCode())
-									 .pendingReason(transactionPayUResponse.getPendingReason())
-									 .responseCode(transactionPayUResponse.getResponseCode())
-									 .errorCode(transactionPayUResponse.getErrorCode())
-									 .responseMessage(transactionPayUResponse.getResponseMessage())
-									 .transactionDate(transactionPayUResponse.getTransactionDate())
-									 .transactionTime(transactionPayUResponse.getTransactionTime())
-									 .operationDate(transactionPayUResponse.getOperationDate())
-									 .extraParameters(transactionPayUResponse.getExtraParameters()).build();
+												 .transactionID(transactionPayUResponse.getTransactionID())
+												 .state(transactionPayUResponse.getState())
+												 .paymentNetworkResponseCode(transactionPayUResponse.getPaymentNetworkResponseCode())
+												 .paymentNetworkResponseErrorMessage(
+														 transactionPayUResponse.getPaymentNetworkResponseErrorMessage())
+												 .trazabilityCode(transactionPayUResponse.getTrazabilityCode())
+												 .authorizationCode(transactionPayUResponse.getAuthorizationCode())
+												 .pendingReason(transactionPayUResponse.getPendingReason())
+												 .responseCode(transactionPayUResponse.getResponseCode())
+												 .errorCode(transactionPayUResponse.getErrorCode())
+												 .responseMessage(transactionPayUResponse.getResponseMessage())
+												 .transactionDate(transactionPayUResponse.getTransactionDate())
+												 .transactionTime(transactionPayUResponse.getTransactionTime())
+												 .operationDate(transactionPayUResponse.getOperationDate()).build();
 	}
 }

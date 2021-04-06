@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 
 import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.purchase.PurchaseOrderDto;
-import com.onboarding.payu.repository.entity.PurchaseOrder;
+import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.service.IPurchaseOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +34,7 @@ public class PurchaseOrderController {
 	}
 
 	@PostMapping
-	public ResponseEntity<PurchaseOrder> addPurchaseOrder(@Valid @NotNull @RequestBody final PurchaseOrderDto purchaseOrderDTO)
+	public ResponseEntity<PurchaseOrderResponse> addPurchaseOrder(@Valid @NotNull @RequestBody final PurchaseOrderDto purchaseOrderDTO)
 			throws RestApplicationException {
 
 		return new ResponseEntity(iPurchaseOrder.addPurchaseOrder(purchaseOrderDTO), HttpStatus.CREATED);

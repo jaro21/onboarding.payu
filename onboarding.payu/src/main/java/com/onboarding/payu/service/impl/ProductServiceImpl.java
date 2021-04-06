@@ -101,6 +101,12 @@ public class ProductServiceImpl implements IProductService {
 		return iProductRepository.save(product);
 	}
 
+	@Override public Integer updateStockById(final Integer stock, final Integer id) {
+
+		log.debug("updateStockById(stock = {}, Id = {}) :",stock, id);
+		return iProductRepository.updateStockById(stock, id);
+	}
+
 	/**
 	 * Run validations on the product to create
 	 *

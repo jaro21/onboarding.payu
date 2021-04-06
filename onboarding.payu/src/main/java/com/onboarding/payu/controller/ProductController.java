@@ -59,19 +59,19 @@ public class ProductController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Product> findProductById(@NotNull @PathVariable Integer id) throws RestApplicationException {
-		Validate.notNull(id, "Product identification is mandatory");
+		Validate.notNull(id, "Product identification cannot not be empty");
 		return ResponseEntity.ok(iProductService.getProductById(id));
 	}
 
 	@PutMapping
 	public ResponseEntity<Product> updateProduct(@Valid @NotNull @RequestBody ProductDto productDto) throws RestApplicationException {
-		Validate.notNull(productDto.getIdProduct(), "Product identification is mandatory");
+		Validate.notNull(productDto.getIdProduct(), "Product identification cannot not be empty");
 		return ResponseEntity.ok(iProductService.updateProduct(productDto));
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity deleteProduct(@NotNull @PathVariable Integer id) throws RestApplicationException {
-		Validate.notNull(id, "Product identification is mandatory to remove");
+		Validate.notNull(id, "Product identification cannot not be empty to remove");
 		return ResponseEntity.ok(iProductService.deleteProduct(id));
 	}
 

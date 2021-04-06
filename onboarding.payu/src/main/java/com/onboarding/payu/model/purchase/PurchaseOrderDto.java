@@ -8,15 +8,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * Object for purchase order's request
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Builder
 @Getter
 @ToString
 public class PurchaseOrderDto {
 
 	private Integer idPurchaseOrder;
-	@NotNull(message = "Client identification is mandatory")
+	@NotNull(message = "Client identification cannot not be empty")
 	private ClientDto clientDto;
-	@NotEmpty(message = "Product is mandatory")
-	@ToString.Exclude
+	@NotEmpty(message = "Product cannot not be empty")
 	private List<ProductDto> productList;
 }

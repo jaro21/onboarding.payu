@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import com.onboarding.payu.repository.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Repository to manage {@link Product} instances.
@@ -15,4 +18,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface IProductRepository extends JpaRepository<Product, Integer> {
 
 	Optional<Product> findByCode(String code);
+
+	@Modifying
+	@Query("update Product set stock = :stock where idProduct = :id")
+	Integer updateStockById(@Param("stock") Integer stock, @Param("id") Integer id);
 }

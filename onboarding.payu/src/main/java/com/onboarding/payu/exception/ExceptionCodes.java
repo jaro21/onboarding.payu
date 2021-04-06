@@ -19,9 +19,12 @@ public enum ExceptionCodes {
 	PRODUCT_STOCK_INVALID("P004","Stock must be greater than or equal to zero !!!"),
 	PRODUCT_PRICE_INVALID("P005","Price must be greater than zero !!!"),
 	PURCHASE_ORDER_INVALID("PO001","Purchase Order does not exist"),
+	PURCHASE_ORDER_STATUS_INVALID("PO002", "Purchase order not available for payment"),
 	MINIMUM_AMOUNT_INVALID("A001","Minimum amount must be greater than or equal to $ %s"),
 	MAXIMUM_AMOUNT_INVALID("A002","Maximum amount must be less than or equal to $ %s"),
-	PAYMENT_NOT_EXIST("PA001","Payment id %d does not exist.");
+	PAYMENT_NOT_EXIST("PA001","Payment id %d does not exist."),
+	PERIOD_INVALID("CC001","The expiration date of the credit card must be greater than the current date."),
+	PERIOD_FORMAT_INVALID("CC002","The expiration date must be in the format 'YYYY/MM'.");
 
 	private final String code;
 	private final String message;

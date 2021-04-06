@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.exception.RestApplicationException;
+import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class PaymentValidator {
 
 		isMinimumAmounValid(purchaseOrder.getValue());
 		isMaximumAmounValid(purchaseOrder.getValue());
+		isPurchaseOrderStatusValid(purchaseOrder);
 	}
 
 	public void isMinimumAmounValid(final BigDecimal value) throws RestApplicationException {
@@ -38,6 +40,14 @@ public class PaymentValidator {
 		if (stringToBigDecimal(maximumAmount).compareTo(value) <= 0) {
 			throw new RestApplicationException(ExceptionCodes.MAXIMUM_AMOUNT_INVALID.getCode(),
 											   format(ExceptionCodes.MAXIMUM_AMOUNT_INVALID.getMessage(), maximumAmount));
+		}
+	}
+
+	public void isPurchaseOrderStatusValid(final PurchaseOrder purchaseOrder) throws RestApplicationException {
+
+		if(!purchaseOrder.getStatus().equals(StatusType.SAVED.name())){
+			throw new RestApplicationException(ExceptionCodes.PURCHASE_ORDER_STATUS_INVALID.getCode(),
+											   ExceptionCodes.PURCHASE_ORDER_STATUS_INVALID.getMessage());
 		}
 	}
 

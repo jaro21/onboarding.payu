@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -47,6 +48,20 @@ public class ProductExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 							 .body(ResponseDto.builder()
 											  .message(ex.getBindingResult().getFieldError().getDefaultMessage())
+											  .responseCode(HttpStatus.BAD_REQUEST.value())
+											  .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
+											  .timestamp(LocalDateTime.now())
+											  .build());
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
+																  HttpStatus status, WebRequest request) {
+
+		log.info(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+							 .body(ResponseDto.builder()
+											  .message(ex.getMessage())
 											  .responseCode(HttpStatus.BAD_REQUEST.value())
 											  .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
 											  .timestamp(LocalDateTime.now())

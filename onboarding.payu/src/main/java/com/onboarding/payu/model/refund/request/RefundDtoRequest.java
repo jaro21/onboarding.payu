@@ -11,10 +11,11 @@ import lombok.ToString;
 @Getter
 @ToString
 public class RefundDtoRequest {
-    @NotNull(message = "Payment Id is mandatory")
-    private Integer idPayment;
-    @NotBlank(message = "Reason for refund is mandatory")
-    private String reason;
-    private Long orderId;
-    private String transactionId;
+
+	@NotNull(message = "Payment Id cannot not be empty")
+	private Integer idPayment;
+	@NotBlank(message = "Reason for refund cannot not be empty")
+	private String reason;
+	private Long orderId;
+	private String transactionId;
 }

@@ -72,4 +72,13 @@ public interface IProductService {
 	 * @throws RestApplicationException
 	 */
 	Product updateProduct(Product product) throws RestApplicationException;
+
+	/**
+	 * Update product stock by id
+	 *
+	 * @param stock {@link Integer}
+	 * @param id {@link Integer}
+	 * @return {@link Integer}
+	 */
+	Integer updateStockById(Integer stock, Integer id);
 }

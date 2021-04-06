@@ -2,6 +2,7 @@ package com.onboarding.payu.client.payu.model.payment.response;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,5 +23,6 @@ public class TransactionPayUResponse {
     private String transactionDate;
     private String transactionTime;
     private String operationDate;
-    private String extraParameters;
+    @JsonProperty("extraParameters")
+    private ExtraParametersPayU extraParameters;
 }

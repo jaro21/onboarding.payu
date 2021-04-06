@@ -1,8 +1,10 @@
 package com.onboarding.payu.model;
 
 public enum StatusType {
-	PENDING,
+	SAVED,
 	PAID,
 	ERROR,
-	REFUNDED;
+	REFUNDED,
+	APPROVED,
+	SUCCESS;
 }

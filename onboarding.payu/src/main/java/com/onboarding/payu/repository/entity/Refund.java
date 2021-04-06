@@ -36,8 +36,8 @@ public class Refund {
 	@OneToOne
 	@JoinColumn(name = "id_payment", updatable = false, nullable = false)
 	private Payment payment;
-	@Column(name = "type")
-	private String type;
 	@Column(name = "reason")
 	private String reason;
+	@Column(name = "response_json")
+	private String response_json;
 }

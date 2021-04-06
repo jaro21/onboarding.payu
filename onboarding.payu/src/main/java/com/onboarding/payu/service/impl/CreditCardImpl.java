@@ -13,6 +13,7 @@ import com.onboarding.payu.repository.entity.CreditCard;
 import com.onboarding.payu.service.IClientService;
 import com.onboarding.payu.service.ICreditCard;
 import com.onboarding.payu.service.impl.mapper.CreditCardMapper;
+import com.onboarding.payu.service.validator.CreditCardValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,18 @@ public class CreditCardImpl implements ICreditCard {
 
 	private IClientService iClientService;
 
+	private CreditCardValidator creditCardValidator;
+
 	@Autowired
 	public CreditCardImpl(final IPaymentProvider iPaymentProvider,
 						  final ICreditCardRepository iCreditCardRepository,
-						  final IClientService iClientService) {
+						  final IClientService iClientService,
+						  final CreditCardValidator creditCardValidator) {
 
 		this.iPaymentProvider = iPaymentProvider;
 		this.iCreditCardRepository = iCreditCardRepository;
 		this.iClientService = iClientService;
+		this.creditCardValidator = creditCardValidator;
 	}
 
 	/**
@@ -50,6 +55,7 @@ public class CreditCardImpl implements ICreditCard {
 	@Override public TokenResponse tokenizationCard(final CreditCardDto creditCardDto) throws RestApplicationException {
 
 		log.debug("TokenizationCard : ", creditCardDto.toString());
+		creditCardValidator.runValidations(creditCardDto);
 		final TokenResponse tokenResponse = iPaymentProvider.tokenizationCard(creditCardDto);
 		saveCreditCard(tokenResponse);
 		return iPaymentProvider.tokenizationCard(creditCardDto);

@@ -21,15 +21,23 @@ spring:
 onboarding.uri: https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi
 
 payment-api:
-  apiKey: 4Vj8eK4rloUd272L48hsrarnUA
-  apiLogin: pRRXKOl8ikMmt9u
+  apiKey: '012345678901'
+  apiLogin: '012345678901'
   order:
-    accountId: 512321
+    accountId: 1
     notifyUrl: http://prueba-pago.com.co
-    signature: 95d7e92b23cae0cae6a98e34cc54be39
   amount:
     minimum: 11000
     maximum: 18308500
+
+credit:
+  card:
+    visa: "^(4)(\\d{12}|\\d{15})$|^(606374\\d{10}$)"
+    diners: "(^[35](?:0[0-5]|[68][0-9])[0-9]{11}$)|(^30[0-5]{11}$)|(^3095(\\d{10})$)|(^36{12}$)|(^3[89](\\d{12})$)"
+    discover: "^(6011\\d{12})$|^(64[4-9]\\{13})$|^(65\\d{14})$"
+    amex: "^(3[47]\\d{13})$"
+    mastercard: "^(5[1-5]\\d{14}$)|^(2(?:2(?:2[1-9]|[3-9]||d)|[3-6]\\d\\d|7(?:[01]\\d|20))\\d{12}$)"
+    naranja: "^(589562)\\d{10}$"
 
 feign:
   hystrix:
@@ -37,8 +45,9 @@ feign:
   client:
     config:
       default:
-        connectionTimeout: 5000
-        readTimeout: 5000
+        connectionTimeout: 30000
+        readTimeout: 30000
       "[payment]":
-        connectionTimeout: 5000
-        readTimeout: 5000
+        connectionTimeout: 30000
+        readTimeout: 30000
+
