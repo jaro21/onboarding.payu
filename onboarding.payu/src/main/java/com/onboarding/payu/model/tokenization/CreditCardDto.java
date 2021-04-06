@@ -33,6 +33,5 @@ public class CreditCardDto {
 	private String number;
 	@ToString.Exclude
 	@NotBlank(message = "Credit card expiration date cannot not be empty")
-	//@JsonFormat(pattern = "yyyy/MM")
 	private String expirationDate;
 }

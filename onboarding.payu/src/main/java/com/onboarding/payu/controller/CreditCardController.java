@@ -4,7 +4,6 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.tokenization.CreditCardDto;
 import com.onboarding.payu.model.tokenization.TokenResponse;
 import com.onboarding.payu.repository.entity.CreditCard;
@@ -38,13 +37,13 @@ public class CreditCardController {
 	}
 
 	@PostMapping
-	public TokenResponse tokenizationCard(@Valid @NotNull @RequestBody final CreditCardDto creditCardDto) throws RestApplicationException {
+	public TokenResponse tokenizationCard(@Valid @NotNull @RequestBody final CreditCardDto creditCardDto) {
 
 		return iCreditCard.tokenizationCard(creditCardDto);
 	}
 
 	@GetMapping("/{dni}")
-	public ResponseEntity<List<CreditCard>> findAllCardsByClient(@NotNull @PathVariable String dni) throws RestApplicationException {
+	public ResponseEntity<List<CreditCard>> findAllCardsByClient(@NotNull @PathVariable String dni) {
 
 		return ResponseEntity.ok(iCreditCard.findAllCardsByClient(dni));
 	}

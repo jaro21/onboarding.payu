@@ -12,8 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.product.ProductDto;
 import com.onboarding.payu.repository.IProductRepository;
 import com.onboarding.payu.repository.entity.Product;
@@ -41,7 +41,8 @@ class ProductServiceImplTest {
 	private ProductServiceImpl productServiceImpl;
 
 	@Test
-	void saveProductSuccessful() throws RestApplicationException {
+	void saveProductSuccessful() {
+
 		final ProductDto productDtoSample = ProductSample.getProductDto();
 		when(iProductRepositoryMock.findByCode(any(String.class))).thenReturn(Optional.empty());
 		when(iProductRepositoryMock.save(any(Product.class))).thenReturn(ProductSample.getProduct());
@@ -51,19 +52,20 @@ class ProductServiceImplTest {
 		verify(iProductRepositoryMock).findByCode(any(String.class));
 		verify(iProductRepositoryMock).save(any(Product.class));
 
-		assertEquals(productDtoSample.getIdProduct(),productRes.getIdProduct());
+		assertEquals(productDtoSample.getIdProduct(), productRes.getIdProduct());
 		assertEquals(productDtoSample.getCode(), productRes.getCode());
 	}
 
 	@Test
 	void saveProduct_InvalidCode() {
+
 		final ProductDto productDtoSample = ProductSample.getProductDto();
 		when(iProductRepositoryMock.findByCode(any(String.class))).thenReturn(Optional.of(ProductSample.getProduct()));
 
 		try {
 			final Product productRes = productServiceImpl.saveProduct(productDtoSample);
 			fail();
-		}catch (RestApplicationException e){
+		} catch (BusinessAppException e) {
 			assertEquals(e.getCode(), ExceptionCodes.DUPLICATE_PRODUCT_CODE.getCode());
 		}
 
@@ -72,14 +74,15 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	void saveProduct_StockLessThanZero() throws RestApplicationException {
+	void saveProduct_StockLessThanZero() {
+
 		final ProductDto productDtoSample = ProductSample.getProductDtoStockLessThanZero();
 		when(iProductRepositoryMock.findByCode(any(String.class))).thenReturn(Optional.empty());
 
 		try {
 			final Product productRes = productServiceImpl.saveProduct(productDtoSample);
 			fail();
-		}catch (RestApplicationException e){
+		} catch (BusinessAppException e) {
 			assertEquals(e.getCode(), ExceptionCodes.PRODUCT_STOCK_INVALID.getCode());
 		}
 
@@ -88,14 +91,15 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	void saveProduct_PriceEqualsZero() throws RestApplicationException {
+	void saveProduct_PriceEqualsZero() {
+
 		final ProductDto productDtoSample = ProductSample.getProductDtoPriceZero();
 		when(iProductRepositoryMock.findByCode(any(String.class))).thenReturn(Optional.empty());
 
 		try {
 			final Product productRes = productServiceImpl.saveProduct(productDtoSample);
 			fail();
-		}catch (RestApplicationException e){
+		} catch (BusinessAppException e) {
 			assertEquals(e.getCode(), ExceptionCodes.PRODUCT_PRICE_INVALID.getCode());
 		}
 
@@ -104,7 +108,8 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	void getAllProductsTest(){
+	void getAllProductsTest() {
+
 		when(iProductRepositoryMock.findAll()).thenReturn(ProductSample.getProductList());
 
 		List<Product> productList = productServiceImpl.getProducts();
@@ -115,7 +120,8 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	void getAllProducts_EmptyListTest(){
+	void getAllProducts_EmptyListTest() {
+
 		when(iProductRepositoryMock.findAll()).thenReturn(Collections.emptyList());
 
 		List<Product> productList = productServiceImpl.getProducts();
@@ -126,7 +132,8 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	void getAllProductsByIdsTest(){
+	void getAllProductsByIdsTest() {
+
 		when(iProductRepositoryMock.findAllById(any())).thenReturn(ProductSample.getProductList());
 
 		List<Product> productList = productServiceImpl.getProductsByIds(ProductSample.getListIds());
@@ -137,7 +144,8 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	void getAllProductsByIds_EmptyListTest(){
+	void getAllProductsByIds_EmptyListTest() {
+
 		when(iProductRepositoryMock.findAllById(any())).thenReturn(Collections.emptyList());
 
 		List<Product> productList = productServiceImpl.getProductsByIds(ProductSample.getListIds());
@@ -148,7 +156,8 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	void updateProductSuccessful() throws RestApplicationException {
+	void updateProductSuccessful() {
+
 		final ProductDto productDtoSample = ProductSample.getProductDto();
 		when(iProductRepositoryMock.findById(any(Integer.class))).thenReturn(Optional.of(ProductSample.getProduct()));
 		when(iProductRepositoryMock.save(any(Product.class))).thenReturn(ProductSample.getProduct());
@@ -158,19 +167,20 @@ class ProductServiceImplTest {
 		verify(iProductRepositoryMock).findById(any(Integer.class));
 		verify(iProductRepositoryMock).save(any(Product.class));
 
-		assertEquals(productDtoSample.getIdProduct(),productRes.getIdProduct());
+		assertEquals(productDtoSample.getIdProduct(), productRes.getIdProduct());
 		assertEquals(productDtoSample.getCode(), productRes.getCode());
 	}
 
 	@Test
 	void updateProduct_ProductNotExist() {
+
 		final ProductDto productDtoSample = ProductSample.getProductDto();
 		when(iProductRepositoryMock.findById(any(Integer.class))).thenReturn(Optional.empty());
 
 		try {
 			final Product productRes = productServiceImpl.updateProduct(productDtoSample);
 			fail();
-		}catch (RestApplicationException e){
+		} catch (BusinessAppException e) {
 			assertEquals(e.getCode(), ExceptionCodes.PRODUCT_ID_NOT_EXIST.getCode());
 		}
 

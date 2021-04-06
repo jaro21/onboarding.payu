@@ -4,7 +4,6 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.product.ProductDto;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.IProductService;
@@ -43,7 +42,7 @@ public class ProductController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Product> addProduct(@Valid @NotNull @RequestBody ProductDto productDto) throws RestApplicationException {
+	public ResponseEntity<Product> addProduct(@Valid @NotNull @RequestBody ProductDto productDto) {
 
 		return new ResponseEntity(iProductService.saveProduct(productDto), HttpStatus.CREATED);
 	}
@@ -55,21 +54,21 @@ public class ProductController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Product> findProductById(@NotNull @PathVariable Integer id) throws RestApplicationException {
+	public ResponseEntity<Product> findProductById(@NotNull @PathVariable Integer id) {
 
 		Validate.notNull(id, "Product identification cannot not be empty");
 		return ResponseEntity.ok(iProductService.getProductById(id));
 	}
 
 	@PutMapping
-	public ResponseEntity<Product> updateProduct(@Valid @NotNull @RequestBody ProductDto productDto) throws RestApplicationException {
+	public ResponseEntity<Product> updateProduct(@Valid @NotNull @RequestBody ProductDto productDto) {
 
 		Validate.notNull(productDto.getIdProduct(), "Product identification cannot not be empty");
 		return ResponseEntity.ok(iProductService.updateProduct(productDto));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteProduct(@NotNull @PathVariable Integer id) throws RestApplicationException {
+	public ResponseEntity<String> deleteProduct(@NotNull @PathVariable Integer id) {
 
 		Validate.notNull(id, "Product identification cannot not be empty to remove");
 		return ResponseEntity.ok(iProductService.deleteProduct(id));

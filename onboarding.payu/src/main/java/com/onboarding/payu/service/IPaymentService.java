@@ -1,6 +1,5 @@
 package com.onboarding.payu.service;
 
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.payment.request.PaymentTransactionRequest;
 import com.onboarding.payu.model.payment.request.TransactionRequest;
 import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
@@ -18,12 +17,11 @@ import com.onboarding.payu.repository.entity.Payment;
 public interface IPaymentService {
 
 	/**
-	 *
 	 * @param idPayment {@link Integer}
 	 * @return {@link Payment}
-	 * @throws RestApplicationException
+	 * @
 	 */
-	Payment findById(Integer idPayment) throws RestApplicationException;
+	Payment findById(Integer idPayment);
 
 	/**
 	 * Service to apply the payment of a purchase order
@@ -31,7 +29,7 @@ public interface IPaymentService {
 	 * @param transactionRequest {@link TransactionRequest}
 	 * @return {@link PaymentWithTokenResponse}
 	 */
-	PaymentWithTokenResponse paymentWithToken(PaymentTransactionRequest transactionRequest) throws RestApplicationException;
+	PaymentWithTokenResponse paymentWithToken(PaymentTransactionRequest transactionRequest);
 
 	/**
 	 * Service to apply the refund payment
@@ -39,5 +37,5 @@ public interface IPaymentService {
 	 * @param refundDtoRequest {@link RefundDtoRequest}
 	 * @return {@link RefundDtoResponse}
 	 */
-	RefundDtoResponse appyRefund(RefundDtoRequest refundDtoRequest) throws RestApplicationException;
+	RefundDtoResponse appyRefund(RefundDtoRequest refundDtoRequest);
 }

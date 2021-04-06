@@ -10,6 +10,13 @@ import com.onboarding.payu.model.purchase.ProductPoDto;
 import com.onboarding.payu.repository.entity.OrderProduct;
 import com.onboarding.payu.repository.entity.Product;
 
+/**
+ * Get sample object for run unit tests.
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public class ProductSample {
 
 	public static Product getProduct(){

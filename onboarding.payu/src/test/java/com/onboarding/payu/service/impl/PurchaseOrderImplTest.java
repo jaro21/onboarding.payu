@@ -10,9 +10,9 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.exception.RestApplicationException;
-import com.onboarding.payu.model.purchase.PurchaseOrderDto;
+import com.onboarding.payu.model.purchase.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.repository.IPurchaseOrderRepository;
 import com.onboarding.payu.repository.entity.Client;
@@ -31,7 +31,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Unit testing for product implementation.
+ * Unit testing for purchase order implementation.
  *
  * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
  * @version 1.0.0
@@ -59,20 +59,23 @@ class PurchaseOrderImplTest {
 	private PurchaseOrderImpl purchaseOrderImpl;
 
 	@Test
-	void addPurchaseOrderSuccessful() throws RestApplicationException {
-		final PurchaseOrderDto purchaseOrderDto = PurchaseOrderDtoSample.getPurchasOrderDto();
+	void addPurchaseOrderSuccessful() {
+
+		final PurchaseOrderRequest purchaseOrderRequest = PurchaseOrderDtoSample.getPurchasOrderDto();
 		when(iProductServiceMock.getProductsByIds(any(List.class))).thenReturn(ProductSample.getProductList());
 		when(iClientServiceMock.findById(any(Integer.class))).thenReturn(ClientSample.getClient());
-		when(purchaseOrderMapperMock.toPurchaseOrder(any(Client.class), any(List.class), any(PurchaseOrderDto.class))).thenReturn(PurchaseOrderDtoSample.getPurchaseOrder());
+		when(purchaseOrderMapperMock.toPurchaseOrder(any(Client.class), any(List.class), any(PurchaseOrderRequest.class)))
+				.thenReturn(PurchaseOrderDtoSample.getPurchaseOrder());
 		when(iPurchaseOrderRepositoryMock.save(any(PurchaseOrder.class))).thenReturn(PurchaseOrderDtoSample.getPurchaseOrder());
 		when(iOrderProductServiceMock.saveAll(any(List.class))).thenReturn(ProductSample.getOrderProductList());
-		when(purchaseOrderMapperMock.toPurchaseOrderResponse(any(PurchaseOrder.class))).thenReturn(PurchaseOrderDtoSample.getPurchaseOrderResponse());
+		when(purchaseOrderMapperMock.toPurchaseOrderResponse(any(PurchaseOrder.class)))
+				.thenReturn(PurchaseOrderDtoSample.getPurchaseOrderResponse());
 
-		final PurchaseOrderResponse purchaseOrderResponse = purchaseOrderImpl.addPurchaseOrder(purchaseOrderDto);
+		final PurchaseOrderResponse purchaseOrderResponse = purchaseOrderImpl.addPurchaseOrder(purchaseOrderRequest);
 
 		verify(iProductServiceMock).getProductsByIds(any(List.class));
 		verify(iClientServiceMock).findById(any(Integer.class));
-		verify(purchaseOrderMapperMock).toPurchaseOrder(any(Client.class), any(List.class), any(PurchaseOrderDto.class));
+		verify(purchaseOrderMapperMock).toPurchaseOrder(any(Client.class), any(List.class), any(PurchaseOrderRequest.class));
 		verify(iPurchaseOrderRepositoryMock).save(any(PurchaseOrder.class));
 		verify(iOrderProductServiceMock).saveAll(any(List.class));
 		verify(purchaseOrderMapperMock).toPurchaseOrderResponse(any(PurchaseOrder.class));
@@ -81,21 +84,22 @@ class PurchaseOrderImplTest {
 	}
 
 	@Test
-	void addPurchaseOrder_StockInvalid() throws RestApplicationException {
-		final PurchaseOrderDto purchaseOrderDto = PurchaseOrderDtoSample.getPurchasOrderDtoStockInvalid();
+	void addPurchaseOrder_StockInvalid() {
+
+		final PurchaseOrderRequest purchaseOrderRequest = PurchaseOrderDtoSample.getPurchasOrderDtoStockInvalid();
 		when(iProductServiceMock.getProductsByIds(any(List.class))).thenReturn(ProductSample.getProductList());
 		when(iClientServiceMock.findById(any(Integer.class))).thenReturn(ClientSample.getClient());
 
-		try{
-			final PurchaseOrderResponse purchaseOrderResponse = purchaseOrderImpl.addPurchaseOrder(purchaseOrderDto);
+		try {
+			final PurchaseOrderResponse purchaseOrderResponse = purchaseOrderImpl.addPurchaseOrder(purchaseOrderRequest);
 			fail();
-		}catch (RestApplicationException e){
+		} catch (BusinessAppException e) {
 			assertEquals(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(), e.getCode());
 		}
 
 		verify(iProductServiceMock).getProductsByIds(any(List.class));
 		verify(iClientServiceMock).findById(any(Integer.class));
-		verify(purchaseOrderMapperMock, times(0)).toPurchaseOrder(any(Client.class), any(List.class), any(PurchaseOrderDto.class));
+		verify(purchaseOrderMapperMock, times(0)).toPurchaseOrder(any(Client.class), any(List.class), any(PurchaseOrderRequest.class));
 		verify(iPurchaseOrderRepositoryMock, times(0)).save(any(PurchaseOrder.class));
 		verify(iOrderProductServiceMock, times(0)).saveAll(any(List.class));
 		verify(purchaseOrderMapperMock, times(0)).toPurchaseOrderResponse(any(PurchaseOrder.class));

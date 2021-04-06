@@ -5,8 +5,8 @@ import static java.lang.String.format;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.product.ProductDto;
 import com.onboarding.payu.repository.IProductRepository;
 import com.onboarding.payu.repository.entity.Product;
@@ -38,9 +38,9 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product saveProduct(final ProductDto product) throws RestApplicationException {
+	@Override public Product saveProduct(final ProductDto product) {
 
-		log.debug("saveProduct : ",product.toString());
+		log.debug("saveProduct : ", product.toString());
 		productCreateValidation(product);
 		return iProductRepository.save(ProductMapper.toProduct(product));
 	}
@@ -64,17 +64,17 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product getProductById(final Integer id) throws RestApplicationException {
+	@Override public Product getProductById(final Integer id) {
 
 		return iProductRepository.findById(id).orElseThrow(
-				() -> new RestApplicationException(ExceptionCodes.PRODUCT_ID_NOT_EXIST.getCode(),
-												   format(ExceptionCodes.PRODUCT_ID_NOT_EXIST.getMessage(), id)));
+				() -> new BusinessAppException(ExceptionCodes.PRODUCT_ID_NOT_EXIST.getCode(),
+											   format(ExceptionCodes.PRODUCT_ID_NOT_EXIST.getMessage(), id)));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public String deleteProduct(final Integer id) throws RestApplicationException {
+	@Override public String deleteProduct(final Integer id) {
 
 		getProductById(id);
 		iProductRepository.deleteById(id);
@@ -84,9 +84,9 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product updateProduct(final ProductDto product) throws RestApplicationException {
+	@Override public Product updateProduct(final ProductDto product) {
 
-		log.debug("updateProduct : ",product.toString());
+		log.debug("updateProduct : ", product.toString());
 		productValidation(product);
 		return updateProduct(ProductMapper.toProduct(product));
 	}
@@ -94,16 +94,16 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product updateProduct(final Product product) throws RestApplicationException {
+	@Override public Product updateProduct(final Product product) {
 
-		log.debug("updateProduct : ",product.toString());
+		log.debug("updateProduct : ", product.toString());
 		getProductById(product.getIdProduct());
 		return iProductRepository.save(product);
 	}
 
 	@Override public Integer updateStockById(final Integer stock, final Integer id) {
 
-		log.debug("updateStockById(stock = {}, Id = {}) :",stock, id);
+		log.debug("updateStockById(stock = {}, Id = {}) :", stock, id);
 		return iProductRepository.updateStockById(stock, id);
 	}
 
@@ -111,13 +111,12 @@ public class ProductServiceImpl implements IProductService {
 	 * Run validations on the product to create
 	 *
 	 * @param product {@link ProductDto}
-	 * @throws RestApplicationException
 	 */
-	private void productCreateValidation(final ProductDto product) throws RestApplicationException {
+	private void productCreateValidation(final ProductDto product) {
 
 		if (iProductRepository.findByCode(product.getCode()).isPresent()) {
-			throw new RestApplicationException(ExceptionCodes.DUPLICATE_PRODUCT_CODE.getCode(),
-											   format(ExceptionCodes.DUPLICATE_PRODUCT_CODE.getMessage(), product.getCode()));
+			throw new BusinessAppException(ExceptionCodes.DUPLICATE_PRODUCT_CODE.getCode(),
+										   format(ExceptionCodes.DUPLICATE_PRODUCT_CODE.getMessage(), product.getCode()));
 		}
 
 		productValidation(product);
@@ -128,15 +127,15 @@ public class ProductServiceImpl implements IProductService {
 	 *
 	 * @param product {@link ProductDto}
 	 */
-	private void productValidation(final ProductDto product) throws RestApplicationException {
+	private void productValidation(final ProductDto product) {
 
-		if(product.getStock() < 0){
-			throw new RestApplicationException(ExceptionCodes.PRODUCT_STOCK_INVALID.getCode(),
-											   ExceptionCodes.PRODUCT_STOCK_INVALID.getMessage());
+		if (product.getStock() < 0) {
+			throw new BusinessAppException(ExceptionCodes.PRODUCT_STOCK_INVALID.getCode(),
+										   ExceptionCodes.PRODUCT_STOCK_INVALID.getMessage());
 		}
-		if(product.getPrice().compareTo(BigDecimal.ZERO) <= 0){
-			throw new RestApplicationException(ExceptionCodes.PRODUCT_PRICE_INVALID.getCode(),
-											   ExceptionCodes.PRODUCT_PRICE_INVALID.getMessage());
+		if (product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+			throw new BusinessAppException(ExceptionCodes.PRODUCT_PRICE_INVALID.getCode(),
+										   ExceptionCodes.PRODUCT_PRICE_INVALID.getMessage());
 		}
 	}
 }

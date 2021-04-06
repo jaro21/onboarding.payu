@@ -4,8 +4,8 @@ import static java.lang.String.format;
 
 import java.math.BigDecimal;
 
+import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,34 +20,34 @@ public class PaymentValidator {
 	@Value("${payment-api.amount.maximum}")
 	private String maximumAmount;
 
-	public void runValidations(final PurchaseOrder purchaseOrder) throws RestApplicationException {
+	public void runValidations(final PurchaseOrder purchaseOrder) {
 
 		isMinimumAmounValid(purchaseOrder.getValue());
 		isMaximumAmounValid(purchaseOrder.getValue());
 		isPurchaseOrderStatusValid(purchaseOrder);
 	}
 
-	public void isMinimumAmounValid(final BigDecimal value) throws RestApplicationException {
+	public void isMinimumAmounValid(final BigDecimal value) {
 
 		if (stringToBigDecimal(minimumAmount).compareTo(value) >= 0) {
-			throw new RestApplicationException(ExceptionCodes.MINIMUM_AMOUNT_INVALID.getCode(),
-											   format(ExceptionCodes.MINIMUM_AMOUNT_INVALID.getMessage(), minimumAmount));
+			throw new BusinessAppException(ExceptionCodes.MINIMUM_AMOUNT_INVALID.getCode(),
+										   format(ExceptionCodes.MINIMUM_AMOUNT_INVALID.getMessage(), minimumAmount));
 		}
 	}
 
-	public void isMaximumAmounValid(final BigDecimal value) throws RestApplicationException {
+	public void isMaximumAmounValid(final BigDecimal value) {
 
 		if (stringToBigDecimal(maximumAmount).compareTo(value) <= 0) {
-			throw new RestApplicationException(ExceptionCodes.MAXIMUM_AMOUNT_INVALID.getCode(),
-											   format(ExceptionCodes.MAXIMUM_AMOUNT_INVALID.getMessage(), maximumAmount));
+			throw new BusinessAppException(ExceptionCodes.MAXIMUM_AMOUNT_INVALID.getCode(),
+										   format(ExceptionCodes.MAXIMUM_AMOUNT_INVALID.getMessage(), maximumAmount));
 		}
 	}
 
-	public void isPurchaseOrderStatusValid(final PurchaseOrder purchaseOrder) throws RestApplicationException {
+	public void isPurchaseOrderStatusValid(final PurchaseOrder purchaseOrder) {
 
-		if(!purchaseOrder.getStatus().equals(StatusType.SAVED.name())){
-			throw new RestApplicationException(ExceptionCodes.PURCHASE_ORDER_STATUS_INVALID.getCode(),
-											   ExceptionCodes.PURCHASE_ORDER_STATUS_INVALID.getMessage());
+		if (!purchaseOrder.getStatus().equals(StatusType.SAVED.name())) {
+			throw new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_STATUS_INVALID.getCode(),
+										   ExceptionCodes.PURCHASE_ORDER_STATUS_INVALID.getMessage());
 		}
 	}
 

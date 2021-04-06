@@ -10,7 +10,7 @@ import lombok.Getter;
  * @since 1.0.0
  */
 @Getter
-public class RestApplicationException  extends Exception {
+public class BusinessAppException extends RuntimeException {
 
 	private String code;
 
@@ -20,7 +20,7 @@ public class RestApplicationException  extends Exception {
 	 * @param code {@link String} The exception's code
 	 * @param message {@link String} The exception's message
 	 * */
-	public RestApplicationException(final String code, final String message) {
+	public BusinessAppException(final String code, final String message) {
 		super(message);
 		this.code = code;
 	}

@@ -8,8 +8,8 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.onboarding.payu.client.payu.model.CurrencyType;
 import com.onboarding.payu.client.payu.model.LanguageType;
+import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.payment.request.AdditionalValuesDto;
 import com.onboarding.payu.model.payment.request.OrderDto;
@@ -81,18 +81,17 @@ public class PaymentServiceImpl implements IPaymentService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Payment findById(final Integer idPayment) throws RestApplicationException {
+	@Override public Payment findById(final Integer idPayment) {
 
 		return iPaymentRepository.findById(idPayment)
-								 .orElseThrow(() -> new RestApplicationException(ExceptionCodes.PAYMENT_NOT_EXIST.getCode()
+								 .orElseThrow(() -> new BusinessAppException(ExceptionCodes.PAYMENT_NOT_EXIST.getCode()
 										 , format(ExceptionCodes.PAYMENT_NOT_EXIST.getMessage(), idPayment)));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public PaymentWithTokenResponse paymentWithToken(final PaymentTransactionRequest paymentTransactionRequest)
-			throws RestApplicationException {
+	@Override public PaymentWithTokenResponse paymentWithToken(final PaymentTransactionRequest paymentTransactionRequest) {
 
 		log.debug("PaymentWithToken : ", paymentTransactionRequest.toString());
 		final PurchaseOrder purchaseOrder = iPurchaseOrder.findById(paymentTransactionRequest.getIdPurchaseOrder());
@@ -196,7 +195,7 @@ public class PaymentServiceImpl implements IPaymentService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public RefundDtoResponse appyRefund(final RefundDtoRequest refundDtoRequest) throws RestApplicationException {
+	@Override public RefundDtoResponse appyRefund(final RefundDtoRequest refundDtoRequest) {
 
 		log.debug("appyRefund : ", refundDtoRequest.toString());
 		final Payment payment = findById(refundDtoRequest.getIdPayment());
@@ -253,8 +252,7 @@ public class PaymentServiceImpl implements IPaymentService {
 					  .transactionId(payment.getTransactionId()).build();
 	}
 
-	private void updatePurchaseOrder(final RefundDtoResponse refundDtoResponse, final Integer idPurchaseOrder)
-			throws RestApplicationException {
+	private void updatePurchaseOrder(final RefundDtoResponse refundDtoResponse, final Integer idPurchaseOrder) {
 
 		if (refundDtoResponse.getCode().equals(StatusType.SUCCESS.name())) {
 			final PurchaseOrder purchaseOrder = iPurchaseOrder.findById(idPurchaseOrder);
@@ -282,11 +280,9 @@ public class PaymentServiceImpl implements IPaymentService {
 	 * @param paymentTransactionRequest {@link PaymentTransactionRequest}
 	 * @param purchaseOrder
 	 * @return {@link TransactionRequest}
-	 * @throws RestApplicationException
 	 */
 	private TransactionRequest getTransactionRequest(final PaymentTransactionRequest paymentTransactionRequest,
-													 final PurchaseOrder purchaseOrder)
-			throws RestApplicationException {
+													 final PurchaseOrder purchaseOrder) {
 
 		final Client client = iClientService.findById(paymentTransactionRequest.getIdClient());
 

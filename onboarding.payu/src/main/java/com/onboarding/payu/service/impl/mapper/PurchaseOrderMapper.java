@@ -8,7 +8,7 @@ import java.util.UUID;
 import com.onboarding.payu.client.payu.model.LanguageType;
 import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.purchase.ProductPoDto;
-import com.onboarding.payu.model.purchase.PurchaseOrderDto;
+import com.onboarding.payu.model.purchase.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.Client;
 import com.onboarding.payu.repository.entity.Product;
@@ -23,24 +23,24 @@ public class PurchaseOrderMapper {
 	 *
 	 * @param client           {@link Client}
 	 * @param productList      {@link List < Product >}
-	 * @param purchaseOrderDTO {@link PurchaseOrder}
+	 * @param purchaseOrderRequest {@link PurchaseOrder}
 	 * @return {@link PurchaseOrder}
 	 */
 	public PurchaseOrder toPurchaseOrder(final Client client, final List<Product> productList,
-												final PurchaseOrderDto purchaseOrderDTO) {
+												final PurchaseOrderRequest purchaseOrderRequest) {
 
 		return PurchaseOrder.builder().client(client)
 							.status(StatusType.SAVED.name())
 							.date(LocalDate.now())
-							.value(getTotalValue(productList, purchaseOrderDTO.getProductList()))
+							.value(getTotalValue(productList, purchaseOrderRequest.getProductList()))
 							.referenceCode(UUID.randomUUID().toString())
 							.languaje(LanguageType.ES.getLanguage())
-							.street1(purchaseOrderDTO.getClientDto().getStreet1())
-							.street2(purchaseOrderDTO.getClientDto().getStreet2())
-							.city(purchaseOrderDTO.getClientDto().getCity())
-							.state(purchaseOrderDTO.getClientDto().getState())
-							.country(purchaseOrderDTO.getClientDto().getCountry())
-							.postalCode(purchaseOrderDTO.getClientDto().getPostalCode())
+							.street1(purchaseOrderRequest.getClient().getStreet1())
+							.street2(purchaseOrderRequest.getClient().getStreet2())
+							.city(purchaseOrderRequest.getClient().getCity())
+							.state(purchaseOrderRequest.getClient().getState())
+							.country(purchaseOrderRequest.getClient().getCountry())
+							.postalCode(purchaseOrderRequest.getClient().getPostalCode())
 							.build();
 	}
 

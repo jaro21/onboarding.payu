@@ -1,7 +1,6 @@
 package com.onboarding.payu.service;
 
-import com.onboarding.payu.exception.RestApplicationException;
-import com.onboarding.payu.model.purchase.PurchaseOrderDto;
+import com.onboarding.payu.model.purchase.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
 
@@ -17,26 +16,26 @@ public interface IPurchaseOrder {
 	/**
 	 * Service to save a purchase order
 	 *
-	 * @param purchaseOrder {@link PurchaseOrderDto}
+	 * @param purchaseOrder {@link PurchaseOrderRequest}
 	 * @return {@link PurchaseOrderResponse}
-	 * @throws RestApplicationException
+	 * @
 	 */
-	PurchaseOrderResponse addPurchaseOrder(PurchaseOrderDto purchaseOrder) throws RestApplicationException;
+	PurchaseOrderResponse addPurchaseOrder(PurchaseOrderRequest purchaseOrder);
 
 	/**
 	 * Method to get Client by idClient
 	 *
 	 * @param idPurchaseOrder {@link Integer}
 	 * @return {@link PurchaseOrder}
-	 * @throws RestApplicationException
+	 * @
 	 */
-	PurchaseOrder findById(Integer idPurchaseOrder) throws RestApplicationException;
+	PurchaseOrder findById(Integer idPurchaseOrder);
 
 	/**
 	 * Update Purchase Order's status by id
 	 *
 	 * @param status {@link String}
-	 * @param id {@link Integer}
+	 * @param id     {@link Integer}
 	 * @return {@link Integer}
 	 */
 	Integer updateStatusById(String status, Integer id);

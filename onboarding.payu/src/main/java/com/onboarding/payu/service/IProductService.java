@@ -2,7 +2,6 @@ package com.onboarding.payu.service;
 
 import java.util.List;
 
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.product.ProductDto;
 import com.onboarding.payu.repository.entity.Product;
 
@@ -20,9 +19,9 @@ public interface IProductService {
 	 *
 	 * @param product {@link ProductDto}
 	 * @return {@link Product}
-	 * @throws RestApplicationException
+	 * @
 	 */
-	Product saveProduct(ProductDto product) throws RestApplicationException;
+	Product saveProduct(ProductDto product);
 
 	/**
 	 * Method to get all products
@@ -45,7 +44,7 @@ public interface IProductService {
 	 * @param id {@link Integer}
 	 * @return {@link Product}
 	 */
-	Product getProductById(Integer id) throws RestApplicationException;
+	Product getProductById(Integer id);
 
 	/**
 	 * Method to delete one product by id
@@ -53,31 +52,31 @@ public interface IProductService {
 	 * @param id {@link Integer}
 	 * @return {@link String}
 	 */
-	String deleteProduct(Integer id) throws RestApplicationException;
+	String deleteProduct(Integer id);
 
 	/**
 	 * Method to update product
 	 *
 	 * @param product {@link ProductDto}
 	 * @return {@link Product}
-	 * @throws RestApplicationException
+	 * @
 	 */
-	Product updateProduct(ProductDto product) throws RestApplicationException;
+	Product updateProduct(ProductDto product);
 
 	/**
 	 * Method to update product
 	 *
 	 * @param product {@link Product}
 	 * @return {@link Product}
-	 * @throws RestApplicationException
+	 * @
 	 */
-	Product updateProduct(Product product) throws RestApplicationException;
+	Product updateProduct(Product product);
 
 	/**
 	 * Update product stock by id
 	 *
 	 * @param stock {@link Integer}
-	 * @param id {@link Integer}
+	 * @param id    {@link Integer}
 	 * @return {@link Integer}
 	 */
 	Integer updateStockById(Integer stock, Integer id);

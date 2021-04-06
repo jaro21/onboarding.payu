@@ -1,7 +1,5 @@
 package com.onboarding.payu.model;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +9,5 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ResponseDto {
 	private String message;
-	private String exceptionCode;
-	private int responseCode;
-	private String status;
-	private LocalDateTime timestamp;
+	private String errorCode;
 }

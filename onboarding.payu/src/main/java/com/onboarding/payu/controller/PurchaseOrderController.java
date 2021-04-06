@@ -3,8 +3,7 @@ package com.onboarding.payu.controller;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.exception.RestApplicationException;
-import com.onboarding.payu.model.purchase.PurchaseOrderDto;
+import com.onboarding.payu.model.purchase.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.service.IPurchaseOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +29,14 @@ public class PurchaseOrderController {
 
 	@Autowired
 	public PurchaseOrderController(final IPurchaseOrder iPurchaseOrder) {
+
 		this.iPurchaseOrder = iPurchaseOrder;
 	}
 
 	@PostMapping
-	public ResponseEntity<PurchaseOrderResponse> addPurchaseOrder(@Valid @NotNull @RequestBody final PurchaseOrderDto purchaseOrderDTO)
-			throws RestApplicationException {
+	public ResponseEntity<PurchaseOrderResponse> addPurchaseOrder(
+			@Valid @NotNull @RequestBody final PurchaseOrderRequest purchaseOrderRequest) {
 
-		return new ResponseEntity(iPurchaseOrder.addPurchaseOrder(purchaseOrderDTO), HttpStatus.CREATED);
+		return new ResponseEntity(iPurchaseOrder.addPurchaseOrder(purchaseOrderRequest), HttpStatus.CREATED);
 	}
 }

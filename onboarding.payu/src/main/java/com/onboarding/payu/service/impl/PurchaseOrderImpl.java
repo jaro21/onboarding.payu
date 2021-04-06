@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
+import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.purchase.ProductPoDto;
-import com.onboarding.payu.model.purchase.PurchaseOrderDto;
+import com.onboarding.payu.model.purchase.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.repository.IPurchaseOrderRepository;
 import com.onboarding.payu.repository.entity.Client;
@@ -65,17 +65,17 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	 * {@inheritDoc}
 	 */
 	@Transactional
-	@Override public PurchaseOrderResponse addPurchaseOrder(final PurchaseOrderDto purchaseOrderDTO) throws RestApplicationException {
+	@Override public PurchaseOrderResponse addPurchaseOrder(final PurchaseOrderRequest purchaseOrderRequest)  {
 
-		log.debug("addPurchaseOrder(PurchaseOrderDTO) : ", purchaseOrderDTO.toString());
-		final List<Product> productList = getProductsByIds(purchaseOrderDTO.getProductList());
-		final Client client = iClientService.findById(purchaseOrderDTO.getClientDto().getIdClient());
+		log.debug("addPurchaseOrder(PurchaseOrderDTO) : ", purchaseOrderRequest.toString());
+		final List<Product> productList = getProductsByIds(purchaseOrderRequest.getProductList());
+		final Client client = iClientService.findById(purchaseOrderRequest.getClient().getIdClient());
 
-		isValidOrder(productList, purchaseOrderDTO.getProductList());
-		updateStock(productList, purchaseOrderDTO.getProductList());
+		isValidOrder(productList, purchaseOrderRequest.getProductList());
+		updateStock(productList, purchaseOrderRequest.getProductList());
 		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(purchaseOrderMapper.toPurchaseOrder(client, productList,
-																											  purchaseOrderDTO));
-		List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderDTO.getProductList(), productList, purchaseOrder);
+																											  purchaseOrderRequest));
+		List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderRequest.getProductList(), productList, purchaseOrder);
 		iOrderProductService.saveAll(orderProductList);
 
 		return purchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
@@ -84,11 +84,11 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public PurchaseOrder findById(final Integer idPurchaseOrder) throws RestApplicationException {
+	@Override public PurchaseOrder findById(final Integer idPurchaseOrder)  {
 
 		return iPurchaseOrderRepository.findById(idPurchaseOrder).orElseThrow(
-				() -> new RestApplicationException(ExceptionCodes.PURCHASE_ORDER_INVALID.getCode(),
-												   ExceptionCodes.PURCHASE_ORDER_INVALID.getMessage()));
+				() -> new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_INVALID.getCode(),
+											   ExceptionCodes.PURCHASE_ORDER_INVALID.getMessage()));
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 						   .build();
 	}
 
-	private void isValidOrder(final List<Product> productList, final List<ProductPoDto> productPoDtoList) throws RestApplicationException {
+	private void isValidOrder(final List<Product> productList, final List<ProductPoDto> productPoDtoList)  {
 
 		for (Product product : productList) {
 			for (ProductPoDto productPoDTO : productPoDtoList) {
@@ -152,12 +152,12 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		}
 	}
 
-	private void validateStock(final Product product, final ProductPoDto productPoDTO) throws RestApplicationException {
+	private void validateStock(final Product product, final ProductPoDto productPoDTO)  {
 
 		if (productPoDTO.getIdProduct().equals(product.getIdProduct())
 				&& product.getStock().compareTo(productPoDTO.getQuantity()) < 0) {
-			throw new RestApplicationException(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(),
-											   format(ExceptionCodes.PRODUCT_NOT_AVAILABLE
+			throw new BusinessAppException(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(),
+										   format(ExceptionCodes.PRODUCT_NOT_AVAILABLE
 															  .getMessage(), product.getCode(),
 													  product.getName()));
 		}

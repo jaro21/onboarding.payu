@@ -2,8 +2,8 @@ package com.onboarding.payu.service.impl;
 
 import static java.lang.String.format;
 
+import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.repository.IClientRepository;
 import com.onboarding.payu.repository.entity.Client;
 import com.onboarding.payu.service.IClientService;
@@ -31,20 +31,20 @@ public class ClientServiceImpl implements IClientService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Client findByDniNumber(final String dniNumber) throws RestApplicationException {
+	@Override public Client findByDniNumber(final String dniNumber) {
 
 		return iClientRepository.findByDniNumber(dniNumber).orElseThrow(
-				() -> new RestApplicationException(ExceptionCodes.CLIENT_NUMBER_NOT_EXIST.getCode(),
-												   format(ExceptionCodes.CLIENT_NUMBER_NOT_EXIST.getMessage(), dniNumber)));
+				() -> new BusinessAppException(ExceptionCodes.CLIENT_NUMBER_NOT_EXIST.getCode(),
+											   format(ExceptionCodes.CLIENT_NUMBER_NOT_EXIST.getMessage(), dniNumber)));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Client findById(final Integer idClient) throws RestApplicationException {
+	@Override public Client findById(final Integer idClient) {
 
 		return iClientRepository.findById(idClient).orElseThrow(
-				() -> new RestApplicationException(ExceptionCodes.CLIENT_ID_NOT_EXIST.getCode(),
-												   format(ExceptionCodes.CLIENT_ID_NOT_EXIST.getMessage(), idClient)));
+				() -> new BusinessAppException(ExceptionCodes.CLIENT_ID_NOT_EXIST.getCode(),
+											   format(ExceptionCodes.CLIENT_ID_NOT_EXIST.getMessage(), idClient)));
 	}
 }

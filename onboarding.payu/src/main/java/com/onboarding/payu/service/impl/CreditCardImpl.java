@@ -3,7 +3,6 @@ package com.onboarding.payu.service.impl;
 import java.util.Collections;
 import java.util.List;
 
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.tokenization.CreditCardDto;
 import com.onboarding.payu.model.tokenization.TokenResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
@@ -52,7 +51,7 @@ public class CreditCardImpl implements ICreditCard {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public TokenResponse tokenizationCard(final CreditCardDto creditCardDto) throws RestApplicationException {
+	@Override public TokenResponse tokenizationCard(final CreditCardDto creditCardDto) {
 
 		log.debug("TokenizationCard : ", creditCardDto.toString());
 		creditCardValidator.runValidations(creditCardDto);
@@ -64,7 +63,7 @@ public class CreditCardImpl implements ICreditCard {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public TokenResponse saveCreditCard(final TokenResponse tokenResponse) throws RestApplicationException {
+	@Override public TokenResponse saveCreditCard(final TokenResponse tokenResponse) {
 
 		log.debug("Save Credit Card", tokenResponse.toString());
 		if (isValidRegistration(tokenResponse)) {
@@ -90,7 +89,7 @@ public class CreditCardImpl implements ICreditCard {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public List<CreditCard> findAllCardsByClient(final String dniNumber) throws RestApplicationException {
+	@Override public List<CreditCard> findAllCardsByClient(final String dniNumber) {
 
 		final Client client = iClientService.findByDniNumber(dniNumber);
 		return iCreditCardRepository.findByIdClient(client.getIdClient()).orElse(Collections.emptyList());

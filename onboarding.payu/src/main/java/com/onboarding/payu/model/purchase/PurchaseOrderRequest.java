@@ -18,11 +18,11 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-public class PurchaseOrderDto {
+public class PurchaseOrderRequest {
 
 	private Integer idPurchaseOrder;
 	@NotNull(message = "Client identification cannot not be empty")
-	private ClientDto clientDto;
+	private Client client;
 	@NotEmpty(message = "Product cannot not be empty")
 	private List<ProductPoDto> productList;
 }

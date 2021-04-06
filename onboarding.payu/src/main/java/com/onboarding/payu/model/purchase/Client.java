@@ -16,7 +16,7 @@ import lombok.ToString;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
-public class ClientDto {
+public class Client {
 
 	@NotNull(message = "Client identification cannot not be empty")
 	private Integer idClient;

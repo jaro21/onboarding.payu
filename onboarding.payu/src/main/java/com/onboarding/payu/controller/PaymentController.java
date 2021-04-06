@@ -3,7 +3,6 @@ package com.onboarding.payu.controller;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.payment.request.PaymentTransactionRequest;
 import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
 import com.onboarding.payu.model.refund.request.RefundDtoRequest;
@@ -37,15 +36,13 @@ public class PaymentController {
 
 	@PostMapping
 	public ResponseEntity<PaymentWithTokenResponse> applyPayment(
-			@Valid @NotNull @RequestBody final PaymentTransactionRequest paymentTransactionRequest)
-			throws RestApplicationException {
+			@Valid @NotNull @RequestBody final PaymentTransactionRequest paymentTransactionRequest) {
 
 		return ResponseEntity.ok(iPaymentService.paymentWithToken(paymentTransactionRequest));
 	}
 
 	@PostMapping("/refund")
-	public ResponseEntity<RefundDtoResponse> applyRefund(@Valid @NotNull @RequestBody final RefundDtoRequest refundDtoRequest)
-			throws RestApplicationException {
+	public ResponseEntity<RefundDtoResponse> applyRefund(@Valid @NotNull @RequestBody final RefundDtoRequest refundDtoRequest) {
 
 		return ResponseEntity.ok(iPaymentService.appyRefund(refundDtoRequest));
 	}
