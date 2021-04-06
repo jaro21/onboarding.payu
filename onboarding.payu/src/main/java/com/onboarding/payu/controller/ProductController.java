@@ -44,39 +44,40 @@ public class ProductController {
 
 	@PostMapping
 	public ResponseEntity<Product> addProduct(@Valid @NotNull @RequestBody ProductDto productDto) throws RestApplicationException {
-		//try {
-			//validateProduct(productDto);
-			return new ResponseEntity(iProductService.saveProduct(productDto), HttpStatus.CREATED);
-		//}catch (Exception e){
-		//	return manageException(e);
-		//}
+
+		return new ResponseEntity(iProductService.saveProduct(productDto), HttpStatus.CREATED);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Product>> findAllProducts() {
+
 		return ResponseEntity.ok(iProductService.getProducts());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Product> findProductById(@NotNull @PathVariable Integer id) throws RestApplicationException {
+
 		Validate.notNull(id, "Product identification cannot not be empty");
 		return ResponseEntity.ok(iProductService.getProductById(id));
 	}
 
 	@PutMapping
 	public ResponseEntity<Product> updateProduct(@Valid @NotNull @RequestBody ProductDto productDto) throws RestApplicationException {
+
 		Validate.notNull(productDto.getIdProduct(), "Product identification cannot not be empty");
 		return ResponseEntity.ok(iProductService.updateProduct(productDto));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity deleteProduct(@NotNull @PathVariable Integer id) throws RestApplicationException {
+	public ResponseEntity<String> deleteProduct(@NotNull @PathVariable Integer id) throws RestApplicationException {
+
 		Validate.notNull(id, "Product identification cannot not be empty to remove");
 		return ResponseEntity.ok(iProductService.deleteProduct(id));
 	}
 
-	private ResponseEntity manageException(final Exception exception){
-		if(exception instanceof IllegalArgumentException){
+	private ResponseEntity manageException(final Exception exception) {
+
+		if (exception instanceof IllegalArgumentException) {
 			return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

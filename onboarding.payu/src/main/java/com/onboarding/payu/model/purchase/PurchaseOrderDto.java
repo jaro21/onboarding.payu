@@ -24,5 +24,5 @@ public class PurchaseOrderDto {
 	@NotNull(message = "Client identification cannot not be empty")
 	private ClientDto clientDto;
 	@NotEmpty(message = "Product cannot not be empty")
-	private List<ProductDto> productList;
+	private List<ProductPoDto> productList;
 }

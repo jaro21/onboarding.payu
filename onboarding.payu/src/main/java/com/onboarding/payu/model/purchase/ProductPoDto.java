@@ -18,7 +18,7 @@ import lombok.ToString;
 @Builder
 @Getter
 @ToString
-public class ProductDto {
+public class ProductPoDto {
 	@NotEmpty(message = "Product id cannot not be empty")
 	private Integer idProduct;
 	@NotEmpty(message = "Product quantity cannot not be empty")

@@ -38,6 +38,7 @@ credit:
     amex: "^(3[47]\\d{13})$"
     mastercard: "^(5[1-5]\\d{14}$)|^(2(?:2(?:2[1-9]|[3-9]||d)|[3-6]\\d\\d|7(?:[01]\\d|20))\\d{12}$)"
     naranja: "^(589562)\\d{10}$"
+    codensa: "^590712(\\d{10})$"
 
 feign:
   hystrix:
@@ -50,4 +51,3 @@ feign:
       "[payment]":
         connectionTimeout: 30000
         readTimeout: 30000
-

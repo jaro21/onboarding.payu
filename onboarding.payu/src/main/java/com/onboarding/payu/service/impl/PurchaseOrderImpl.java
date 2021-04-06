@@ -3,13 +3,12 @@ package com.onboarding.payu.service.impl;
 import static java.lang.String.format;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.exception.RestApplicationException;
-import com.onboarding.payu.model.purchase.ProductDto;
+import com.onboarding.payu.model.purchase.ProductPoDto;
 import com.onboarding.payu.model.purchase.PurchaseOrderDto;
 import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.repository.IPurchaseOrderRepository;
@@ -46,16 +45,20 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 	private IClientService iClientService;
 
+	private PurchaseOrderMapper purchaseOrderMapper;
+
 	@Autowired
 	public PurchaseOrderImpl(final IPurchaseOrderRepository iPurchaseOrderRepository,
 							 final IProductService iProductService,
 							 final IOrderProductService iOrderProductService,
-							 final IClientService iClientService) {
+							 final IClientService iClientService,
+							 final PurchaseOrderMapper purchaseOrderMapper) {
 
 		this.iPurchaseOrderRepository = iPurchaseOrderRepository;
 		this.iProductService = iProductService;
 		this.iOrderProductService = iOrderProductService;
 		this.iClientService = iClientService;
+		this.purchaseOrderMapper = purchaseOrderMapper;
 	}
 
 	/**
@@ -64,18 +67,18 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	@Transactional
 	@Override public PurchaseOrderResponse addPurchaseOrder(final PurchaseOrderDto purchaseOrderDTO) throws RestApplicationException {
 
-		log.debug("addPurchaseOrder(PurchaseOrderDTO)", purchaseOrderDTO.toString());
+		log.debug("addPurchaseOrder(PurchaseOrderDTO) : ", purchaseOrderDTO.toString());
 		final List<Product> productList = getProductsByIds(purchaseOrderDTO.getProductList());
 		final Client client = iClientService.findById(purchaseOrderDTO.getClientDto().getIdClient());
 
 		isValidOrder(productList, purchaseOrderDTO.getProductList());
 		updateStock(productList, purchaseOrderDTO.getProductList());
-		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(PurchaseOrderMapper.toPurchaseOrder(client, productList,
+		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(purchaseOrderMapper.toPurchaseOrder(client, productList,
 																											  purchaseOrderDTO));
 		List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderDTO.getProductList(), productList, purchaseOrder);
 		iOrderProductService.saveAll(orderProductList);
 
-		return PurchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
+		return purchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder);
 	}
 
 	/**
@@ -107,19 +110,19 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	/**
 	 * Get list of orderProduct to register them in database
 	 *
-	 * @param productDTOList {@link List<ProductDto>}
+	 * @param productPoDTOList {@link List< ProductPoDto >}
 	 * @param productList    {@link List<Product>}
 	 * @param purchaseOrder  {@link PurchaseOrder}
 	 * @return {@link List<OrderProduct>}
 	 */
-	private List<OrderProduct> getOrderProducts(final List<ProductDto> productDTOList,
+	private List<OrderProduct> getOrderProducts(final List<ProductPoDto> productPoDTOList,
 												final List<Product> productList,
 												final PurchaseOrder purchaseOrder) {
 
-		return productDTOList.stream().map(productDTO -> {
+		return productPoDTOList.stream().map(productPoDTO -> {
 			final Product productRes =
-					productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get();
-			return getOrderProduct(purchaseOrder, productDTO, productRes);
+					productList.stream().filter(product -> product.getIdProduct().equals(productPoDTO.getIdProduct())).findFirst().get();
+			return getOrderProduct(purchaseOrder, productPoDTO, productRes);
 		}).collect(Collectors.toList());
 	}
 
@@ -127,32 +130,32 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	 * Get new OrdenProduct to register them in database
 	 *
 	 * @param purchaseOrder {@link PurchaseOrder}
-	 * @param productDto    {@link ProductDto}
+	 * @param productPoDto    {@link ProductPoDto}
 	 * @param productRes    {@link Product}
 	 * @return {@link OrderProduct}
 	 */
-	private OrderProduct getOrderProduct(final PurchaseOrder purchaseOrder, final ProductDto productDto, final Product productRes) {
+	private OrderProduct getOrderProduct(final PurchaseOrder purchaseOrder, final ProductPoDto productPoDto, final Product productRes) {
 
 		return OrderProduct.builder().product(productRes)
-						   .quantity(productDto.getQuantity())
+						   .quantity(productPoDto.getQuantity())
 						   .unitValue(productRes.getPrice())
 						   .purchaseOrder(purchaseOrder)
 						   .build();
 	}
 
-	private void isValidOrder(final List<Product> productList, final List<ProductDto> productDtoList) throws RestApplicationException {
+	private void isValidOrder(final List<Product> productList, final List<ProductPoDto> productPoDtoList) throws RestApplicationException {
 
 		for (Product product : productList) {
-			for (ProductDto productDTO : productDtoList) {
-				validateStock(product, productDTO);
+			for (ProductPoDto productPoDTO : productPoDtoList) {
+				validateStock(product, productPoDTO);
 			}
 		}
 	}
 
-	private void validateStock(final Product product, final ProductDto productDTO) throws RestApplicationException {
+	private void validateStock(final Product product, final ProductPoDto productPoDTO) throws RestApplicationException {
 
-		if (productDTO.getIdProduct().equals(product.getIdProduct())
-				&& product.getStock().compareTo(productDTO.getQuantity()) < 0) {
+		if (productPoDTO.getIdProduct().equals(product.getIdProduct())
+				&& product.getStock().compareTo(productPoDTO.getQuantity()) < 0) {
 			throw new RestApplicationException(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(),
 											   format(ExceptionCodes.PRODUCT_NOT_AVAILABLE
 															  .getMessage(), product.getCode(),
@@ -160,18 +163,18 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		}
 	}
 
-	private void updateStock(final List<Product> productList, final List<ProductDto> productDTOList) {
+	private void updateStock(final List<Product> productList, final List<ProductPoDto> productPoDTOList) {
 
-		List<Product> products = getNewProductList(productList, productDTOList);
+		List<Product> products = getNewProductList(productList, productPoDTOList);
 		products.forEach(product -> iProductService.updateStockById(product.getStock(), product.getIdProduct()));
 	}
 
-	private List<Product> getNewProductList(final List<Product> productList, final List<ProductDto> productDTOList) {
+	private List<Product> getNewProductList(final List<Product> productList, final List<ProductPoDto> productPoDTOList) {
 
-		return productList.stream().map(product -> getProduct(productDTOList, product)).collect(Collectors.toList());
+		return productList.stream().map(product -> getProduct(productPoDTOList, product)).collect(Collectors.toList());
 	}
 
-	private Product getProduct(final List<ProductDto> productDTOList, final Product product) {
+	private Product getProduct(final List<ProductPoDto> productPoDTOList, final Product product) {
 
 		return Product.builder().idProduct(product.getIdProduct())
 					  .name(product.getName())
@@ -179,28 +182,26 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 					  .price(product.getPrice())
 					  .description(product.getDescription())
 					  .stock(subtract.apply(product.getStock(),
-											productDTOList.stream().filter(productDTO -> productDTO.getIdProduct()
-																								   .equals(product.getIdProduct()))
-														  .findFirst().get().getQuantity())).build();
+											productPoDTOList.stream().filter(productPoDTO -> productPoDTO.getIdProduct()
+																										 .equals(product.getIdProduct()))
+															.findFirst().get().getQuantity())).build();
 	}
 
 	/**
 	 * get list products by ids
 	 *
-	 * @param productDTOList {@link List<ProductDto>}
+	 * @param productPoDTOList {@link List< ProductPoDto >}
 	 * @return {@link List<Product>}
 	 */
-	private List<Product> getProductsByIds(final List<ProductDto> productDTOList) {
+	private List<Product> getProductsByIds(final List<ProductPoDto> productPoDTOList) {
 
-		return iProductService.getProductsByIds(getProductsList(productDTOList));
+		return iProductService.getProductsByIds(getProductsList(productPoDTOList));
 	}
 
-	private List<Integer> getProductsList(final List<ProductDto> productDTOList) {
+	private List<Integer> getProductsList(final List<ProductPoDto> productPoDTOList) {
 
-		return productDTOList.stream().map(ProductDto::getIdProduct).collect(Collectors.toList());
+		return productPoDTOList.stream().map(ProductPoDto::getIdProduct).collect(Collectors.toList());
 	}
-
-	BiFunction<Integer, Integer, Boolean> isValidQuantity = (s, i) -> s >= i;
 
 	BinaryOperator<Integer> subtract = (n1, n2) -> n1 - n2;
 }

@@ -32,7 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @since 1.0.0
  */
 @ExtendWith(MockitoExtension.class)
-public class ProductServiceImplTest {
+class ProductServiceImplTest {
 
 	@Mock
 	private IProductRepository iProductRepositoryMock;
@@ -111,7 +111,7 @@ public class ProductServiceImplTest {
 
 		verify(iProductRepositoryMock).findAll();
 
-		assertEquals(productList.size(), 1);
+		assertEquals(2, productList.size());
 	}
 
 	@Test
@@ -133,7 +133,7 @@ public class ProductServiceImplTest {
 
 		verify(iProductRepositoryMock).findAllById(any());
 
-		assertEquals(productList.size(), 1);
+		assertEquals(2, productList.size());
 	}
 
 	@Test

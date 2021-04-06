@@ -16,7 +16,8 @@ public enum CreditCartType {
 	DISCOVER("DISCOVER","^(6011\\d{12})$|^(64[4-9]\\{13})$|^(65\\d{14})$"),
 	AMEX("AMEX","^(3[47]\\d{13})$"),
 	MASTERCARD("MASTERCARD","^(5[1-5]\\d{14}$)|^(2(?:2(?:2[1-9]|[3-9]||d)|[3-6]\\d\\d|7(?:[01]\\d|20))\\d{12}$)"),
-	NARANJA("NARANJA","^(589562)\\d{10}$");
+	NARANJA("NARANJA","^(589562)\\d{10}$"),
+	CODENSA("CODENSA","^590712(\\d{10})$");
 
 	private String nameCard;
 	private String pattern;

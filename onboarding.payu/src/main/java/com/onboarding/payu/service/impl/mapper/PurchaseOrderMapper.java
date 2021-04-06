@@ -7,13 +7,15 @@ import java.util.UUID;
 
 import com.onboarding.payu.client.payu.model.LanguageType;
 import com.onboarding.payu.model.StatusType;
-import com.onboarding.payu.model.purchase.ProductDto;
+import com.onboarding.payu.model.purchase.ProductPoDto;
 import com.onboarding.payu.model.purchase.PurchaseOrderDto;
 import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.Client;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PurchaseOrderMapper {
 
 	/**
@@ -24,7 +26,7 @@ public class PurchaseOrderMapper {
 	 * @param purchaseOrderDTO {@link PurchaseOrder}
 	 * @return {@link PurchaseOrder}
 	 */
-	public static PurchaseOrder toPurchaseOrder(final Client client, final List<Product> productList,
+	public PurchaseOrder toPurchaseOrder(final Client client, final List<Product> productList,
 												final PurchaseOrderDto purchaseOrderDTO) {
 
 		return PurchaseOrder.builder().client(client)
@@ -46,13 +48,13 @@ public class PurchaseOrderMapper {
 	 * Get the total value of the purchase order
 	 *
 	 * @param productList    {@link List<Product>}
-	 * @param productDTOList {@link List<ProductDto>}
+	 * @param productPoDTOList {@link List< ProductPoDto >}
 	 * @return {@link BigDecimal}
 	 */
-	private static BigDecimal getTotalValue(final List<Product> productList, final List<ProductDto> productDTOList) {
+	private BigDecimal getTotalValue(final List<Product> productList, final List<ProductPoDto> productPoDTOList) {
 
-		return productDTOList.stream().map(productDTO -> BigDecimal.valueOf(productDTO.getQuantity()).multiply(
-				productList.stream().filter(product -> product.getIdProduct().equals(productDTO.getIdProduct())).findFirst().get()
+		return productPoDTOList.stream().map(productPoDTO -> BigDecimal.valueOf(productPoDTO.getQuantity()).multiply(
+				productList.stream().filter(product -> product.getIdProduct().equals(productPoDTO.getIdProduct())).findFirst().get()
 						   .getPrice())).reduce(BigDecimal.valueOf(0.0), (a, b) -> a.add(b));
 	}
 
@@ -61,7 +63,7 @@ public class PurchaseOrderMapper {
 	 * @param purchaseOrder {@link PurchaseOrder}
 	 * @return {@link PurchaseOrderResponse}
 	 */
-	public static PurchaseOrderResponse toPurchaseOrderResponse(final PurchaseOrder purchaseOrder) {
+	public PurchaseOrderResponse toPurchaseOrderResponse(final PurchaseOrder purchaseOrder) {
 
 		return PurchaseOrderResponse.builder().idPurchaseOrder(purchaseOrder.getIdPurchaseOrder())
 									.status(purchaseOrder.getStatus())

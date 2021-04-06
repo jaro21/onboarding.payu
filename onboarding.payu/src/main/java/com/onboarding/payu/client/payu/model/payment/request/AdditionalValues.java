@@ -2,7 +2,6 @@ package com.onboarding.payu.client.payu.model.payment.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.onboarding.payu.service.IPurchaseOrder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

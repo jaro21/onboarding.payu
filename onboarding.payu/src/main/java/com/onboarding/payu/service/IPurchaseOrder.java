@@ -4,7 +4,6 @@ import com.onboarding.payu.exception.RestApplicationException;
 import com.onboarding.payu.model.purchase.PurchaseOrderDto;
 import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
-import org.springframework.data.repository.query.Param;
 
 /**
  * Interface that define of Purchase Order's services
