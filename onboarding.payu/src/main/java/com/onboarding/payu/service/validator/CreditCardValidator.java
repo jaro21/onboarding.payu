@@ -1,32 +1,49 @@
 package com.onboarding.payu.service.validator;
 
+import static java.lang.String.format;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
-import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.exception.RestApplicationException;
+import com.onboarding.payu.model.CreditCartType;
 import com.onboarding.payu.model.tokenization.CreditCardDto;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Credit card validator
+ *
+ * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 @Component
 public class CreditCardValidator {
 
-	@Value("${credit.card.mastercard}")
-	private String visa;
+	public void runValidations(final CreditCardDto creditCardDto) throws RestApplicationException {
 
-	//@Value("${credit.card}")
-	//private Map<String, String> creditCards;
-
-	public void runValidations(final CreditCardDto creditCardDto) throws RestApplicationException{
 		isPeriodValid(creditCardDto.getExpirationDate());
-		getPaymentMethod(creditCardDto.getNumber());
+		isPaymentMethodValid(creditCardDto);
+	}
+
+	private void isPaymentMethodValid(final CreditCardDto creditCardDto) throws RestApplicationException {
+
+		final Optional<CreditCartType> creditCartType = getPaymentMethod(creditCardDto.getNumber());
+		if (!creditCartType.isPresent()) {
+			throw new RestApplicationException(ExceptionCodes.CREDIT_CARD_INVALID.getCode(),
+											   ExceptionCodes.CREDIT_CARD_INVALID.getMessage());
+		}
+		if (!creditCartType.get().getNameCard().equals(creditCardDto.getPaymentMethod())) {
+			throw new RestApplicationException(ExceptionCodes.PAYMENT_METHOD_IVALID.getCode(),
+											   format(ExceptionCodes.PAYMENT_METHOD_IVALID.getMessage(), creditCardDto.getPaymentMethod()));
+		}
 	}
 
 	public void isPeriodValid(final String period) throws RestApplicationException {
@@ -50,11 +67,17 @@ public class CreditCardValidator {
 		}
 	}
 
-	public String getPaymentMethod(final String cardNumber){
-		Pattern patron = Pattern.compile(visa);
-		Matcher matcher = patron.matcher(cardNumber);
-		boolean esCoincidente = matcher.find();
+	public Optional<CreditCartType> getPaymentMethod(final String cardNumber) {
 
-		return null;
+		for (CreditCartType creditCartType : CreditCartType.values()) {
+			Pattern patron = Pattern.compile(creditCartType.getPattern());
+			Matcher matcher = patron.matcher(cardNumber);
+
+			if (matcher.find()) {
+				return Optional.of(creditCartType);
+			}
+		}
+
+		return Optional.empty();
 	}
 }

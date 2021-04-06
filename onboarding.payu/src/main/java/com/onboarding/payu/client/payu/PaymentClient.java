@@ -20,12 +20,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(value = "payment", url = "${onboarding.uri}")
 public interface PaymentClient {
 
+	/**
+	 * Feign client to tokenization card
+	 *
+	 * @param registrationCardRequest {@link TokenizationPayURequest}
+	 * @return {@link TokenizationPayUResponse}
+	 */
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	TokenizationPayUResponse tokenizationCard(@RequestBody TokenizationPayURequest registrationCardRequest);
 
+	/**
+	 * Feign client to payment with token
+	 *
+	 * @param paymentWithTokenRequest {@link PaymentWithTokenPayURequest}
+	 * @return {@link PaymentWithTokenPayUResponse}
+	 */
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	PaymentWithTokenPayUResponse paymentWithToken(@RequestBody PaymentWithTokenPayURequest paymentWithTokenRequest);
 
+	/**
+	 * Feign client to payment refund
+	 *
+	 * @param refundPayURequest {@link RefundPayURequest}
+	 * @return {@link RefundPayUResponse}
+	 */
 	@PostMapping(consumes = "application/json", produces = "application/json")
 	RefundPayUResponse applyRefund(@RequestBody RefundPayURequest refundPayURequest);
 }

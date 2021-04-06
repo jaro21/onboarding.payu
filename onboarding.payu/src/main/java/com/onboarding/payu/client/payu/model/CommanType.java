@@ -8,6 +8,7 @@ package com.onboarding.payu.client.payu.model;
  * @since 1.0.0
  */
 public enum CommanType {
+
 	CREATE_TOKEN,
 	SUBMIT_TRANSACTION,
 	ORDER_DETAIL;

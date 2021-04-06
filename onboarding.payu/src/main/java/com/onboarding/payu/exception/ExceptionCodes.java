@@ -24,7 +24,9 @@ public enum ExceptionCodes {
 	MAXIMUM_AMOUNT_INVALID("A002","Maximum amount must be less than or equal to $ %s"),
 	PAYMENT_NOT_EXIST("PA001","Payment id %d does not exist."),
 	PERIOD_INVALID("CC001","The expiration date of the credit card must be greater than the current date."),
-	PERIOD_FORMAT_INVALID("CC002","The expiration date must be in the format 'YYYY/MM'.");
+	PERIOD_FORMAT_INVALID("CC002","The expiration date must be in the format 'YYYY/MM'."),
+	CREDIT_CARD_INVALID("CC003", "The credit card number is invalid."),
+	PAYMENT_METHOD_IVALID("CC004", "The payment method %s is invalid.");
 
 	private final String code;
 	private final String message;
