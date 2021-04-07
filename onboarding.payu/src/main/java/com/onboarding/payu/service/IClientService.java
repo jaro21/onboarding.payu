@@ -1,5 +1,7 @@
 package com.onboarding.payu.service;
 
+import com.onboarding.payu.model.client.request.ClientRequest;
+import com.onboarding.payu.model.client.response.ClientResponse;
 import com.onboarding.payu.repository.entity.Client;
 
 /**
@@ -28,4 +30,36 @@ public interface IClientService {
 	 * @
 	 */
 	Client findById(Integer idClient) ;
+
+	/**
+	 * Method to get Client by idClient
+	 *
+	 * @param idClient {@link Integer}
+	 * @return {@link Client}
+	 * @
+	 */
+	ClientResponse findClientById(Integer idClient) ;
+
+	/**
+	 * Method to create a Client
+	 *
+	 * @param clientRequest {@link ClientRequest}
+	 * @return {@link ClientResponse}
+	 */
+	ClientResponse create(ClientRequest clientRequest);
+
+	/**
+	 * Method to create a Client
+	 *
+	 * @param clientRequest {@link ClientRequest}
+	 * @return {@link ClientResponse}
+	 */
+	ClientResponse update(ClientRequest clientRequest);
+
+	/**
+	 * Method to delete a Client by id
+	 *
+	 * @param idClient
+	 */
+	void delete(Integer idClient);
 }

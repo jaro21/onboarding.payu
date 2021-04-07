@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 1.0.0
  */
 @RestController
-@RequestMapping("/v1.0/credit-card")
+@RequestMapping("/v1.0/credit-cards")
 public class CreditCardController {
 
 	private ICreditCard iCreditCard;

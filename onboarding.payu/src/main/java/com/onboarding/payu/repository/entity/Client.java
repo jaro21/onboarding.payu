@@ -34,14 +34,22 @@ public class Client {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_client", updatable = false, nullable = false)
 	private Integer idClient;
+
 	@Column(name = "full_name", length = 45)
 	private String fullName;
+
 	@Column(name = "email", length = 45)
 	private String email;
+
 	@Column(name = "phone", length = 45)
 	private String phone;
+
 	@Column(name = "dni_number", length = 45)
 	private String dniNumber;
+
+	@Column(name = "active", length = 1)
+	private Integer active;
+
 	@OneToMany(mappedBy = "idClient", fetch = FetchType.EAGER)
 	private List<CreditCard> creditCardList;
 }

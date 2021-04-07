@@ -2,7 +2,7 @@ package com.onboarding.payu.service;
 
 import java.util.List;
 
-import com.onboarding.payu.model.product.ProductDto;
+import com.onboarding.payu.model.product.ProductRequest;
 import com.onboarding.payu.repository.entity.Product;
 
 /**
@@ -17,11 +17,10 @@ public interface IProductService {
 	/**
 	 * Method to create product
 	 *
-	 * @param product {@link ProductDto}
+	 * @param product {@link ProductRequest}
 	 * @return {@link Product}
-	 * @
 	 */
-	Product saveProduct(ProductDto product);
+	Product saveProduct(ProductRequest product);
 
 	/**
 	 * Method to get all products
@@ -50,25 +49,22 @@ public interface IProductService {
 	 * Method to delete one product by id
 	 *
 	 * @param id {@link Integer}
-	 * @return {@link String}
 	 */
-	String deleteProduct(Integer id);
+	void deleteProduct(Integer id);
 
 	/**
 	 * Method to update product
 	 *
-	 * @param product {@link ProductDto}
+	 * @param product {@link ProductRequest}
 	 * @return {@link Product}
-	 * @
 	 */
-	Product updateProduct(ProductDto product);
+	Product updateProduct(ProductRequest product);
 
 	/**
 	 * Method to update product
 	 *
 	 * @param product {@link Product}
 	 * @return {@link Product}
-	 * @
 	 */
 	Product updateProduct(Product product);
 

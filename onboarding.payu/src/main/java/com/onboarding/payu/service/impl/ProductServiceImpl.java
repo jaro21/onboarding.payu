@@ -7,13 +7,14 @@ import java.util.List;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.model.product.ProductDto;
+import com.onboarding.payu.model.product.ProductRequest;
 import com.onboarding.payu.repository.IProductRepository;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.IProductService;
 import com.onboarding.payu.service.impl.mapper.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,20 +30,24 @@ public class ProductServiceImpl implements IProductService {
 
 	private IProductRepository iProductRepository;
 
+	private ProductMapper productMapper;
+
 	@Autowired
-	public ProductServiceImpl(final IProductRepository iProductRepository) {
+	public ProductServiceImpl(final IProductRepository iProductRepository,
+							  final ProductMapper productMapper) {
 
 		this.iProductRepository = iProductRepository;
+		this.productMapper = productMapper;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product saveProduct(final ProductDto product) {
+	@Override public Product saveProduct(final ProductRequest product) {
 
 		log.debug("saveProduct : ", product.toString());
 		productCreateValidation(product);
-		return iProductRepository.save(ProductMapper.toProduct(product));
+		return iProductRepository.save(productMapper.toProduct(product));
 	}
 
 	/**
@@ -74,21 +79,26 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public String deleteProduct(final Integer id) {
+	@Override public void deleteProduct(final Integer id) {
 
-		getProductById(id);
-		iProductRepository.deleteById(id);
-		return "product removed !! " + id;
+		try {
+			getProductById(id);
+			iProductRepository.deleteById(id);
+		} catch (DataIntegrityViolationException e) {
+			log.error("Failed to delete product id {} ", id, e);
+			throw new BusinessAppException(ExceptionCodes.ERROR_TO_DELETE_PRODUCT.getCode(),
+										   ExceptionCodes.ERROR_TO_DELETE_PRODUCT.getMessage());
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product updateProduct(final ProductDto product) {
+	@Override public Product updateProduct(final ProductRequest product) {
 
 		log.debug("updateProduct : ", product.toString());
 		productValidation(product);
-		return updateProduct(ProductMapper.toProduct(product));
+		return updateProduct(productMapper.toProduct(product));
 	}
 
 	/**
@@ -110,9 +120,9 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * Run validations on the product to create
 	 *
-	 * @param product {@link ProductDto}
+	 * @param product {@link ProductRequest}
 	 */
-	private void productCreateValidation(final ProductDto product) {
+	private void productCreateValidation(final ProductRequest product) {
 
 		if (iProductRepository.findByCode(product.getCode()).isPresent()) {
 			throw new BusinessAppException(ExceptionCodes.DUPLICATE_PRODUCT_CODE.getCode(),
@@ -125,9 +135,9 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * Run validations on the product to create or update
 	 *
-	 * @param product {@link ProductDto}
+	 * @param product {@link ProductRequest}
 	 */
-	private void productValidation(final ProductDto product) {
+	private void productValidation(final ProductRequest product) {
 
 		if (product.getStock() < 0) {
 			throw new BusinessAppException(ExceptionCodes.PRODUCT_STOCK_INVALID.getCode(),

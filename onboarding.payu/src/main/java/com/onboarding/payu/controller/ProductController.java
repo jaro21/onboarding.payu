@@ -4,7 +4,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.model.product.ProductDto;
+import com.onboarding.payu.model.product.ProductRequest;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.IProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +42,9 @@ public class ProductController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Product> addProduct(@Valid @NotNull @RequestBody ProductDto productDto) {
+	public ResponseEntity<Product> addProduct(@Valid @NotNull @RequestBody ProductRequest productRequest) {
 
-		return new ResponseEntity(iProductService.saveProduct(productDto), HttpStatus.CREATED);
+		return new ResponseEntity(iProductService.saveProduct(productRequest), HttpStatus.CREATED);
 	}
 
 	@GetMapping
@@ -61,17 +61,18 @@ public class ProductController {
 	}
 
 	@PutMapping
-	public ResponseEntity<Product> updateProduct(@Valid @NotNull @RequestBody ProductDto productDto) {
+	public ResponseEntity<Product> updateProduct(@Valid @NotNull @RequestBody ProductRequest productRequest) {
 
-		Validate.notNull(productDto.getIdProduct(), "Product identification cannot not be empty");
-		return ResponseEntity.ok(iProductService.updateProduct(productDto));
+		Validate.notNull(productRequest.getIdProduct(), "Product identification cannot not be empty");
+		return ResponseEntity.ok(iProductService.updateProduct(productRequest));
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteProduct(@NotNull @PathVariable Integer id) {
 
 		Validate.notNull(id, "Product identification cannot not be empty to remove");
-		return ResponseEntity.ok(iProductService.deleteProduct(id));
+		iProductService.deleteProduct(id);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	private ResponseEntity manageException(final Exception exception) {

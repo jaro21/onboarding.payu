@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.onboarding.payu.model.product.ProductDto;
+import com.onboarding.payu.model.product.ProductRequest;
 import com.onboarding.payu.model.purchase.ProductPoDto;
 import com.onboarding.payu.repository.entity.OrderProduct;
 import com.onboarding.payu.repository.entity.Product;
@@ -41,34 +41,34 @@ public class ProductSample {
 		return productList;
 	}
 
-	public static ProductDto getProductDto(){
-		return ProductDto.builder().idProduct(1)
-					  .name("Bicycle")
-					  .code("B001")
-					  .description("Mountain bike")
-					  .price(BigDecimal.valueOf(500000L))
-					  .stock(10)
-					  .build();
+	public static ProductRequest getProductDto(){
+		return ProductRequest.builder().idProduct(1)
+							 .name("Bicycle")
+							 .code("B001")
+							 .description("Mountain bike")
+							 .price(BigDecimal.valueOf(500000L))
+							 .stock(10)
+							 .build();
 	}
 
-	public static ProductDto getProductDtoStockLessThanZero(){
-		return ProductDto.builder().idProduct(1)
-						 .name("Bicycle")
-						 .code("B001")
-						 .description("Mountain bike")
-						 .price(BigDecimal.valueOf(500000L))
-						 .stock(-1)
-						 .build();
+	public static ProductRequest getProductDtoStockLessThanZero(){
+		return ProductRequest.builder().idProduct(1)
+							 .name("Bicycle")
+							 .code("B001")
+							 .description("Mountain bike")
+							 .price(BigDecimal.valueOf(500000L))
+							 .stock(-1)
+							 .build();
 	}
 
-	public static ProductDto getProductDtoPriceZero(){
-		return ProductDto.builder().idProduct(1)
-						 .name("Bicycle")
-						 .code("B001")
-						 .description("Mountain bike")
-						 .price(BigDecimal.valueOf(0L))
-						 .stock(10)
-						 .build();
+	public static ProductRequest getProductDtoPriceZero(){
+		return ProductRequest.builder().idProduct(1)
+							 .name("Bicycle")
+							 .code("B001")
+							 .description("Mountain bike")
+							 .price(BigDecimal.valueOf(0L))
+							 .stock(10)
+							 .build();
 	}
 
 	public static List<Integer> getListIds(){

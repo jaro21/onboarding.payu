@@ -36,14 +36,22 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_product", updatable = false, nullable = false)
 	private Integer idProduct;
+
 	@NotBlank(message = "Product name cannot not be empty")
 	private String name;
+
 	@NotBlank(message = "Product code cannot not be empty")
 	private String code;
+
 	@NotBlank(message = "Product description cannot not be empty")
 	private String description;
+
 	@NotNull(message = "Product price cannot not be empty")
 	private BigDecimal price;
+
 	@NotNull(message = "Product stock cannot not be empty")
 	private Integer stock;
+
+	@Column(name = "active", length = 1)
+	private Integer active;
 }

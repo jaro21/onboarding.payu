@@ -23,21 +23,27 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ProductDto {
+public class ProductRequest {
+
 	private Integer idProduct;
+
 	@NotBlank(message = "Product name cannot not be empty")
 	@Size(max = 25, message = "The size of the name must be a maximum of 25 characters.")
 	private String name;
+
 	@NotBlank(message = "Product code cannot not be empty")
 	@Size(max = 10, message = "The size of the code must be a maximum of 10 characters.")
 	private String code;
+
 	@NotBlank(message = "Product description cannot not be empty")
 	@Size(max = 50, message = "The size of the description must be a maximum of 50 characters.")
 	private String description;
+
 	@NotNull(message = "Product price cannot not be empty")
-	//@Pattern(regexp = "[0-9]+", message="The price must contain only numeric characters")
 	private BigDecimal price;
+
 	@NotNull(message = "Product stock cannot not be empty")
-	//@Pattern(regexp = "[0-9]+", message="The stock must contain only numeric characters")
 	private Integer stock;
+
+	private Integer active;
 }
