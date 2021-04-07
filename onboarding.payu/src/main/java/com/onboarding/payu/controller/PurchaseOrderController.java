@@ -3,8 +3,8 @@ package com.onboarding.payu.controller;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.model.purchase.PurchaseOrderRequest;
-import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
+import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
+import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.service.IPurchaseOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

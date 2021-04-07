@@ -32,22 +32,25 @@ public class Payment {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_payment", updatable = false, nullable = false)
 	private Integer idPayment;
+
 	@Column(name = "id_purchase_order", updatable = false, nullable = false)
 	private Integer idPurchaseOrder;
-	@Column(name = "languaje")
-	private String languaje;
-	@Column(name = "notify_url")
-	private String notify_url;
+
 	@Column(name = "value")
 	private BigDecimal value;
-	@Column(name = "currency")
+
+	@Column(name = "currency", length = 3)
 	private String currency;
+
 	@Column(name = "response_json")
 	private String response_json;
+
 	@Column(name = "status")
 	private String status;
+
 	@Column(name = "order_id")
 	private Long orderId;
-	@Column(name = "transaction_id")
+
+	@Column(name = "transaction_id", length = 36)
 	private String transactionId;
 }

@@ -1,22 +1,20 @@
 package com.onboarding.payu.service.impl;
 
-import static java.lang.String.format;
-
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.model.purchase.ProductPoDto;
-import com.onboarding.payu.model.purchase.PurchaseOrderRequest;
-import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
+import com.onboarding.payu.model.purchase.request.ProductPoDto;
+import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
+import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.repository.IPurchaseOrderRepository;
-import com.onboarding.payu.repository.entity.Client;
+import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.repository.entity.OrderProduct;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
-import com.onboarding.payu.service.IClientService;
+import com.onboarding.payu.service.ICustomerService;
 import com.onboarding.payu.service.IOrderProductService;
 import com.onboarding.payu.service.IProductService;
 import com.onboarding.payu.service.IPurchaseOrder;
@@ -43,7 +41,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 	private IOrderProductService iOrderProductService;
 
-	private IClientService iClientService;
+	private ICustomerService iCustomerService;
 
 	private PurchaseOrderMapper purchaseOrderMapper;
 
@@ -51,13 +49,13 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	public PurchaseOrderImpl(final IPurchaseOrderRepository iPurchaseOrderRepository,
 							 final IProductService iProductService,
 							 final IOrderProductService iOrderProductService,
-							 final IClientService iClientService,
+							 final ICustomerService iCustomerService,
 							 final PurchaseOrderMapper purchaseOrderMapper) {
 
 		this.iPurchaseOrderRepository = iPurchaseOrderRepository;
 		this.iProductService = iProductService;
 		this.iOrderProductService = iOrderProductService;
-		this.iClientService = iClientService;
+		this.iCustomerService = iCustomerService;
 		this.purchaseOrderMapper = purchaseOrderMapper;
 	}
 
@@ -69,11 +67,11 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 		log.debug("addPurchaseOrder(PurchaseOrderDTO) : ", purchaseOrderRequest.toString());
 		final List<Product> productList = getProductsByIds(purchaseOrderRequest.getProductList());
-		final Client client = iClientService.findById(purchaseOrderRequest.getClient().getIdClient());
+		final Customer customer = iCustomerService.findById(purchaseOrderRequest.getCustomer().getIdCustomer());
 
 		isValidOrder(productList, purchaseOrderRequest.getProductList());
 		updateStock(productList, purchaseOrderRequest.getProductList());
-		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(purchaseOrderMapper.toPurchaseOrder(client, productList,
+		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(purchaseOrderMapper.toPurchaseOrder(customer, productList,
 																											  purchaseOrderRequest));
 		List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderRequest.getProductList(), productList, purchaseOrder);
 		iOrderProductService.saveAll(orderProductList);
@@ -87,8 +85,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	@Override public PurchaseOrder findById(final Integer idPurchaseOrder)  {
 
 		return iPurchaseOrderRepository.findById(idPurchaseOrder).orElseThrow(
-				() -> new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_INVALID.getCode(),
-											   ExceptionCodes.PURCHASE_ORDER_INVALID.getMessage()));
+				() -> new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_INVALID));
 	}
 
 	/**
@@ -156,10 +153,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 		if (productPoDTO.getIdProduct().equals(product.getIdProduct())
 				&& product.getStock().compareTo(productPoDTO.getQuantity()) < 0) {
-			throw new BusinessAppException(ExceptionCodes.PRODUCT_NOT_AVAILABLE.getCode(),
-										   format(ExceptionCodes.PRODUCT_NOT_AVAILABLE
-															  .getMessage(), product.getCode(),
-													  product.getName()));
+			throw new BusinessAppException(ExceptionCodes.PRODUCT_NOT_AVAILABLE, product.getName());
 		}
 	}
 
@@ -190,7 +184,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	/**
 	 * get list products by ids
 	 *
-	 * @param productPoDTOList {@link List< ProductPoDto >}
+	 * @param productPoDTOList {@link List<ProductPoDto>}
 	 * @return {@link List<Product>}
 	 */
 	private List<Product> getProductsByIds(final List<ProductPoDto> productPoDTOList) {

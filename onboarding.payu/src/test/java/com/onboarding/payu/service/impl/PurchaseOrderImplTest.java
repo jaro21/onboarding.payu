@@ -12,15 +12,15 @@ import java.util.List;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.model.purchase.PurchaseOrderRequest;
-import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
+import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
+import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.repository.IPurchaseOrderRepository;
-import com.onboarding.payu.repository.entity.Client;
+import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
-import com.onboarding.payu.service.IClientService;
+import com.onboarding.payu.service.ICustomerService;
 import com.onboarding.payu.service.IOrderProductService;
 import com.onboarding.payu.service.IProductService;
-import com.onboarding.payu.service.impl.Samples.ClientSample;
+import com.onboarding.payu.service.impl.Samples.CustomerSample;
 import com.onboarding.payu.service.impl.Samples.ProductSample;
 import com.onboarding.payu.service.impl.Samples.PurchaseOrderDtoSample;
 import com.onboarding.payu.service.impl.mapper.PurchaseOrderMapper;
@@ -50,7 +50,7 @@ class PurchaseOrderImplTest {
 	private IOrderProductService iOrderProductServiceMock;
 
 	@Mock
-	private IClientService iClientServiceMock;
+	private ICustomerService iCustomerServiceMock;
 
 	@Mock
 	private PurchaseOrderMapper purchaseOrderMapperMock;
@@ -63,8 +63,8 @@ class PurchaseOrderImplTest {
 
 		final PurchaseOrderRequest purchaseOrderRequest = PurchaseOrderDtoSample.getPurchasOrderDto();
 		when(iProductServiceMock.getProductsByIds(any(List.class))).thenReturn(ProductSample.getProductList());
-		when(iClientServiceMock.findById(any(Integer.class))).thenReturn(ClientSample.getClient());
-		when(purchaseOrderMapperMock.toPurchaseOrder(any(Client.class), any(List.class), any(PurchaseOrderRequest.class)))
+		when(iCustomerServiceMock.findById(any(Integer.class))).thenReturn(CustomerSample.getCustomer());
+		when(purchaseOrderMapperMock.toPurchaseOrder(any(Customer.class), any(List.class), any(PurchaseOrderRequest.class)))
 				.thenReturn(PurchaseOrderDtoSample.getPurchaseOrder());
 		when(iPurchaseOrderRepositoryMock.save(any(PurchaseOrder.class))).thenReturn(PurchaseOrderDtoSample.getPurchaseOrder());
 		when(iOrderProductServiceMock.saveAll(any(List.class))).thenReturn(ProductSample.getOrderProductList());
@@ -74,8 +74,8 @@ class PurchaseOrderImplTest {
 		final PurchaseOrderResponse purchaseOrderResponse = purchaseOrderImpl.addPurchaseOrder(purchaseOrderRequest);
 
 		verify(iProductServiceMock).getProductsByIds(any(List.class));
-		verify(iClientServiceMock).findById(any(Integer.class));
-		verify(purchaseOrderMapperMock).toPurchaseOrder(any(Client.class), any(List.class), any(PurchaseOrderRequest.class));
+		verify(iCustomerServiceMock).findById(any(Integer.class));
+		verify(purchaseOrderMapperMock).toPurchaseOrder(any(Customer.class), any(List.class), any(PurchaseOrderRequest.class));
 		verify(iPurchaseOrderRepositoryMock).save(any(PurchaseOrder.class));
 		verify(iOrderProductServiceMock).saveAll(any(List.class));
 		verify(purchaseOrderMapperMock).toPurchaseOrderResponse(any(PurchaseOrder.class));
@@ -88,7 +88,7 @@ class PurchaseOrderImplTest {
 
 		final PurchaseOrderRequest purchaseOrderRequest = PurchaseOrderDtoSample.getPurchasOrderDtoStockInvalid();
 		when(iProductServiceMock.getProductsByIds(any(List.class))).thenReturn(ProductSample.getProductList());
-		when(iClientServiceMock.findById(any(Integer.class))).thenReturn(ClientSample.getClient());
+		when(iCustomerServiceMock.findById(any(Integer.class))).thenReturn(CustomerSample.getCustomer());
 
 		try {
 			final PurchaseOrderResponse purchaseOrderResponse = purchaseOrderImpl.addPurchaseOrder(purchaseOrderRequest);
@@ -98,8 +98,8 @@ class PurchaseOrderImplTest {
 		}
 
 		verify(iProductServiceMock).getProductsByIds(any(List.class));
-		verify(iClientServiceMock).findById(any(Integer.class));
-		verify(purchaseOrderMapperMock, times(0)).toPurchaseOrder(any(Client.class), any(List.class), any(PurchaseOrderRequest.class));
+		verify(iCustomerServiceMock).findById(any(Integer.class));
+		verify(purchaseOrderMapperMock, times(0)).toPurchaseOrder(any(Customer.class), any(List.class), any(PurchaseOrderRequest.class));
 		verify(iPurchaseOrderRepositoryMock, times(0)).save(any(PurchaseOrder.class));
 		verify(iOrderProductServiceMock, times(0)).saveAll(any(List.class));
 		verify(purchaseOrderMapperMock, times(0)).toPurchaseOrderResponse(any(PurchaseOrder.class));

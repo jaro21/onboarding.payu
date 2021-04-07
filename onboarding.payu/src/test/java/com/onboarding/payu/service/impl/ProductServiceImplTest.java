@@ -14,7 +14,7 @@ import java.util.Optional;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.model.product.ProductRequest;
+import com.onboarding.payu.model.product.request.ProductRequest;
 import com.onboarding.payu.repository.IProductRepository;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.impl.Samples.ProductSample;

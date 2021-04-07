@@ -1,7 +1,7 @@
 package com.onboarding.payu.service;
 
-import com.onboarding.payu.model.purchase.PurchaseOrderRequest;
-import com.onboarding.payu.model.purchase.PurchaseOrderResponse;
+import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
+import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
 
 /**
@@ -23,7 +23,7 @@ public interface IPurchaseOrder {
 	PurchaseOrderResponse addPurchaseOrder(PurchaseOrderRequest purchaseOrder);
 
 	/**
-	 * Method to get Client by idClient
+	 * Method to get Purchase Order by id
 	 *
 	 * @param idPurchaseOrder {@link Integer}
 	 * @return {@link PurchaseOrder}

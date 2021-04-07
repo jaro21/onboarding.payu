@@ -2,8 +2,8 @@ package com.onboarding.payu.service;
 
 import java.util.List;
 
-import com.onboarding.payu.model.tokenization.CreditCardDto;
-import com.onboarding.payu.model.tokenization.TokenResponse;
+import com.onboarding.payu.model.tokenization.request.CreditCardRequest;
+import com.onboarding.payu.model.tokenization.response.TokenResponse;
 import com.onboarding.payu.repository.entity.CreditCard;
 
 /**
@@ -18,11 +18,11 @@ public interface ICreditCard {
 	/**
 	 * Service to tokenize a credit card
 	 *
-	 * @param creditCardDto {@link CreditCardDto}
+	 * @param creditCardRequest {@link CreditCardRequest}
 	 * @return {@link TokenResponse}
 	 * @
 	 */
-	TokenResponse tokenizationCard(CreditCardDto creditCardDto);
+	TokenResponse tokenizationCard(CreditCardRequest creditCardRequest);
 
 	/**
 	 * Service to save a tokenized credit card
@@ -40,5 +40,5 @@ public interface ICreditCard {
 	 * @return {@link List<CreditCard>}
 	 * @
 	 */
-	List<CreditCard> findAllCardsByClient(String dniNumber);
+	List<CreditCard> findAllCardsByCustomer(String dniNumber);
 }

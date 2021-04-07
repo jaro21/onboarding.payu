@@ -4,8 +4,8 @@ import com.onboarding.payu.model.payment.request.TransactionRequest;
 import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
 import com.onboarding.payu.model.refund.request.RefundDtoRequest;
 import com.onboarding.payu.model.refund.response.RefundDtoResponse;
-import com.onboarding.payu.model.tokenization.CreditCardDto;
-import com.onboarding.payu.model.tokenization.TokenResponse;
+import com.onboarding.payu.model.tokenization.request.CreditCardRequest;
+import com.onboarding.payu.model.tokenization.response.TokenResponse;
 
 /**
  * Payment Provider interface used to define payment methods.
@@ -18,13 +18,13 @@ public interface IPaymentProvider {
 
 	/**
 	 *
-	 * @param creditCardDto {@link CreditCardDto}
+	 * @param creditCardRequest {@link CreditCardRequest}
 	 * @return {@link TokenResponse}
 	 */
-	TokenResponse tokenizationCard(CreditCardDto creditCardDto);
+	TokenResponse tokenizationCard(CreditCardRequest creditCardRequest);
 
 	PaymentWithTokenResponse paymentWithToken(TransactionRequest transactionRequest);
 
-	RefundDtoResponse appyRefundPayU(final RefundDtoRequest refundDtoRequest);
+	RefundDtoResponse applyRefund(RefundDtoRequest refundDtoRequest);
 
 }

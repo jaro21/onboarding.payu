@@ -8,6 +8,7 @@ import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
 import com.onboarding.payu.model.refund.request.RefundDtoRequest;
 import com.onboarding.payu.model.refund.response.RefundDtoResponse;
 import com.onboarding.payu.service.IPaymentService;
+import com.onboarding.payu.service.IRefundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,10 +29,13 @@ public class PaymentController {
 
 	private IPaymentService iPaymentService;
 
+	private IRefundService iRefundService;
+
 	@Autowired
-	public PaymentController(final IPaymentService iPaymentService) {
+	public PaymentController(final IPaymentService iPaymentService, final IRefundService iRefundService) {
 
 		this.iPaymentService = iPaymentService;
+		this.iRefundService = iRefundService;
 	}
 
 	@PostMapping
@@ -44,6 +48,6 @@ public class PaymentController {
 	@PostMapping("/refund")
 	public ResponseEntity<RefundDtoResponse> applyRefund(@Valid @NotNull @RequestBody final RefundDtoRequest refundDtoRequest) {
 
-		return ResponseEntity.ok(iPaymentService.appyRefund(refundDtoRequest));
+		return ResponseEntity.ok(iRefundService.appyRefund(refundDtoRequest));
 	}
 }

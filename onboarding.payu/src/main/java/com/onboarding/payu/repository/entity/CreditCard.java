@@ -32,16 +32,18 @@ public class CreditCard {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_credit_card", updatable = false, nullable = false)
 	private Integer idCreditCard;
-	@Column(name = "id_client", updatable = false, nullable = false)
-	private Integer idClient;
+
+	@Column(name = "id_customer", updatable = false, nullable = false)
+	private Integer idCustomer;
+
 	@Column(name = "masked_number", length = 20)
 	@NotBlank(message = "Masked Number cannot not be empty")
 	private String maskedNumber;
+
 	@Column(name = "payment_method", length = 20)
 	@NotBlank(message = "Payment Method cannot not be empty")
 	private String paymentMethod;
+
 	@Column(name = "token", length = 45)
 	private String token;
-	@Column(name = "name", length = 15)
-	private String name;
 }

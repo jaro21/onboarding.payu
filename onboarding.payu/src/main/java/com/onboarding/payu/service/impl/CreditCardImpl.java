@@ -3,13 +3,13 @@ package com.onboarding.payu.service.impl;
 import java.util.Collections;
 import java.util.List;
 
-import com.onboarding.payu.model.tokenization.CreditCardDto;
-import com.onboarding.payu.model.tokenization.TokenResponse;
+import com.onboarding.payu.model.tokenization.request.CreditCardRequest;
+import com.onboarding.payu.model.tokenization.response.TokenResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
 import com.onboarding.payu.repository.ICreditCardRepository;
-import com.onboarding.payu.repository.entity.Client;
+import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.repository.entity.CreditCard;
-import com.onboarding.payu.service.IClientService;
+import com.onboarding.payu.service.ICustomerService;
 import com.onboarding.payu.service.ICreditCard;
 import com.onboarding.payu.service.impl.mapper.CreditCardMapper;
 import com.onboarding.payu.service.validator.CreditCardValidator;
@@ -32,32 +32,32 @@ public class CreditCardImpl implements ICreditCard {
 
 	private ICreditCardRepository iCreditCardRepository;
 
-	private IClientService iClientService;
+	private ICustomerService iCustomerService;
 
 	private CreditCardValidator creditCardValidator;
 
 	@Autowired
 	public CreditCardImpl(final IPaymentProvider iPaymentProvider,
 						  final ICreditCardRepository iCreditCardRepository,
-						  final IClientService iClientService,
+						  final ICustomerService iCustomerService,
 						  final CreditCardValidator creditCardValidator) {
 
 		this.iPaymentProvider = iPaymentProvider;
 		this.iCreditCardRepository = iCreditCardRepository;
-		this.iClientService = iClientService;
+		this.iCustomerService = iCustomerService;
 		this.creditCardValidator = creditCardValidator;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public TokenResponse tokenizationCard(final CreditCardDto creditCardDto) {
+	@Override public TokenResponse tokenizationCard(final CreditCardRequest creditCardRequest) {
 
-		log.debug("TokenizationCard : ", creditCardDto.toString());
-		creditCardValidator.runValidations(creditCardDto);
-		final TokenResponse tokenResponse = iPaymentProvider.tokenizationCard(creditCardDto);
+		log.debug("TokenizationCard : ", creditCardRequest.toString());
+		creditCardValidator.runValidations(creditCardRequest);
+		final TokenResponse tokenResponse = iPaymentProvider.tokenizationCard(creditCardRequest);
 		saveCreditCard(tokenResponse);
-		return iPaymentProvider.tokenizationCard(creditCardDto);
+		return iPaymentProvider.tokenizationCard(creditCardRequest);
 	}
 
 	/**
@@ -67,8 +67,8 @@ public class CreditCardImpl implements ICreditCard {
 
 		log.debug("Save Credit Card", tokenResponse.toString());
 		if (isValidRegistration(tokenResponse)) {
-			final Client client = iClientService.findByDniNumber(tokenResponse.getCreditCardToken().getIdentificationNumber());
-			final CreditCard creditCard = CreditCardMapper.toCreditCard(tokenResponse, client);
+			final Customer customer = iCustomerService.findByDniNumber(tokenResponse.getCreditCard().getIdentificationNumber());
+			final CreditCard creditCard = CreditCardMapper.toCreditCard(tokenResponse, customer);
 			iCreditCardRepository.save(creditCard);
 		}
 		return tokenResponse;
@@ -82,16 +82,16 @@ public class CreditCardImpl implements ICreditCard {
 	 */
 	private boolean isValidRegistration(final TokenResponse tokenResponse) {
 
-		return tokenResponse != null && tokenResponse.getCreditCardToken() != null
-				&& !iCreditCardRepository.findByToken(tokenResponse.getCreditCardToken().getCreditCardTokenId().toString()).isPresent();
+		return tokenResponse != null && tokenResponse.getCreditCard() != null
+				&& !iCreditCardRepository.findByToken(tokenResponse.getCreditCard().getCreditCardTokenId().toString()).isPresent();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public List<CreditCard> findAllCardsByClient(final String dniNumber) {
+	@Override public List<CreditCard> findAllCardsByCustomer(final String dniNumber) {
 
-		final Client client = iClientService.findByDniNumber(dniNumber);
-		return iCreditCardRepository.findByIdClient(client.getIdClient()).orElse(Collections.emptyList());
+		final Customer customer = iCustomerService.findByDniNumber(dniNumber);
+		return iCreditCardRepository.findByIdCustomer(customer.getIdCustomer()).orElse(Collections.emptyList());
 	}
 }

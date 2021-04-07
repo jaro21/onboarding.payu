@@ -1,5 +1,7 @@
 package com.onboarding.payu.exception;
 
+import static java.lang.String.format;
+
 import lombok.Getter;
 
 /**
@@ -17,11 +19,21 @@ public class BusinessAppException extends RuntimeException {
 	/**
 	 * Constructor that receive the exception's message
 	 *
-	 * @param code {@link String} The exception's code
-	 * @param message {@link String} The exception's message
+	 * @param exceptionCodes {@link String} The exception's code
 	 * */
-	public BusinessAppException(final String code, final String message) {
-		super(message);
-		this.code = code;
+	public BusinessAppException(final ExceptionCodes exceptionCodes) {
+		super(exceptionCodes.getMessage());
+		this.code = exceptionCodes.getCode();
+	}
+
+	/**
+	 *
+	 *
+	 * @param exceptionCodes {@link ExceptionCodes}
+	 * @param param {@link String}
+	 */
+	public BusinessAppException(final ExceptionCodes exceptionCodes, final String param) {
+		super(format(exceptionCodes.getMessage(), param));
+		this.code = exceptionCodes.getCode();
 	}
 }

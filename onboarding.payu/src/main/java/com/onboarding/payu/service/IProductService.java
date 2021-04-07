@@ -2,7 +2,7 @@ package com.onboarding.payu.service;
 
 import java.util.List;
 
-import com.onboarding.payu.model.product.ProductRequest;
+import com.onboarding.payu.model.product.request.ProductRequest;
 import com.onboarding.payu.repository.entity.Product;
 
 /**

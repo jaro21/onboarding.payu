@@ -25,7 +25,6 @@ payment-api:
   apiLogin: '012345678901'
   order:
     accountId: 1
-    notifyUrl: http://prueba-pago.com.co
   amount:
     minimum: 11000
     maximum: 18308500

@@ -27,7 +27,7 @@ public class CreditCardSample {
 						 .maskedNumber("526746******1351")
 						 .paymentMethod("MASTERCARD")
 						 .token("43cf57a8-eab8-4f55-9afe-543c8ed95dcf")
-						 .name("Client Test").build();
+						 .build();
 	}
 
 	private static CreditCard getCreditCardMasterVisa() {
@@ -36,6 +36,6 @@ public class CreditCardSample {
 						 .maskedNumber("411111******1111")
 						 .paymentMethod("VISA")
 						 .token("4d8323d5-1b6b-4602-9f59-7391560bb53b")
-						 .name("Client Test").build();
+						 .build();
 	}
 }

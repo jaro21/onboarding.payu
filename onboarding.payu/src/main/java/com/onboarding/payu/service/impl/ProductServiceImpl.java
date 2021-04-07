@@ -1,13 +1,11 @@
 package com.onboarding.payu.service.impl;
 
-import static java.lang.String.format;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.model.product.ProductRequest;
+import com.onboarding.payu.model.product.request.ProductRequest;
 import com.onboarding.payu.repository.IProductRepository;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.IProductService;
@@ -72,8 +70,7 @@ public class ProductServiceImpl implements IProductService {
 	@Override public Product getProductById(final Integer id) {
 
 		return iProductRepository.findById(id).orElseThrow(
-				() -> new BusinessAppException(ExceptionCodes.PRODUCT_ID_NOT_EXIST.getCode(),
-											   format(ExceptionCodes.PRODUCT_ID_NOT_EXIST.getMessage(), id)));
+				() -> new BusinessAppException(ExceptionCodes.PRODUCT_ID_NOT_EXIST, id.toString()));
 	}
 
 	/**
@@ -86,8 +83,7 @@ public class ProductServiceImpl implements IProductService {
 			iProductRepository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
 			log.error("Failed to delete product id {} ", id, e);
-			throw new BusinessAppException(ExceptionCodes.ERROR_TO_DELETE_PRODUCT.getCode(),
-										   ExceptionCodes.ERROR_TO_DELETE_PRODUCT.getMessage());
+			throw new BusinessAppException(ExceptionCodes.ERROR_TO_DELETE_PRODUCT);
 		}
 	}
 
@@ -125,8 +121,7 @@ public class ProductServiceImpl implements IProductService {
 	private void productCreateValidation(final ProductRequest product) {
 
 		if (iProductRepository.findByCode(product.getCode()).isPresent()) {
-			throw new BusinessAppException(ExceptionCodes.DUPLICATE_PRODUCT_CODE.getCode(),
-										   format(ExceptionCodes.DUPLICATE_PRODUCT_CODE.getMessage(), product.getCode()));
+			throw new BusinessAppException(ExceptionCodes.DUPLICATE_PRODUCT_CODE, product.getCode());
 		}
 
 		productValidation(product);
@@ -140,12 +135,10 @@ public class ProductServiceImpl implements IProductService {
 	private void productValidation(final ProductRequest product) {
 
 		if (product.getStock() < 0) {
-			throw new BusinessAppException(ExceptionCodes.PRODUCT_STOCK_INVALID.getCode(),
-										   ExceptionCodes.PRODUCT_STOCK_INVALID.getMessage());
+			throw new BusinessAppException(ExceptionCodes.PRODUCT_STOCK_INVALID);
 		}
 		if (product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-			throw new BusinessAppException(ExceptionCodes.PRODUCT_PRICE_INVALID.getCode(),
-										   ExceptionCodes.PRODUCT_PRICE_INVALID.getMessage());
+			throw new BusinessAppException(ExceptionCodes.PRODUCT_PRICE_INVALID);
 		}
 	}
 }

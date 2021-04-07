@@ -18,7 +18,7 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PaymentTransactionRequest {
 
-	private Integer idClient;
+	private Integer idCustomer;
 	private Integer idAddress;
 	private Integer idCreditCard;
 	private Integer idPurchaseOrder;

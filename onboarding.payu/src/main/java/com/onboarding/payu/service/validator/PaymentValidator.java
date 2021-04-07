@@ -1,7 +1,5 @@
 package com.onboarding.payu.service.validator;
 
-import static java.lang.String.format;
-
 import java.math.BigDecimal;
 
 import com.onboarding.payu.exception.BusinessAppException;
@@ -15,10 +13,10 @@ import org.springframework.stereotype.Component;
 public class PaymentValidator {
 
 	@Value("${payment-api.amount.minimum}")
-	private String minimumAmount;
+	private BigDecimal minimumAmount;
 
 	@Value("${payment-api.amount.maximum}")
-	private String maximumAmount;
+	private BigDecimal maximumAmount;
 
 	public void runValidations(final PurchaseOrder purchaseOrder) {
 
@@ -29,30 +27,22 @@ public class PaymentValidator {
 
 	public void isMinimumAmounValid(final BigDecimal value) {
 
-		if (stringToBigDecimal(minimumAmount).compareTo(value) >= 0) {
-			throw new BusinessAppException(ExceptionCodes.MINIMUM_AMOUNT_INVALID.getCode(),
-										   format(ExceptionCodes.MINIMUM_AMOUNT_INVALID.getMessage(), minimumAmount));
+		if (minimumAmount.compareTo(value) >= 0) {
+			throw new BusinessAppException(ExceptionCodes.MINIMUM_AMOUNT_INVALID, minimumAmount.toString());
 		}
 	}
 
 	public void isMaximumAmounValid(final BigDecimal value) {
 
-		if (stringToBigDecimal(maximumAmount).compareTo(value) <= 0) {
-			throw new BusinessAppException(ExceptionCodes.MAXIMUM_AMOUNT_INVALID.getCode(),
-										   format(ExceptionCodes.MAXIMUM_AMOUNT_INVALID.getMessage(), maximumAmount));
+		if (maximumAmount.compareTo(value) <= 0) {
+			throw new BusinessAppException(ExceptionCodes.MAXIMUM_AMOUNT_INVALID, maximumAmount.toString());
 		}
 	}
 
 	public void isPurchaseOrderStatusValid(final PurchaseOrder purchaseOrder) {
 
 		if (!purchaseOrder.getStatus().equals(StatusType.SAVED.name())) {
-			throw new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_STATUS_INVALID.getCode(),
-										   ExceptionCodes.PURCHASE_ORDER_STATUS_INVALID.getMessage());
+			throw new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_STATUS_INVALID);
 		}
-	}
-
-	public BigDecimal stringToBigDecimal(final String valueString) {
-
-		return new BigDecimal(valueString);
 	}
 }

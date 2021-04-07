@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
  * @since 1.0.0
  */
 public interface IPaymentRepository extends JpaRepository<Payment, Integer> {
+
 	@Modifying
 	@Query("update Payment set status = :status where idPayment = :id")
 	Integer updateStatusById(@Param("status") String status, @Param("id") Integer id);

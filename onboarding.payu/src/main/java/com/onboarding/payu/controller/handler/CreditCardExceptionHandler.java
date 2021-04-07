@@ -106,21 +106,4 @@ public class CreditCardExceptionHandler extends ResponseEntityExceptionHandler {
 											  .message(e.getMessage())
 											  .build());
 	}
-
-	/**
-	 * Handler the generic exception.
-	 *
-	 * @param e {@link RuntimeException} with the information about the error.
-	 * @return {@link ResponseEntity<ResponseDto>} object with the formatted error information.
-	 */
-	@ResponseBody
-	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<ResponseDto> handleRuntimeException(final RuntimeException e) {
-
-		log.error("Unhandled exception : ", e);
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-							 .body(ResponseDto.builder()
-											  .message(e.getMessage())
-											  .build());
-	}
 }

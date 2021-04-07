@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * Feign client to access payu services.
+ * Feign customer to access payu services.
  *
  * @author <a href='julian.ramirez@payu.com'>Julian Ramirez</a>
  * @version 1.0.0
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface PaymentClient {
 
 	/**
-	 * Feign client to tokenization card
+	 * Feign customer to tokenization card
 	 *
 	 * @param registrationCardRequest {@link TokenizationPayURequest}
 	 * @return {@link TokenizationPayUResponse}
@@ -30,7 +30,7 @@ public interface PaymentClient {
 	TokenizationPayUResponse tokenizationCard(@RequestBody TokenizationPayURequest registrationCardRequest);
 
 	/**
-	 * Feign client to payment with token
+	 * Feign customer to payment with token
 	 *
 	 * @param paymentWithTokenRequest {@link PaymentWithTokenPayURequest}
 	 * @return {@link PaymentWithTokenPayUResponse}
@@ -39,7 +39,7 @@ public interface PaymentClient {
 	PaymentWithTokenPayUResponse paymentWithToken(@RequestBody PaymentWithTokenPayURequest paymentWithTokenRequest);
 
 	/**
-	 * Feign client to payment refund
+	 * Feign customer to payment refund
 	 *
 	 * @param refundPayURequest {@link RefundPayURequest}
 	 * @return {@link RefundPayUResponse}

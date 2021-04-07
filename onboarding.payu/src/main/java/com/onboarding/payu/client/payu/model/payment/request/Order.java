@@ -23,7 +23,6 @@ public class Order {
 	private String description;
 	private String language;
 	private String signature;
-	private String notifyUrl;
 	private AdditionalValues additionalValues;
 	private Buyer buyer;
 	private IngAddress shippingAddress;

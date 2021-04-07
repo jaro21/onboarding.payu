@@ -1,8 +1,8 @@
 package com.onboarding.payu.service.impl.mapper;
 
-import com.onboarding.payu.model.tokenization.TokenResponse;
-import com.onboarding.payu.repository.entity.Client;
+import com.onboarding.payu.model.tokenization.response.TokenResponse;
 import com.onboarding.payu.repository.entity.CreditCard;
+import com.onboarding.payu.repository.entity.Customer;
 
 /**
  * Mapper for the Payment's objects
@@ -13,12 +13,11 @@ import com.onboarding.payu.repository.entity.CreditCard;
  */
 public class CreditCardMapper {
 
-	public static CreditCard toCreditCard(final TokenResponse tokenResponse, final Client client) {
+	public static CreditCard toCreditCard(final TokenResponse tokenResponse, final Customer customer) {
 
-		return CreditCard.builder().idClient(client.getIdClient())
-						 .maskedNumber(tokenResponse.getCreditCardToken().getMaskedNumber())
-						 .paymentMethod(tokenResponse.getCreditCardToken().getPaymentMethod())
-						 .token(tokenResponse.getCreditCardToken().getCreditCardTokenId())
-						 .name(tokenResponse.getCreditCardToken().getName()).build();
+		return CreditCard.builder().idCustomer(customer.getIdCustomer())
+						 .maskedNumber(tokenResponse.getCreditCard().getMaskedNumber())
+						 .paymentMethod(tokenResponse.getCreditCard().getPaymentMethod())
+						 .token(tokenResponse.getCreditCard().getCreditCardTokenId()).build();
 	}
 }

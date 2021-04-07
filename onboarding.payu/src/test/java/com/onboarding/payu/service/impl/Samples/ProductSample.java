@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.onboarding.payu.model.product.ProductRequest;
-import com.onboarding.payu.model.purchase.ProductPoDto;
+import com.onboarding.payu.model.product.request.ProductRequest;
+import com.onboarding.payu.model.purchase.request.ProductPoDto;
 import com.onboarding.payu.repository.entity.OrderProduct;
 import com.onboarding.payu.repository.entity.Product;
 

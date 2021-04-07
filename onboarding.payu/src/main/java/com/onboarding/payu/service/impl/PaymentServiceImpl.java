@@ -1,13 +1,10 @@
 package com.onboarding.payu.service.impl;
 
-import static java.lang.String.format;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.onboarding.payu.client.payu.model.CurrencyType;
-import com.onboarding.payu.client.payu.model.LanguageType;
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.StatusType;
@@ -18,24 +15,20 @@ import com.onboarding.payu.model.payment.request.PaymentTransactionRequest;
 import com.onboarding.payu.model.payment.request.TransactionRequest;
 import com.onboarding.payu.model.payment.request.TxValueDto;
 import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
-import com.onboarding.payu.model.refund.request.RefundDtoRequest;
-import com.onboarding.payu.model.refund.response.RefundDtoResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
 import com.onboarding.payu.repository.IPaymentRepository;
-import com.onboarding.payu.repository.IRefundRepository;
-import com.onboarding.payu.repository.entity.Client;
 import com.onboarding.payu.repository.entity.CreditCard;
+import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.repository.entity.Payment;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
-import com.onboarding.payu.repository.entity.Refund;
-import com.onboarding.payu.service.IClientService;
+import com.onboarding.payu.service.ICustomerService;
 import com.onboarding.payu.service.IPaymentService;
 import com.onboarding.payu.service.IPurchaseOrder;
 import com.onboarding.payu.service.validator.PaymentValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of {@link IPaymentService} interface.
@@ -48,12 +41,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentServiceImpl implements IPaymentService {
 
-	@Value("${payment-api.order.notifyUrl}")
-	private String notifyUrl;
-
 	private IPaymentProvider iPaymentProvider;
 
-	private IClientService iClientService;
+	private ICustomerService iCustomerService;
 
 	private IPurchaseOrder iPurchaseOrder;
 
@@ -61,21 +51,17 @@ public class PaymentServiceImpl implements IPaymentService {
 
 	private IPaymentRepository iPaymentRepository;
 
-	private IRefundRepository iRefundRepository;
-
 	@Autowired
-	public PaymentServiceImpl(final IPaymentProvider iPaymentProvider, final IClientService iClientService,
+	public PaymentServiceImpl(final IPaymentProvider iPaymentProvider, final ICustomerService iCustomerService,
 							  final IPurchaseOrder iPurchaseOrder,
 							  final PaymentValidator paymentValidator,
-							  final IPaymentRepository iPaymentRepository,
-							  final IRefundRepository iRefundRepository) {
+							  final IPaymentRepository iPaymentRepository) {
 
 		this.iPaymentProvider = iPaymentProvider;
-		this.iClientService = iClientService;
+		this.iCustomerService = iCustomerService;
 		this.iPurchaseOrder = iPurchaseOrder;
 		this.paymentValidator = paymentValidator;
 		this.iPaymentRepository = iPaymentRepository;
-		this.iRefundRepository = iRefundRepository;
 	}
 
 	/**
@@ -83,14 +69,15 @@ public class PaymentServiceImpl implements IPaymentService {
 	 */
 	@Override public Payment findById(final Integer idPayment) {
 
-		return iPaymentRepository.findById(idPayment)
-								 .orElseThrow(() -> new BusinessAppException(ExceptionCodes.PAYMENT_NOT_EXIST.getCode()
-										 , format(ExceptionCodes.PAYMENT_NOT_EXIST.getMessage(), idPayment)));
+		return iPaymentRepository.findById(idPayment).orElseThrow(() ->
+																		  new BusinessAppException(ExceptionCodes.PAYMENT_NOT_EXIST,
+																								   idPayment.toString()));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
+	@Transactional
 	@Override public PaymentWithTokenResponse paymentWithToken(final PaymentTransactionRequest paymentTransactionRequest) {
 
 		log.debug("PaymentWithToken : ", paymentTransactionRequest.toString());
@@ -103,6 +90,18 @@ public class PaymentServiceImpl implements IPaymentService {
 		return paymentWithTokenResponse;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public void updateStatusById(final String status, final Integer id) {
+
+		iPaymentRepository.updateStatusById(status, id);
+	}
+
+	/**
+	 * @param paymentWithTokenResponse
+	 * @param purchaseOrder
+	 */
 	private void savePayment(final PaymentWithTokenResponse paymentWithTokenResponse,
 							 final PurchaseOrder purchaseOrder) {
 
@@ -111,37 +110,42 @@ public class PaymentServiceImpl implements IPaymentService {
 		updatePurchaseOrder(payment.getStatus(), purchaseOrder);
 	}
 
+	/**
+	 * @param status
+	 * @param purchaseOrder
+	 */
 	private void updatePurchaseOrder(final String status, final PurchaseOrder purchaseOrder) {
 
-		if (status.equals(StatusType.APPROVED.name())) {
+		if (StatusType.APPROVED.name().equals(status)) {
 
 			iPurchaseOrder.update(getPurchaseOrder(purchaseOrder, StatusType.PAID));
 		}
 	}
 
+	/**
+	 * @param purchaseOrder
+	 * @param statusType
+	 * @return
+	 */
 	private PurchaseOrder getPurchaseOrder(final PurchaseOrder purchaseOrder, final StatusType statusType) {
 
 		return PurchaseOrder.builder().idPurchaseOrder(purchaseOrder.getIdPurchaseOrder())
-							.client(purchaseOrder.getClient())
+							.customer(purchaseOrder.getCustomer())
 							.status(statusType.name())
 							.referenceCode(purchaseOrder.getReferenceCode())
-							.languaje(purchaseOrder.getLanguaje())
-							.street1(purchaseOrder.getStreet1())
-							.street2(purchaseOrder.getStreet2())
-							.city(purchaseOrder.getCity())
-							.state(purchaseOrder.getState())
-							.country(purchaseOrder.getCountry())
-							.postalCode(purchaseOrder.getPostalCode())
 							.date(purchaseOrder.getDate())
 							.value(purchaseOrder.getValue()).build();
 	}
 
+	/**
+	 * @param paymentWithTokenResponse
+	 * @param purchaseOrder
+	 * @return
+	 */
 	private Payment getPayment(final PaymentWithTokenResponse paymentWithTokenResponse,
 							   final PurchaseOrder purchaseOrder) {
 
 		final Payment.PaymentBuilder paymentBuilder = Payment.builder().idPurchaseOrder(purchaseOrder.getIdPurchaseOrder())
-															 .languaje(LanguageType.ES.getLanguage())
-															 .notify_url(notifyUrl)
 															 .value(purchaseOrder.getValue())
 															 .currency(CurrencyType.COP.name());
 
@@ -153,6 +157,7 @@ public class PaymentServiceImpl implements IPaymentService {
 		return paymentBuilder.build();
 	}
 
+	//Agregar en un helper
 	private void getTransactionId(final PaymentWithTokenResponse paymentWithTokenResponse,
 								  final Payment.PaymentBuilder paymentBuilder) {
 
@@ -193,88 +198,6 @@ public class PaymentServiceImpl implements IPaymentService {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	@Override public RefundDtoResponse appyRefund(final RefundDtoRequest refundDtoRequest) {
-
-		log.debug("appyRefund : ", refundDtoRequest.toString());
-		final Payment payment = findById(refundDtoRequest.getIdPayment());
-		final RefundDtoResponse refundDtoResponse = iPaymentProvider.appyRefundPayU(getRefundDtoRequest(refundDtoRequest, payment));
-		updatePurchaseOrder(refundDtoResponse, payment.getIdPurchaseOrder());
-		updatePayment(payment, refundDtoResponse.getCode());
-		saveRefund(refundDtoResponse, refundDtoRequest, payment);
-		return refundDtoResponse;
-	}
-
-	private void saveRefund(final RefundDtoResponse refundDtoResponse, final RefundDtoRequest refundDtoRequest, final Payment payment) {
-
-		iRefundRepository.save(getRefund(refundDtoResponse, refundDtoRequest, payment));
-	}
-
-	private Refund getRefund(final RefundDtoResponse refundDtoResponse, final RefundDtoRequest refundDtoRequest, final Payment payment) {
-
-		final Refund.RefundBuilder refundBuilder = Refund.builder().reason(refundDtoRequest.getReason())
-														 .payment(payment);
-
-		getRefundDtoResponse(refundDtoResponse, refundBuilder);
-
-		return refundBuilder.build();
-	}
-
-	private void getRefundDtoResponse(final RefundDtoResponse refundDtoResponse,
-									  final Refund.RefundBuilder refundBuilder) {
-
-		if (refundDtoResponse != null) {
-
-			refundBuilder.response_json(new Gson().toJson(refundDtoResponse));
-		}
-	}
-
-	private void updatePayment(final Payment payment, final String code) {
-
-		if (code.equals(StatusType.SUCCESS.name())) {
-
-			iPaymentRepository.save(getPayment(payment, StatusType.REFUNDED));
-		}
-	}
-
-	private Payment getPayment(final Payment payment, final StatusType statusType) {
-
-		return Payment.builder().idPayment(payment.getIdPayment())
-					  .idPurchaseOrder(payment.getIdPurchaseOrder())
-					  .languaje(payment.getLanguaje())
-					  .notify_url(payment.getNotify_url())
-					  .value(payment.getValue())
-					  .currency(payment.getCurrency())
-					  .response_json(payment.getResponse_json())
-					  .status(statusType.name())
-					  .orderId(payment.getOrderId())
-					  .transactionId(payment.getTransactionId()).build();
-	}
-
-	private void updatePurchaseOrder(final RefundDtoResponse refundDtoResponse, final Integer idPurchaseOrder) {
-
-		if (refundDtoResponse.getCode().equals(StatusType.SUCCESS.name())) {
-			final PurchaseOrder purchaseOrder = iPurchaseOrder.findById(idPurchaseOrder);
-			iPurchaseOrder.update(getPurchaseOrder(purchaseOrder, StatusType.SAVED));
-		}
-	}
-
-	/**
-	 * @param refundDtoRequest {@link RefundDtoRequest}
-	 * @param payment          {@link Payment}
-	 * @return {@link RefundDtoRequest}
-	 */
-	private RefundDtoRequest getRefundDtoRequest(final RefundDtoRequest refundDtoRequest,
-												 final Payment payment) {
-
-		return RefundDtoRequest.builder().idPayment(refundDtoRequest.getIdPayment())
-							   .orderId(payment.getOrderId())
-							   .reason(refundDtoRequest.getReason())
-							   .transactionId(payment.getTransactionId()).build();
-	}
-
-	/**
 	 * Get TransactionRequest object
 	 *
 	 * @param paymentTransactionRequest {@link PaymentTransactionRequest}
@@ -284,14 +207,14 @@ public class PaymentServiceImpl implements IPaymentService {
 	private TransactionRequest getTransactionRequest(final PaymentTransactionRequest paymentTransactionRequest,
 													 final PurchaseOrder purchaseOrder) {
 
-		final Client client = iClientService.findById(paymentTransactionRequest.getIdClient());
+		final Customer customer = iCustomerService.findById(paymentTransactionRequest.getIdCustomer());
 
-		final CreditCard creditCard = getCreditCard(client.getCreditCardList(), paymentTransactionRequest.getIdCreditCard());
+		final CreditCard creditCard = getCreditCard(customer.getCreditCardList(), paymentTransactionRequest.getIdCreditCard());
 
 		paymentValidator.runValidations(purchaseOrder);
 
 		return TransactionRequest.builder().orderDto(buildOrderDto(purchaseOrder))
-								 .payerDto(buildPayerDto(client))
+								 .payerDto(buildPayerDto(customer))
 								 .creditCardTokenId(creditCard.getToken())
 								 .paymentMethod(creditCard.getPaymentMethod())
 								 .deviceSessionId(paymentTransactionRequest.getDeviceSessionId())
@@ -315,16 +238,16 @@ public class PaymentServiceImpl implements IPaymentService {
 	/**
 	 * Build PayerDto object
 	 *
-	 * @param client {@link Client}
+	 * @param customer {@link Customer}
 	 * @return {@link PayerDto}
 	 */
-	private PayerDto buildPayerDto(final Client client) {
+	private PayerDto buildPayerDto(final Customer customer) {
 
 		return PayerDto.builder().merchantPayerId("1")
-					   .fullName(client.getFullName())
-					   .emailAddress(client.getEmail())
-					   .contactPhone(client.getPhone())
-					   .dniNumber(client.getDniNumber()).build();
+					   .fullName(customer.getFullName())
+					   .emailAddress(customer.getEmail())
+					   .contactPhone(customer.getPhone())
+					   .dniNumber(customer.getDniNumber()).build();
 	}
 
 	/**

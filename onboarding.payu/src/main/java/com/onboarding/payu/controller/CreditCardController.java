@@ -4,8 +4,8 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.model.tokenization.CreditCardDto;
-import com.onboarding.payu.model.tokenization.TokenResponse;
+import com.onboarding.payu.model.tokenization.request.CreditCardRequest;
+import com.onboarding.payu.model.tokenization.response.TokenResponse;
 import com.onboarding.payu.repository.entity.CreditCard;
 import com.onboarding.payu.service.ICreditCard;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,14 +37,14 @@ public class CreditCardController {
 	}
 
 	@PostMapping
-	public TokenResponse tokenizationCard(@Valid @NotNull @RequestBody final CreditCardDto creditCardDto) {
+	public TokenResponse tokenizationCard(@Valid @NotNull @RequestBody final CreditCardRequest creditCardRequest) {
 
-		return iCreditCard.tokenizationCard(creditCardDto);
+		return iCreditCard.tokenizationCard(creditCardRequest);
 	}
 
 	@GetMapping("/{dni}")
-	public ResponseEntity<List<CreditCard>> findAllCardsByClient(@NotNull @PathVariable String dni) {
+	public ResponseEntity<List<CreditCard>> findAllCardsByCustomer(@NotNull @PathVariable String dni) {
 
-		return ResponseEntity.ok(iCreditCard.findAllCardsByClient(dni));
+		return ResponseEntity.ok(iCreditCard.findAllCardsByCustomer(dni));
 	}
 }

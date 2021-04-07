@@ -4,7 +4,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.model.product.ProductRequest;
+import com.onboarding.payu.model.product.request.ProductRequest;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.IProductService;
 import lombok.extern.slf4j.Slf4j;

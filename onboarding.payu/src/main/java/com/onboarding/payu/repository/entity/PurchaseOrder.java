@@ -39,29 +39,20 @@ public class PurchaseOrder {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_purchase_order", updatable = false, nullable = false)
 	private Integer idPurchaseOrder;
+
 	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name="id_client")
-	private Client client;
+	@JoinColumn(name="id_customer")
+	private Customer customer;
+
 	@Column(name = "status")
 	private String status;
+
 	@Column(name = "reference_code")
 	private String referenceCode;
-	@Column(name = "languaje")
-	private String languaje;
-	@Column(name = "street1")
-	private String street1;
-	@Column(name = "street2")
-	private String street2;
-	@Column(name = "city")
-	private String city;
-	@Column(name = "state")
-	private String state;
-	@Column(name = "country")
-	private String country;
-	@Column(name = "postal_code")
-	private String postalCode;
+
 	@Column(name = "date")
 	private LocalDate date;
+
 	@Column(name = "value")
 	private BigDecimal value;
 }

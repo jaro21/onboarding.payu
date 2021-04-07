@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.onboarding.payu.model.ActiveType;
-import com.onboarding.payu.model.product.ProductRequest;
+import com.onboarding.payu.model.product.request.ProductRequest;
 import com.onboarding.payu.repository.entity.Product;
 import org.springframework.stereotype.Component;
 

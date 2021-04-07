@@ -34,14 +34,18 @@ public class OrderProduct {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_order_product", updatable = false, nullable = false)
 	private Integer idOrderProduct;
+
 	@ManyToOne
 	@JoinColumn(name = "id_purchase_order", updatable = false, nullable = false)
 	private PurchaseOrder purchaseOrder;
+
 	@ManyToOne
 	@JoinColumn(name = "id_product", updatable = false, nullable = false)
 	private Product product;
+
 	@Column(name = "quantity")
 	private Integer quantity;
+
 	@Column(name = "unit_value")
 	private BigDecimal unitValue;
 }
