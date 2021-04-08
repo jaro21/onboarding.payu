@@ -1,5 +1,8 @@
 package com.onboarding.payu.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.onboarding.payu.repository.entity.OrderProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface IOrderProductRepository extends JpaRepository<OrderProduct, Integer> {
 
+	Optional<List<OrderProduct>> findByPurchaseOrderIdPurchaseOrder(Integer idPurchaseOrder);
 }

@@ -2,12 +2,12 @@ package com.onboarding.payu.controller.handler;
 
 import com.onboarding.payu.controller.CreditCardController;
 import com.onboarding.payu.exception.BusinessAppException;
+import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -47,17 +47,6 @@ public class CreditCardExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 							 .body(ResponseDto.builder()
 											  .message(ex.getBindingResult().getFieldError().getDefaultMessage())
-											  .build());
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
-																  HttpStatus status, WebRequest request) {
-
-		log.info(ex.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-							 .body(ResponseDto.builder()
-											  .message(ex.getMessage())
 											  .build());
 	}
 
@@ -103,7 +92,8 @@ public class CreditCardExceptionHandler extends ResponseEntityExceptionHandler {
 		log.error("Unhandled exception : ", e);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 							 .body(ResponseDto.builder()
-											  .message(e.getMessage())
+											  .message(ExceptionCodes.UNCONTROLLED_ERROR.getMessage())
+											  .errorCode(ExceptionCodes.UNCONTROLLED_ERROR.getCode())
 											  .build());
 	}
 }

@@ -120,22 +120,6 @@ public class RefundServiceImpl implements IRefundService {
 	}
 
 	/**
-	 * Get the payment object to update
-	 *
-	 * @param payment {@link Payment}
-	 * @param statusType {@link StatusType}
-	 * @return {@link Payment}
-	 */
-	private Payment getPayment(final Payment payment, final StatusType statusType) {
-
-		return Payment.builder().idPayment(payment.getIdPayment())
-					  .idPurchaseOrder(payment.getIdPurchaseOrder())
-					  .status(statusType.name())
-					  .orderId(payment.getOrderId())
-					  .transactionId(payment.getTransactionId()).build();
-	}
-
-	/**
 	 * update purchase order information
 	 *
 	 * @param refundDtoResponse {@link RefundDtoResponse}
@@ -144,8 +128,6 @@ public class RefundServiceImpl implements IRefundService {
 	private void updatePurchaseOrder(final RefundDtoResponse refundDtoResponse, final Integer idPurchaseOrder) {
 
 		if (refundDtoResponse.getCode().equals(StatusType.SUCCESS.name())) {
-			//final PurchaseOrder purchaseOrder = iPurchaseOrder.findById(idPurchaseOrder);
-			//iPurchaseOrder.update(refundMapper.getPurchaseOrder(purchaseOrder, StatusType.REFUNDED));
 			iPurchaseOrder.updateStatusById(StatusType.REFUNDED.name(), idPurchaseOrder);
 		}
 	}

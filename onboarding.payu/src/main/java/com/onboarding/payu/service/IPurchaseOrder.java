@@ -1,5 +1,6 @@
 package com.onboarding.payu.service;
 
+import com.onboarding.payu.model.purchase.request.DeclineRequest;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
@@ -36,9 +37,8 @@ public interface IPurchaseOrder {
 	 *
 	 * @param status {@link String}
 	 * @param id     {@link Integer}
-	 * @return {@link Integer}
 	 */
-	Integer updateStatusById(String status, Integer id);
+	void updateStatusById(String status, Integer id);
 
 	/**
 	 * Update Purchase Order
@@ -51,7 +51,7 @@ public interface IPurchaseOrder {
 	/**
 	 * Decline Purchase Order by id
 	 *
-	 * @param id {@link Integer}
+	 * @param declineRequest {@link DeclineRequest}
 	 */
-	void decline(Integer id);
+	void decline(DeclineRequest declineRequest);
 }

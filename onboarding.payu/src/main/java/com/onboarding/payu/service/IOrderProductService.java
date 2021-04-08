@@ -20,4 +20,12 @@ public interface IOrderProductService {
 	 * @return {@link List<OrderProduct>}
 	 */
 	List<OrderProduct> saveAll(List<OrderProduct> orderProductList);
+
+	/**
+	 * Get purchase order list by idPurchaseOrder
+	 *
+	 * @param idPurchaseOrder {@link Integer}
+	 * @return {@link List<OrderProduct>}
+	 */
+	List<OrderProduct> findByIdPurchaseOrder(Integer idPurchaseOrder);
 }

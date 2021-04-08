@@ -2,12 +2,12 @@ package com.onboarding.payu.controller.handler;
 
 import com.onboarding.payu.controller.ProductController;
 import com.onboarding.payu.exception.BusinessAppException;
+import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -50,17 +50,6 @@ public class ProductExceptionHandler extends ResponseEntityExceptionHandler {
 											  .build());
 	}
 
-	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
-																  HttpStatus status, WebRequest request) {
-
-		log.info(ex.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-							 .body(ResponseDto.builder()
-											  .message(ex.getMessage())
-											  .build());
-	}
-
 	/**
 	 * Handle an {@link BusinessAppException}.
 	 *
@@ -92,7 +81,8 @@ public class ProductExceptionHandler extends ResponseEntityExceptionHandler {
 		log.error("Unhandled exception : ", e);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 							 .body(ResponseDto.builder()
-											  .message(e.getMessage()) //Cambiar mensaje
+											  .message(ExceptionCodes.UNCONTROLLED_ERROR.getMessage())
+											  .errorCode(ExceptionCodes.UNCONTROLLED_ERROR.getCode())
 											  .build());
 	}
 }

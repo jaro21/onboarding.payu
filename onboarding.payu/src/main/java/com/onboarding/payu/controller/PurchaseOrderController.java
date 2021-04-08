@@ -3,6 +3,7 @@ package com.onboarding.payu.controller;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.onboarding.payu.model.purchase.request.DeclineRequest;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.service.IPurchaseOrder;
@@ -40,10 +41,10 @@ public class PurchaseOrderController {
 		return new ResponseEntity<>(iPurchaseOrder.addPurchaseOrder(purchaseOrderRequest), HttpStatus.CREATED);
 	}
 
-	@PostMapping
-	public ResponseEntity decline(@Valid @NotNull @RequestBody final Integer id){
+	@PostMapping("/decline")
+	public ResponseEntity decline(@Valid @NotNull @RequestBody final DeclineRequest declineRequest){
 
-		iPurchaseOrder.decline(id);
+		iPurchaseOrder.decline(declineRequest);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
