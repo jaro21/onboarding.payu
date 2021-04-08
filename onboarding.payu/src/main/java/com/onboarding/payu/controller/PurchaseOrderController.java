@@ -1,5 +1,6 @@
 package com.onboarding.payu.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -10,6 +11,8 @@ import com.onboarding.payu.service.IPurchaseOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,5 +49,18 @@ public class PurchaseOrderController {
 
 		iPurchaseOrder.decline(declineRequest);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@GetMapping("/customer-id/{idCustomer}")
+	public ResponseEntity<List<PurchaseOrderResponse>> getAllPurchaseOrderForCustomer(@NotNull @PathVariable Integer idCustomer) {
+
+		return ResponseEntity.ok(iPurchaseOrder.findByIdCustomer(idCustomer));
+	}
+
+	@GetMapping("/customer-id/{idCustomer}/order-id/{idPurchaseOrder}")
+	public ResponseEntity<PurchaseOrderResponse> getPurchaseOrderForCustomer(@NotNull @PathVariable Integer idCustomer,
+															   @NotNull @PathVariable Integer idPurchaseOrder) {
+
+		return ResponseEntity.ok(iPurchaseOrder.findByIdCustomerAndIdPurchaseOrder(idCustomer, idPurchaseOrder));
 	}
 }

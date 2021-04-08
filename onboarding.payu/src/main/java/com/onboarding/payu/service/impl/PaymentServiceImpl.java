@@ -81,7 +81,7 @@ public class PaymentServiceImpl implements IPaymentService {
 	@Override public PaymentWithTokenResponse paymentWithToken(final PaymentTransactionRequest paymentTransactionRequest) {
 
 		log.debug("PaymentWithToken : ", paymentTransactionRequest.toString());
-		final PurchaseOrder purchaseOrder = iPurchaseOrder.findById(paymentTransactionRequest.getIdPurchaseOrder());
+		final PurchaseOrder purchaseOrder = iPurchaseOrder.findByIdCustomerAndIdPurchaseOrder(paymentTransactionRequest.getIdPurchaseOrder());
 
 		final PaymentWithTokenResponse paymentWithTokenResponse =
 				iPaymentProvider.paymentWithToken(getTransactionRequest(paymentTransactionRequest, purchaseOrder));
