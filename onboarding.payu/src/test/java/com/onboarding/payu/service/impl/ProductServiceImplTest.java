@@ -118,7 +118,7 @@ class ProductServiceImplTest {
 
 		when(iProductRepositoryMock.findAll()).thenReturn(ProductSample.getProductList());
 
-		List<Product> productList = productServiceImpl.getProducts();
+		List<Product> productList = productServiceImpl.findProducts();
 
 		verify(iProductRepositoryMock).findAll();
 
@@ -130,7 +130,7 @@ class ProductServiceImplTest {
 
 		when(iProductRepositoryMock.findAll()).thenReturn(Collections.emptyList());
 
-		List<Product> productList = productServiceImpl.getProducts();
+		List<Product> productList = productServiceImpl.findProducts();
 
 		verify(iProductRepositoryMock).findAll();
 
@@ -142,7 +142,7 @@ class ProductServiceImplTest {
 
 		when(iProductRepositoryMock.findAllById(any())).thenReturn(ProductSample.getProductList());
 
-		List<Product> productList = productServiceImpl.getProductsByIds(ProductSample.getListIds());
+		List<Product> productList = productServiceImpl.findProductsByIds(ProductSample.getListIds());
 
 		verify(iProductRepositoryMock).findAllById(any());
 
@@ -154,7 +154,7 @@ class ProductServiceImplTest {
 
 		when(iProductRepositoryMock.findAllById(any())).thenReturn(Collections.emptyList());
 
-		List<Product> productList = productServiceImpl.getProductsByIds(ProductSample.getListIds());
+		List<Product> productList = productServiceImpl.findProductsByIds(ProductSample.getListIds());
 
 		verify(iProductRepositoryMock).findAllById(ProductSample.getListIds());
 

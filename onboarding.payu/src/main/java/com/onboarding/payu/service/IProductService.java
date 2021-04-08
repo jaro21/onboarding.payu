@@ -27,7 +27,14 @@ public interface IProductService {
 	 *
 	 * @return {@link List<Product>}
 	 */
-	List<Product> getProducts();
+	List<Product> findProducts();
+
+	/**
+	 * Method to get all products
+	 *
+	 * @return {@link List<Product>}
+	 */
+	List<Product> findByActive();
 
 	/**
 	 * Method to get all products by ids
@@ -35,7 +42,7 @@ public interface IProductService {
 	 * @param ids {@link List<Integer>}
 	 * @return {@link List<Product>}
 	 */
-	List<Product> getProductsByIds(List<Integer> ids);
+	List<Product> findProductsByIds(List<Integer> ids);
 
 	/**
 	 * Method to get one product by id
@@ -43,7 +50,7 @@ public interface IProductService {
 	 * @param id {@link Integer}
 	 * @return {@link Product}
 	 */
-	Product getProductById(Integer id);
+	Product findProductById(Integer id);
 
 	/**
 	 * Method to delete one product by id

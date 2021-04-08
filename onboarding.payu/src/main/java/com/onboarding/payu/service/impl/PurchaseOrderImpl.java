@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
+import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.purchase.request.ProductPoDto;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
@@ -104,10 +105,15 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		return iPurchaseOrderRepository.save(purchaseOrder);
 	}
 
+	@Override public void decline(final Integer id) {
+
+		iPurchaseOrderRepository.updateStatusById(StatusType.DECLINED.name(), id);
+	}
+
 	/**
 	 * Get list of orderProduct to register them in database
 	 *
-	 * @param productPoDTOList {@link List< ProductPoDto >}
+	 * @param productPoDTOList {@link List<ProductPoDto>}
 	 * @param productList    {@link List<Product>}
 	 * @param purchaseOrder  {@link PurchaseOrder}
 	 * @return {@link List<OrderProduct>}
@@ -189,7 +195,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	 */
 	private List<Product> getProductsByIds(final List<ProductPoDto> productPoDTOList) {
 
-		return iProductService.getProductsByIds(getProductsList(productPoDTOList));
+		return iProductService.findProductsByIds(getProductsList(productPoDTOList));
 	}
 
 	private List<Integer> getProductsList(final List<ProductPoDto> productPoDTOList) {

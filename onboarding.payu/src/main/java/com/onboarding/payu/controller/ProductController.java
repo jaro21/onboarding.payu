@@ -44,20 +44,26 @@ public class ProductController {
 	@PostMapping
 	public ResponseEntity<Product> addProduct(@Valid @NotNull @RequestBody ProductRequest productRequest) {
 
-		return new ResponseEntity(iProductService.saveProduct(productRequest), HttpStatus.CREATED);
+		return new ResponseEntity<>(iProductService.saveProduct(productRequest), HttpStatus.CREATED);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Product>> findAllProducts() {
 
-		return ResponseEntity.ok(iProductService.getProducts());
+		return ResponseEntity.ok(iProductService.findProducts());
+	}
+
+	@GetMapping("/active")
+	public ResponseEntity<List<Product>> findByActive() {
+
+		return ResponseEntity.ok(iProductService.findByActive());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Product> findProductById(@NotNull @PathVariable Integer id) {
 
 		Validate.notNull(id, "Product identification cannot not be empty");
-		return ResponseEntity.ok(iProductService.getProductById(id));
+		return ResponseEntity.ok(iProductService.findProductById(id));
 	}
 
 	@PutMapping
@@ -72,15 +78,6 @@ public class ProductController {
 
 		Validate.notNull(id, "Product identification cannot not be empty to remove");
 		iProductService.deleteProduct(id);
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
-
-	private ResponseEntity manageException(final Exception exception) {
-
-		if (exception instanceof IllegalArgumentException) {
-			return new ResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-		return new ResponseEntity(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
 }

@@ -1,5 +1,6 @@
 package com.onboarding.payu.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.onboarding.payu.repository.entity.Product;
@@ -18,6 +19,8 @@ import org.springframework.data.repository.query.Param;
 public interface IProductRepository extends JpaRepository<Product, Integer> {
 
 	Optional<Product> findByCode(String code);
+
+	Optional<List<Product>> findByActive(Integer active);
 
 	@Modifying
 	@Query("update Product set stock = :stock where idProduct = :id")

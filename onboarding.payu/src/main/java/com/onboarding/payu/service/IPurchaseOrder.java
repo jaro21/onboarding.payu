@@ -47,4 +47,11 @@ public interface IPurchaseOrder {
 	 * @return {@link PurchaseOrder}
 	 */
 	PurchaseOrder update(PurchaseOrder purchaseOrder);
+
+	/**
+	 * Decline Purchase Order by id
+	 *
+	 * @param id {@link Integer}
+	 */
+	void decline(Integer id);
 }

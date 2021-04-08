@@ -37,6 +37,13 @@ public class PurchaseOrderController {
 	public ResponseEntity<PurchaseOrderResponse> addPurchaseOrder(
 			@Valid @NotNull @RequestBody final PurchaseOrderRequest purchaseOrderRequest) {
 
-		return new ResponseEntity(iPurchaseOrder.addPurchaseOrder(purchaseOrderRequest), HttpStatus.CREATED);
+		return new ResponseEntity<>(iPurchaseOrder.addPurchaseOrder(purchaseOrderRequest), HttpStatus.CREATED);
+	}
+
+	@PostMapping
+	public ResponseEntity decline(@Valid @NotNull @RequestBody final Integer id){
+
+		iPurchaseOrder.decline(id);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

@@ -1,6 +1,7 @@
 package com.onboarding.payu.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import com.onboarding.payu.exception.BusinessAppException;
@@ -51,15 +52,20 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public List<Product> getProducts() {
+	@Override public List<Product> findProducts() {
 
 		return iProductRepository.findAll();
+	}
+
+	@Override public List<Product> findByActive() {
+
+		return iProductRepository.findByActive(1).orElse(Collections.emptyList());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public List<Product> getProductsByIds(final List<Integer> ids) {
+	@Override public List<Product> findProductsByIds(final List<Integer> ids) {
 
 		return iProductRepository.findAllById(ids);
 	}
@@ -67,7 +73,7 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product getProductById(final Integer id) {
+	@Override public Product findProductById(final Integer id) {
 
 		return iProductRepository.findById(id).orElseThrow(
 				() -> new BusinessAppException(ExceptionCodes.PRODUCT_ID_NOT_EXIST, id.toString()));
@@ -79,7 +85,7 @@ public class ProductServiceImpl implements IProductService {
 	@Override public void deleteProduct(final Integer id) {
 
 		try {
-			getProductById(id);
+			findProductById(id);
 			iProductRepository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
 			log.error("Failed to delete product id {} ", id, e);
@@ -103,7 +109,7 @@ public class ProductServiceImpl implements IProductService {
 	@Override public Product updateProduct(final Product product) {
 
 		log.debug("updateProduct : ", product.toString());
-		getProductById(product.getIdProduct());
+		findProductById(product.getIdProduct());
 		return iProductRepository.save(product);
 	}
 

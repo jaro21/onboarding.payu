@@ -40,7 +40,7 @@ public class CustomerController {
 
 	@PostMapping
 	public ResponseEntity<CustomerResponse> createClient(@Valid @NotNull @RequestBody final CustomerRequest customerRequest){
-		return new ResponseEntity(iCustomerService.save(customerRequest), HttpStatus.CREATED);
+		return new ResponseEntity<>(iCustomerService.save(customerRequest), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{id}")
@@ -62,6 +62,6 @@ public class CustomerController {
 
 		Validate.notNull(id, "Product identification cannot not be empty to remove");
 		iCustomerService.delete(id);
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
