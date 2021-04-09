@@ -76,7 +76,7 @@ public class PaymentServiceImpl implements IPaymentService {
 
 		log.debug("PaymentWithToken : ", paymentTransactionRequest.toString());
 		final PurchaseOrder purchaseOrder = iPurchaseOrder
-				.findByIdCustomerAndIdPurchaseOrder(paymentTransactionRequest.getIdPurchaseOrder());
+				.findByIdPurchaseOrder(paymentTransactionRequest.getIdPurchaseOrder());
 		paymentValidator.runValidations(purchaseOrder);
 		final Customer customer = iCustomerService.findById(paymentTransactionRequest.getIdCustomer());
 

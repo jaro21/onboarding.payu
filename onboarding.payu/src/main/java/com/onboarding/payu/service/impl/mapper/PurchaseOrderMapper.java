@@ -45,6 +45,26 @@ public class PurchaseOrderMapper {
 	}
 
 	/**
+	 * Get PurchaseOrder to register them in database
+	 *
+	 * @param purchaseOrder        {@link PurchaseOrder}
+	 * @param productList          {@link List < Product >}
+	 * @param purchaseOrderRequest {@link PurchaseOrder}
+	 * @return {@link PurchaseOrder}
+	 */
+	public PurchaseOrder toPurchaseOrder(final PurchaseOrder purchaseOrder, final List<Product> productList,
+										 final PurchaseOrderRequest purchaseOrderRequest) {
+
+		return PurchaseOrder.builder().idPurchaseOrder(purchaseOrder.getIdPurchaseOrder())
+							.customer(purchaseOrder.getCustomer())
+							.status(StatusType.SAVED.name())
+							.date(LocalDate.now())
+							.value(getTotalValue(productList, purchaseOrderRequest.getProductList()))
+							.referenceCode(UUID.randomUUID().toString())
+							.build();
+	}
+
+	/**
 	 * Get the total value of the purchase order
 	 *
 	 * @param productList      {@link List<Product>}
@@ -116,6 +136,7 @@ public class PurchaseOrderMapper {
 	}
 
 	public PurchaseOrderResponse toPurchaseOrderResponseWithProducts(final PurchaseOrder purchaseOrder) {
+
 		return PurchaseOrderResponse.builder().id(purchaseOrder.getIdPurchaseOrder())
 									.status(purchaseOrder.getStatus())
 									.referenceCode(purchaseOrder.getReferenceCode())
@@ -126,10 +147,12 @@ public class PurchaseOrderMapper {
 	}
 
 	private List<ProductPurchaseResponse> buildProductPurchaseResponseList(final List<OrderProduct> products) {
+
 		return products.stream().map(this::buildProductPurchaseResponse).collect(Collectors.toList());
 	}
 
 	private ProductPurchaseResponse buildProductPurchaseResponse(final OrderProduct orderProduct) {
+
 		return ProductPurchaseResponse.builder()
 									  .idProduct(orderProduct.getProduct().getIdProduct())
 									  .code(orderProduct.getProduct().getCode())

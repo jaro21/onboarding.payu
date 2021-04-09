@@ -2,6 +2,7 @@ package com.onboarding.payu.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
 
@@ -75,7 +76,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		isValidOrder(productList, purchaseOrderRequest.getProductList());
 		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(purchaseOrderMapper.toPurchaseOrder(customer, productList,
 																											  purchaseOrderRequest));
-		List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderRequest.getProductList(), productList, purchaseOrder);
+		final List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderRequest.getProductList(), productList, purchaseOrder);
 		iOrderProductService.saveAll(orderProductList);
 		orderProductList.stream().forEach(orderProduct -> iProductService
 				.updateStockById(subtract.applyAsInt(orderProduct.getProduct().getStock(), orderProduct.getQuantity()),
@@ -87,7 +88,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public PurchaseOrder findByIdCustomerAndIdPurchaseOrder(final Integer idPurchaseOrder) {
+	@Override public PurchaseOrder findByIdPurchaseOrder(final Integer idPurchaseOrder) {
 
 		return iPurchaseOrderRepository.findById(idPurchaseOrder).orElseThrow(
 				() -> new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_INVALID));
@@ -104,18 +105,10 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public PurchaseOrder update(final PurchaseOrder purchaseOrder) {
-
-		return iPurchaseOrderRepository.save(purchaseOrder);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Transactional
 	@Override public void decline(DeclineRequest declineRequest) {
 
-		final PurchaseOrder purchaseOrder = findByIdCustomerAndIdPurchaseOrder(declineRequest.getIdPurchaseOrder());
+		final PurchaseOrder purchaseOrder = findByIdPurchaseOrder(declineRequest.getIdPurchaseOrder());
 		validToDecline(declineRequest, purchaseOrder);
 
 		iPurchaseOrderRepository.updateStatusById(StatusType.DECLINED.name(), declineRequest.getIdPurchaseOrder());
@@ -147,9 +140,67 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 														.collect(Collectors.toList());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional
 	@Override public PurchaseOrderResponse updatePurchaseOrder(final PurchaseOrderRequest purchaseOrderRequest) {
 
-		return null;
+		final PurchaseOrder purchaseOrder = findByIdPurchaseOrder(purchaseOrderRequest.getId());
+
+		final List<Product> productsUpdate = getProductsToUpdate(purchaseOrderRequest, purchaseOrder);
+
+		final List<Product> productList =
+				iProductService.findProductsByIds(productsUpdate.stream().map(Product::getIdProduct).collect(Collectors.toList()));
+
+		productList.stream()
+				   .forEach(product -> {
+					   final Optional<Product> productUpd =
+							   productsUpdate.stream().filter(productUpdate -> productUpdate.getIdProduct().equals(product.getIdProduct()))
+											 .findFirst();
+					   if (productUpd.isPresent()) {
+						   final Integer stock = add.applyAsInt(product.getStock(), productUpd.get().getStock());
+						   if (stock < 0) {
+							   throw new BusinessAppException(ExceptionCodes.PRODUCT_NOT_AVAILABLE, productUpd.get().getStock().toString());
+						   }
+						   iProductService.updateStockById(stock, product.getIdProduct());
+					   }
+				   });
+
+		iOrderProductService.deleteByIdPurchaseOrder(purchaseOrder.getIdPurchaseOrder());
+
+		final PurchaseOrder purchaseOrderUpdate = iPurchaseOrderRepository.save(purchaseOrderMapper.toPurchaseOrder(purchaseOrder,
+																													productList,
+																													purchaseOrderRequest));
+		final List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderRequest.getProductList(), productList,
+																	 purchaseOrderUpdate);
+		iOrderProductService.saveAll(orderProductList);
+
+		return purchaseOrderMapper.toPurchaseOrderResponse(purchaseOrderUpdate);
+	}
+
+	/**
+	 * @param purchaseOrderRequest {@link PurchaseOrderRequest}
+	 * @param purchaseOrder        {@link PurchaseOrder}
+	 * @return {@link List<Product>}
+	 */
+	private List<Product> getProductsToUpdate(final PurchaseOrderRequest purchaseOrderRequest, final PurchaseOrder purchaseOrder) {
+
+		return purchaseOrder.getProducts().stream().map(orderProduct -> {
+			final Optional<ProductPoDto> productOptional =
+					purchaseOrderRequest.getProductList().stream()
+										.filter(product -> product.getIdProduct().equals(orderProduct.getProduct().getIdProduct()))
+										.findFirst();
+			if (productOptional.isPresent()) {
+				return Product.builder().idProduct(productOptional.get().getIdProduct())
+							  .stock(subtract.applyAsInt(orderProduct.getQuantity(), productOptional.get().getQuantity()))
+							  .build();
+			} else {
+				return Product.builder().idProduct(productOptional.get().getIdProduct())
+							  .stock(productOptional.get().getQuantity())
+							  .build();
+			}
+		}).collect(Collectors.toList());
 	}
 
 	/**

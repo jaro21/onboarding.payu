@@ -32,7 +32,7 @@ public interface IPurchaseOrder {
 	 * @return {@link PurchaseOrder}
 	 * @
 	 */
-	PurchaseOrder findByIdCustomerAndIdPurchaseOrder(Integer idPurchaseOrder);
+	PurchaseOrder findByIdPurchaseOrder(Integer idPurchaseOrder);
 
 	/**
 	 * Update Purchase Order's status by id
@@ -41,14 +41,6 @@ public interface IPurchaseOrder {
 	 * @param id     {@link Integer}
 	 */
 	void updateStatusById(String status, Integer id);
-
-	/**
-	 * Update Purchase Order
-	 *
-	 * @param purchaseOrder {@link PurchaseOrder}
-	 * @return {@link PurchaseOrder}
-	 */
-	PurchaseOrder update(PurchaseOrder purchaseOrder);
 
 	/**
 	 * Decline Purchase Order by id
