@@ -39,15 +39,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PurchaseOrderImpl implements IPurchaseOrder {
 
-	private IPurchaseOrderRepository iPurchaseOrderRepository;
+	private final IPurchaseOrderRepository iPurchaseOrderRepository;
 
-	private IProductService iProductService;
+	private final IProductService iProductService;
 
-	private IOrderProductService iOrderProductService;
+	private final IOrderProductService iOrderProductService;
 
-	private ICustomerService iCustomerService;
+	private final ICustomerService iCustomerService;
 
-	private PurchaseOrderMapper purchaseOrderMapper;
+	private final PurchaseOrderMapper purchaseOrderMapper;
 
 	@Autowired
 	public PurchaseOrderImpl(final IPurchaseOrderRepository iPurchaseOrderRepository,

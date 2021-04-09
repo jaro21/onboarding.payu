@@ -28,11 +28,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class PayUProviderImpl implements IPaymentProvider {
 
-	private PaymentClient paymentClient;
+	private final PaymentClient paymentClient;
 
-	private PaymentPayuMapper paymentPayUMapper;
+	private final PaymentPayuMapper paymentPayUMapper;
 
-	private RefundPayuMapper refundPayUMapper;
+	private final RefundPayuMapper refundPayUMapper;
 
 	@Value("${payment-api.apiKey}")
 	private String apiKey;

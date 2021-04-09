@@ -1,4 +1,4 @@
-package com.onboarding.payu.model.client.request;
+package com.onboarding.payu.model.customer.request;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -65,5 +65,14 @@ public class CustomerRequest {
 	@Size(max = 5, message = "The size of the postal code must be a maximum of 5 characters.")
 	private String postal_code;
 
-	private boolean active = true;
+	@Builder.Default
+	private boolean enabled = true;
+
+	@Size(max = 45, message = "The size of the username must be a maximum of 45 characters.")
+	private String username;
+
+	@Size(max = 45, message = "The size of the password must be a maximum of 45 characters.")
+	private String password;
+
+	private Integer idRol;
 }

@@ -52,6 +52,6 @@ public class Product {
 	@NotNull(message = "Product stock cannot not be empty")
 	private Integer stock;
 
-	@Column(name = "active")
-	private Integer active;
+	@Column(name = "enabled")
+	private Integer enabled;
 }

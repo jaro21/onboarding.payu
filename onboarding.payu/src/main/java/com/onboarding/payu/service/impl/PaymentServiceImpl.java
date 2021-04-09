@@ -31,17 +31,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PaymentServiceImpl implements IPaymentService {
 
-	private IPaymentProvider iPaymentProvider;
+	private final IPaymentProvider iPaymentProvider;
 
-	private ICustomerService iCustomerService;
+	private final ICustomerService iCustomerService;
 
-	private IPurchaseOrder iPurchaseOrder;
+	private final IPurchaseOrder iPurchaseOrder;
 
-	private PaymentValidator paymentValidator;
+	private final PaymentValidator paymentValidator;
 
-	private IPaymentRepository iPaymentRepository;
+	private final IPaymentRepository iPaymentRepository;
 
-	private PaymentMapper paymentMapper;
+	private final PaymentMapper paymentMapper;
 
 	@Autowired
 	public PaymentServiceImpl(final IPaymentProvider iPaymentProvider, final ICustomerService iCustomerService,

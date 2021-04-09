@@ -51,7 +51,7 @@ public class RefundPayuMapper {
 
 	public RefundDtoResponse toRefundDtoResponse(final RefundPayUResponse refundPayUResponse) {
 
-		log.error("toRefundDtoResponse : ",refundPayUResponse.toString());
+		log.info("toRefundDtoResponse : ",refundPayUResponse.toString());
 		final RefundDtoResponse.RefundDtoResponseBuilder refundDtoResponseBuilder =
 				RefundDtoResponse.builder().code(refundPayUResponse.getCode())
 								.error(refundPayUResponse.getError());

@@ -62,7 +62,7 @@ public class PaymentPayuMapper {
 										   .test(false);
 
 		toTransaccion(transactionRequest, signatureMd5, paymentWithTokenPayURequest);
-		log.error(paymentWithTokenPayURequest.toString());
+		log.info(paymentWithTokenPayURequest.toString());
 		return paymentWithTokenPayURequest.build();
 	}
 

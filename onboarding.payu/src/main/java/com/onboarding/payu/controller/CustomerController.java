@@ -3,8 +3,8 @@ package com.onboarding.payu.controller;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.model.client.request.CustomerRequest;
-import com.onboarding.payu.model.client.response.CustomerResponse;
+import com.onboarding.payu.model.customer.request.CustomerRequest;
+import com.onboarding.payu.model.customer.response.CustomerResponse;
 import com.onboarding.payu.service.ICustomerService;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;

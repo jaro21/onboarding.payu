@@ -19,15 +19,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RefundServiceImpl implements IRefundService {
 
-	private IPaymentService iPaymentService;
+	private final IPaymentService iPaymentService;
 
-	private IRefundRepository iRefundRepository;
+	private final IRefundRepository iRefundRepository;
 
-	private IPaymentProvider iPaymentProvider;
+	private final IPaymentProvider iPaymentProvider;
 
-	private IPurchaseOrder iPurchaseOrder;
+	private final IPurchaseOrder iPurchaseOrder;
 
-	private RefundMapper refundMapper;
+	private final RefundMapper refundMapper;
 
 	@Autowired
 	public RefundServiceImpl(final IPaymentService iPaymentService,

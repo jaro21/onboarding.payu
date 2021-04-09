@@ -1,4 +1,4 @@
-package com.onboarding.payu.model.client.response;
+package com.onboarding.payu.model.customer.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -30,5 +30,5 @@ public class CustomerResponse {
 	private String state;
 	private String country;
 	private String postal_code;
-	private boolean active;
+	private boolean enabled;
 }

@@ -13,7 +13,8 @@ import lombok.Getter;
 public enum ExceptionCodes {
 
 	UNCONTROLLED_ERROR("E001", "An uncontrolled error occurred in the application."),
-	CUSTOMER_NUMBER_NOT_EXIST("C001", "Customer with identification %s does not exist"),
+	USERNAME_NOT_EXIST("SEC001", "Username %s does not exist."),
+	CUSTOMER_NUMBER_NOT_EXIST("C001", "Customer with identification %s does not exist."),
 	CUSTOMER_ID_NOT_EXIST("C002", "Customer id %s does not exist."),
 	ERROR_TO_DELETE_CUSTOMER("C003", "Failed to delete customer."),
 	DUPLICATE_CUSTOMER_DNI("C004", "Duplicate customer dni %s "),
@@ -37,6 +38,7 @@ public enum ExceptionCodes {
 	PERIOD_FORMAT_INVALID("CC002", "The expiration date must be in the format 'YYYY/MM'."),
 	CREDIT_CARD_INVALID("CC003", "The credit card number is invalid."),
 	PAYMENT_METHOD_IVALID("CC004", "The payment method %s is invalid.");
+
 
 	private final String code;
 	private final String message;

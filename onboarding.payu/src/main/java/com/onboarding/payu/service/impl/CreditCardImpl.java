@@ -7,10 +7,10 @@ import com.onboarding.payu.model.tokenization.request.CreditCardRequest;
 import com.onboarding.payu.model.tokenization.response.TokenResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
 import com.onboarding.payu.repository.ICreditCardRepository;
-import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.repository.entity.CreditCard;
-import com.onboarding.payu.service.ICustomerService;
+import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.service.ICreditCard;
+import com.onboarding.payu.service.ICustomerService;
 import com.onboarding.payu.service.impl.mapper.CreditCardMapper;
 import com.onboarding.payu.service.validator.CreditCardValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -28,13 +28,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class CreditCardImpl implements ICreditCard {
 
-	private IPaymentProvider iPaymentProvider;
+	private final IPaymentProvider iPaymentProvider;
 
-	private ICreditCardRepository iCreditCardRepository;
+	private final ICreditCardRepository iCreditCardRepository;
 
-	private ICustomerService iCustomerService;
+	private final ICustomerService iCustomerService;
 
-	private CreditCardValidator creditCardValidator;
+	private final CreditCardValidator creditCardValidator;
 
 	@Autowired
 	public CreditCardImpl(final IPaymentProvider iPaymentProvider,
