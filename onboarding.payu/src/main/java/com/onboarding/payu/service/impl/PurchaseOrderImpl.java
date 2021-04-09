@@ -119,30 +119,55 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		addStock(declineRequest.getIdPurchaseOrder());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public PurchaseOrderResponse findByIdCustomerAndIdPurchaseOrder(final Integer idCustomer, final Integer idPurchaseOrder) {
 
-		return purchaseOrderMapper.toPurchaseOrderResponse(
-				getPurchaseOrdersByIdCustomer(idCustomer).stream().filter(purchaseOrder -> purchaseOrder.getIdPurchaseOrder().equals(idPurchaseOrder))
-								 .findFirst().orElseThrow(() -> new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_INVALID_CUSTOMER)));
+		return getPurchaseOrderResponse(
+				getPurchaseOrdersByIdCustomer(idCustomer).stream().filter(purchaseOrder -> purchaseOrder.getIdPurchaseOrder()
+																										.equals(idPurchaseOrder))
+														 .findFirst().orElseThrow(
+						() -> new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_INVALID_CUSTOMER)));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override public List<PurchaseOrderResponse> findByIdCustomer(final Integer idCustomer) {
 
-		return getPurchaseOrdersByIdCustomer(idCustomer).stream().map(purchaseOrderMapper::toPurchaseOrderResponse).collect(Collectors.toList());
+		return getPurchaseOrdersByIdCustomer(idCustomer).stream().map(this::getPurchaseOrderResponse).collect(Collectors.toList());
 	}
 
+	/**
+	 * @param idCustomer {@link Integer}
+	 * @return {@link List<PurchaseOrder>}
+	 */
 	private List<PurchaseOrder> getPurchaseOrdersByIdCustomer(final Integer idCustomer) {
 
 		final List<PurchaseOrder> purchaseOrderList = iPurchaseOrderRepository.findByCustomerIdCustomer(idCustomer).orElse(
 				Collections.emptyList());
 
-		if(purchaseOrderList.size() < 1){
+		if (purchaseOrderList.size() < 1) {
 			throw new BusinessAppException(ExceptionCodes.CUSTOMER_HAS_NO_PURCHASE_ORDER);
 		}
 
 		return purchaseOrderList;
 	}
 
+	private PurchaseOrderResponse getPurchaseOrderResponse(final PurchaseOrder purchaseOrder) {
+
+		final List<OrderProduct> orderProductList = iOrderProductService.findByIdPurchaseOrder(purchaseOrder.getIdPurchaseOrder());
+		final List<Integer> productListId = orderProductList.stream().map(orderProduct -> orderProduct.getProduct().getIdProduct())
+															.collect(Collectors.toList());
+		final List<Product> productList = iProductService.findProductsByIds(productListId);
+
+		return purchaseOrderMapper.toPurchaseOrderResponse(purchaseOrder, productList, orderProductList);
+	}
+
+	/**
+	 * @param declineRequest {@link DeclineRequest}
+	 */
 	private void validToDecline(final DeclineRequest declineRequest) {
 
 		final PurchaseOrder purchaseOrder = findByIdCustomerAndIdPurchaseOrder(declineRequest.getIdPurchaseOrder());
@@ -235,9 +260,10 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 		productList.stream().forEach(product -> {
 			final ProductPoDto productPoDto =
-			productPoDtoList.stream().filter(prod -> prod.getIdProduct().equals(product.getIdProduct())).findFirst()
-							.orElseThrow(() -> new BusinessAppException(ExceptionCodes.PRODUCT_ID_NOT_EXIST, product.getIdProduct().toString()));
-			if(product.getStock().compareTo(productPoDto.getQuantity()) < 0){
+					productPoDtoList.stream().filter(prod -> prod.getIdProduct().equals(product.getIdProduct())).findFirst()
+									.orElseThrow(() -> new BusinessAppException(ExceptionCodes.PRODUCT_ID_NOT_EXIST,
+																				product.getIdProduct().toString()));
+			if (product.getStock().compareTo(productPoDto.getQuantity()) < 0) {
 				throw new BusinessAppException(ExceptionCodes.PRODUCT_NOT_AVAILABLE, product.getName());
 			}
 		});

@@ -5,14 +5,17 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.purchase.request.ProductPoDto;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
+import com.onboarding.payu.model.purchase.response.ProductPurchaseResponse;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.Customer;
+import com.onboarding.payu.repository.entity.OrderProduct;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +28,8 @@ public class PurchaseOrderMapper {
 	/**
 	 * Get PurchaseOrder to register them in database
 	 *
-	 * @param customer           {@link Customer}
-	 * @param productList      {@link List < Product >}
+	 * @param customer             {@link Customer}
+	 * @param productList          {@link List < Product >}
 	 * @param purchaseOrderRequest {@link PurchaseOrder}
 	 * @return {@link PurchaseOrder}
 	 */
@@ -44,7 +47,7 @@ public class PurchaseOrderMapper {
 	/**
 	 * Get the total value of the purchase order
 	 *
-	 * @param productList    {@link List<Product>}
+	 * @param productList      {@link List<Product>}
 	 * @param productPoDTOList {@link List<ProductPoDto>}
 	 * @return {@link BigDecimal}
 	 */
@@ -54,14 +57,13 @@ public class PurchaseOrderMapper {
 			return productPoDTOList.stream().map(productPoDTO -> BigDecimal.valueOf(productPoDTO.getQuantity()).multiply(
 					productList.stream().filter(product -> product.getIdProduct().equals(productPoDTO.getIdProduct())).findFirst().get()
 							   .getPrice())).reduce(BigDecimal.valueOf(0.0), (a, b) -> a.add(b));
-		}catch (NoSuchElementException e){
-			log.debug("Invalid product in list [{}]",productPoDTOList.toString(), e);
+		} catch (NoSuchElementException e) {
+			log.debug("Invalid product in list [{}]", productPoDTOList.toString(), e);
 			throw new BusinessAppException(ExceptionCodes.ERROR_TO_PROCESS_PRODUCT);
 		}
 	}
 
 	/**
-	 *
 	 * @param purchaseOrder {@link PurchaseOrder}
 	 * @return {@link PurchaseOrderResponse}
 	 */
@@ -72,5 +74,45 @@ public class PurchaseOrderMapper {
 									.referenceCode(purchaseOrder.getReferenceCode())
 									.date(purchaseOrder.getDate())
 									.value(purchaseOrder.getValue()).build();
+	}
+
+	/**
+	 * @param purchaseOrder {@link PurchaseOrder}
+	 * @param products      {@link List<Product>}
+	 * @return {@link PurchaseOrderResponse}
+	 */
+	public PurchaseOrderResponse toPurchaseOrderResponse(final PurchaseOrder purchaseOrder, final List<Product> products,
+														 final List<OrderProduct> orderProductList) {
+
+		final PurchaseOrderResponse.PurchaseOrderResponseBuilder purchaseOrderResponseBuilder =
+				PurchaseOrderResponse.builder().id(purchaseOrder.getIdPurchaseOrder())
+									 .status(purchaseOrder.getStatus())
+									 .referenceCode(purchaseOrder.getReferenceCode())
+									 .date(purchaseOrder.getDate())
+									 .value(purchaseOrder.getValue());
+
+		toProductPurchaseResponseList(purchaseOrderResponseBuilder, products);
+
+		return purchaseOrderResponseBuilder.build();
+	}
+
+	private void toProductPurchaseResponseList(final PurchaseOrderResponse.PurchaseOrderResponseBuilder purchaseOrderResponseBuilder,
+											   final List<Product> products) {
+
+		if (products != null && !products.isEmpty()) {
+			purchaseOrderResponseBuilder
+					.products(products.stream().map(product -> toProductPurchaseResponse(product)).collect(Collectors.toList()));
+		}
+	}
+
+	private ProductPurchaseResponse toProductPurchaseResponse(final Product product) {
+
+		return ProductPurchaseResponse.builder()
+									  .idProduct(product.getIdProduct())
+									  .name(product.getName())
+									  .code(product.getCode())
+									  .description(product.getDescription())
+									  .price(product.getPrice())
+									  .build();
 	}
 }
