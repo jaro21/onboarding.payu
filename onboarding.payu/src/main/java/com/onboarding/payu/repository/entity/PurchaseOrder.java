@@ -61,6 +61,6 @@ public class PurchaseOrder {
 	private BigDecimal value;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "purchaseOrder")
+	@OneToMany(mappedBy = "idPurchaseOrder")
 	private List<OrderProduct> products;
 }

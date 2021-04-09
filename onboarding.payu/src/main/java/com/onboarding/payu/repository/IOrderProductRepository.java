@@ -15,5 +15,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface IOrderProductRepository extends JpaRepository<OrderProduct, Integer> {
 
-	Optional<List<OrderProduct>> findByPurchaseOrderIdPurchaseOrder(Integer idPurchaseOrder);
+	Optional<List<OrderProduct>> findByIdPurchaseOrder(Integer idPurchaseOrder);
 }

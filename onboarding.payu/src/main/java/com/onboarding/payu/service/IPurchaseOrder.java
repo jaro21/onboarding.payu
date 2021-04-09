@@ -73,4 +73,12 @@ public interface IPurchaseOrder {
 	 * @return {@link List<PurchaseOrderResponse>}
 	 */
 	List<PurchaseOrderResponse> findByIdCustomer(Integer idCustomer);
+
+	/**
+	 *
+	 *
+	 * @param purchaseOrderRequest {@link PurchaseOrderResponse}
+	 * @return {@link PurchaseOrderResponse}
+	 */
+	PurchaseOrderResponse updatePurchaseOrder(PurchaseOrderRequest purchaseOrderRequest);
 }

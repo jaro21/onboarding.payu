@@ -28,7 +28,7 @@ public enum ExceptionCodes {
 	PURCHASE_ORDER_STATUS_INVALID("PO002", "Purchase order not available for payment"),
 	ERROR_TO_PROCESS_PURCHASE_ORDER("PO003", "Error processing purchase order."),
 	PURCHASE_ORDER_INVALID_CUSTOMER("PO004", "The purchase order is not associated with the customer."),
-	PURCHASE_ORDER_CANNOT_BE_DECLINED("PO005", "Purchase order cannot be declined if it is in a state other than saved."),
+	PURCHASE_ORDER_CANNOT_BE_DECLINED("PO005", "The purchase order cannot be refunded if it has a different status than saved."),
 	CUSTOMER_HAS_NO_PURCHASE_ORDER("PO005", "The customer has no purchase orders."),
 	MINIMUM_AMOUNT_INVALID("A001", "Minimum amount must be greater than or equal to $ %s"),
 	MAXIMUM_AMOUNT_INVALID("A002", "Maximum amount must be less than or equal to $ %s"),

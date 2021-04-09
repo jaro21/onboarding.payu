@@ -41,7 +41,7 @@ public class OrderProductServicesImpl implements IOrderProductService {
 	 */
 	@Override public List<OrderProduct> findByIdPurchaseOrder(final Integer idPurchaseOrder) {
 
-		return iOrderProductRepository.findByPurchaseOrderIdPurchaseOrder(idPurchaseOrder).orElseThrow(
+		return iOrderProductRepository.findByIdPurchaseOrder(idPurchaseOrder).orElseThrow(
 				() -> new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_INVALID));
 	}
 }

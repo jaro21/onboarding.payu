@@ -81,8 +81,7 @@ public class PurchaseOrderMapper {
 	 * @param products      {@link List<Product>}
 	 * @return {@link PurchaseOrderResponse}
 	 */
-	public PurchaseOrderResponse toPurchaseOrderResponse(final PurchaseOrder purchaseOrder, final List<Product> products,
-														 final List<OrderProduct> orderProductList) {
+	public PurchaseOrderResponse toPurchaseOrderResponse(final PurchaseOrder purchaseOrder, final List<Product> products) {
 
 		final PurchaseOrderResponse.PurchaseOrderResponseBuilder purchaseOrderResponseBuilder =
 				PurchaseOrderResponse.builder().id(purchaseOrder.getIdPurchaseOrder())
@@ -101,7 +100,7 @@ public class PurchaseOrderMapper {
 
 		if (products != null && !products.isEmpty()) {
 			purchaseOrderResponseBuilder
-					.products(products.stream().map(product -> toProductPurchaseResponse(product)).collect(Collectors.toList()));
+					.products(products.stream().map(this::toProductPurchaseResponse).collect(Collectors.toList()));
 		}
 	}
 
@@ -113,6 +112,30 @@ public class PurchaseOrderMapper {
 									  .code(product.getCode())
 									  .description(product.getDescription())
 									  .price(product.getPrice())
+									  .build();
+	}
+
+	public PurchaseOrderResponse toPurchaseOrderResponseWithProducts(final PurchaseOrder purchaseOrder) {
+		return PurchaseOrderResponse.builder().id(purchaseOrder.getIdPurchaseOrder())
+									.status(purchaseOrder.getStatus())
+									.referenceCode(purchaseOrder.getReferenceCode())
+									.date(purchaseOrder.getDate())
+									.value(purchaseOrder.getValue())
+									.products(buildProductPurchaseResponseList(purchaseOrder.getProducts()))
+									.build();
+	}
+
+	private List<ProductPurchaseResponse> buildProductPurchaseResponseList(final List<OrderProduct> products) {
+		return products.stream().map(this::buildProductPurchaseResponse).collect(Collectors.toList());
+	}
+
+	private ProductPurchaseResponse buildProductPurchaseResponse(final OrderProduct orderProduct) {
+		return ProductPurchaseResponse.builder()
+									  .idProduct(orderProduct.getProduct().getIdProduct())
+									  .code(orderProduct.getProduct().getCode())
+									  .description(orderProduct.getProduct().getDescription())
+									  .price(orderProduct.getUnitValue())
+									  .quantity(orderProduct.getQuantity())
 									  .build();
 	}
 }
