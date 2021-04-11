@@ -4,17 +4,11 @@ import com.onboarding.payu.model.ActiveType;
 import com.onboarding.payu.model.customer.request.CustomerRequest;
 import com.onboarding.payu.model.customer.response.CustomerResponse;
 import com.onboarding.payu.repository.entity.Customer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CustomerMapper {
 
-	@Bean public BCryptPasswordEncoder bCryptPasswordEncoder() {
-
-		return new BCryptPasswordEncoder();
-	}
 
 	public Customer toCustomer(final CustomerRequest customerRequest) {
 
@@ -33,7 +27,8 @@ public class CustomerMapper {
 								ActiveType.ENABLED.getId() :
 								ActiveType.DISABLED.getId())
 					   .username(customerRequest.getUsername())
-					   .password_hash(bCryptPasswordEncoder().encode(customerRequest.getPassword())).build();
+					   //.password_hash(bCryptPasswordEncoder.encode(customerRequest.getPassword()))
+					   .build();
 	}
 
 	public CustomerResponse toCustomerResponse(final Customer customer) {

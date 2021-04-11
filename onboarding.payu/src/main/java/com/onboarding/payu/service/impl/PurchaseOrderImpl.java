@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
@@ -148,31 +149,26 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 		final PurchaseOrder purchaseOrder = findByIdPurchaseOrder(purchaseOrderRequest.getId());
 
-		final List<Product> productsUpdate = getProductsToUpdate(purchaseOrderRequest, purchaseOrder);
+		final List<Integer> listIds =
+				Stream.concat(purchaseOrder.getProducts().stream().map(orderProduct -> orderProduct.getProduct().getIdProduct()).collect(
+						Collectors.toList()).stream(),
+							  purchaseOrderRequest.getProductList().stream().map(productPoDto -> productPoDto.getIdProduct()).collect(
+									  Collectors.toList()).stream()).distinct().collect(Collectors.toList());
 
-		final List<Product> productList =
-				iProductService.findProductsByIds(productsUpdate.stream().map(Product::getIdProduct).collect(Collectors.toList()));
+		final List<Product> productList = iProductService.findProductsByIds(listIds);
 
-		productList.stream()
-				   .forEach(product -> {
-					   final Optional<Product> productUpd =
-							   productsUpdate.stream().filter(productUpdate -> productUpdate.getIdProduct().equals(product.getIdProduct()))
-											 .findFirst();
-					   if (productUpd.isPresent()) {
-						   final Integer stock = add.applyAsInt(product.getStock(), productUpd.get().getStock());
-						   if (stock < 0) {
-							   throw new BusinessAppException(ExceptionCodes.PRODUCT_NOT_AVAILABLE, productUpd.get().getStock().toString());
-						   }
-						   iProductService.updateStockById(stock, product.getIdProduct());
-					   }
-				   });
+		updateProductStock(productList, purchaseOrder, purchaseOrderRequest);
 
 		iOrderProductService.deleteByIdPurchaseOrder(purchaseOrder.getIdPurchaseOrder());
 
+		final List<Product> productOrderList =
+				iProductService.findProductsByIds(
+						purchaseOrderRequest.getProductList().stream().map(ProductPoDto::getIdProduct).collect(Collectors.toList()));
+
 		final PurchaseOrder purchaseOrderUpdate = iPurchaseOrderRepository.save(purchaseOrderMapper.toPurchaseOrder(purchaseOrder,
-																													productList,
+																													productOrderList,
 																													purchaseOrderRequest));
-		final List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderRequest.getProductList(), productList,
+		final List<OrderProduct> orderProductList = getOrderProducts(purchaseOrderRequest.getProductList(), productOrderList,
 																	 purchaseOrderUpdate);
 		iOrderProductService.saveAll(orderProductList);
 
@@ -180,27 +176,32 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	}
 
 	/**
-	 * @param purchaseOrderRequest {@link PurchaseOrderRequest}
+	 * @param productList          {@link List<Product>List<Product>List<Product>}
 	 * @param purchaseOrder        {@link PurchaseOrder}
+	 * @param purchaseOrderRequest {@link PurchaseOrderRequest}
 	 * @return {@link List<Product>}
 	 */
-	private List<Product> getProductsToUpdate(final PurchaseOrderRequest purchaseOrderRequest, final PurchaseOrder purchaseOrder) {
+	private void updateProductStock(final List<Product> productList, final PurchaseOrder purchaseOrder,
+									final PurchaseOrderRequest purchaseOrderRequest) {
 
-		return purchaseOrder.getProducts().stream().map(orderProduct -> {
-			final Optional<ProductPoDto> productOptional =
+		productList.stream().forEach(product -> {
+			final Optional<OrderProduct> productOptional =
+					purchaseOrder.getProducts().stream().filter(prod -> prod.getProduct().getIdProduct().equals(product.getIdProduct()))
+								 .findFirst();
+
+			final Optional<ProductPoDto> productDtoOptional =
 					purchaseOrderRequest.getProductList().stream()
-										.filter(product -> product.getIdProduct().equals(orderProduct.getProduct().getIdProduct()))
-										.findFirst();
+										.filter(productPoDto -> productPoDto.getIdProduct().equals(product.getIdProduct())).findFirst();
+
+			Integer stock = product.getStock();
 			if (productOptional.isPresent()) {
-				return Product.builder().idProduct(productOptional.get().getIdProduct())
-							  .stock(subtract.applyAsInt(orderProduct.getQuantity(), productOptional.get().getQuantity()))
-							  .build();
-			} else {
-				return Product.builder().idProduct(productOptional.get().getIdProduct())
-							  .stock(productOptional.get().getQuantity())
-							  .build();
+				stock = add.applyAsInt(stock, productOptional.get().getQuantity());
 			}
-		}).collect(Collectors.toList());
+			if (productDtoOptional.isPresent()) {
+				stock = subtract.applyAsInt(stock, productDtoOptional.get().getQuantity());
+			}
+			iProductService.updateStockById(stock, product.getIdProduct());
+		});
 	}
 
 	/**
