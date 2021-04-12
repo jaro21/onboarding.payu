@@ -50,11 +50,12 @@ public class RefundServiceImpl implements IRefundService {
 
 		log.debug("appyRefund : ", refundDtoRequest.toString());
 		final Payment payment = iPaymentService.findById(refundDtoRequest.getIdPayment());
-		final RefundDtoResponse refundDtoResponse = iPaymentProvider.applyRefund(refundMapper.buildRefundDtoRequest(refundDtoRequest,
-																													payment));
+		final RefundDtoResponse refundDtoResponse = iPaymentProvider.applyRefund(payment, refundDtoRequest.getReason());
+
 		updatePurchaseOrder(refundDtoResponse, payment.getIdPurchaseOrder());
 		updatePayment(payment, refundDtoResponse.getCode());
 		saveRefund(refundDtoResponse, refundDtoRequest, payment);
+
 		return refundDtoResponse;
 	}
 

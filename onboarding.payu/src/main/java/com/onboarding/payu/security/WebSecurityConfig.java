@@ -3,6 +3,7 @@ package com.onboarding.payu.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -53,11 +54,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(final HttpSecurity httpSecurity) throws Exception {
 
-		httpSecurity.csrf().disable()
-					.authorizeRequests().antMatchers("/v1.0/authenticate").permitAll().
-							anyRequest().authenticated().and().
-							exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-					.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		httpSecurity.cors().and().csrf().disable()
+					.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+					.authorizeRequests().antMatchers("/v1.0/authenticate").permitAll()
+					.antMatchers(HttpMethod.POST, "/v1.0/customers").permitAll()
+					.anyRequest().authenticated();
 
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}

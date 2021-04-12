@@ -154,7 +154,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		final List<Integer> listIds =
 				Stream.concat(purchaseOrder.getProducts().stream().map(orderProduct -> orderProduct.getProduct().getIdProduct()).collect(
 						Collectors.toList()).stream(),
-							  purchaseOrderRequest.getProductList().stream().map(productPoDto -> productPoDto.getIdProduct()).collect(
+							  purchaseOrderRequest.getProductList().stream().map(ProductPoDto::getIdProduct).collect(
 									  Collectors.toList()).stream()).distinct().collect(Collectors.toList());
 
 		final List<Product> productList = iProductService.findProductsByIds(listIds);

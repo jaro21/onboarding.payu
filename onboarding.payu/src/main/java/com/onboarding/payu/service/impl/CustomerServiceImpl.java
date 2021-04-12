@@ -117,5 +117,8 @@ public class CustomerServiceImpl implements ICustomerService {
 		if (iCustomerRepository.findByDniNumber(customerRequest.getDniNumber()).isPresent()) {
 			throw new BusinessAppException(ExceptionCodes.DUPLICATE_CUSTOMER_DNI, customerRequest.getDniNumber());
 		}
+		if (iCustomerRepository.findByUsername(customerRequest.getUsername()).isPresent()) {
+			throw new BusinessAppException(ExceptionCodes.DUPLICATE_USERNAME, customerRequest.getUsername());
+		}
 	}
 }

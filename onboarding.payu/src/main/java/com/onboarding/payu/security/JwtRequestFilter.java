@@ -6,7 +6,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,29 +43,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 		final String requestTokenHeader = request.getHeader(header_authorization);
 
-		String username = null;
-		String jwtToken = null;
-
-		if (requestTokenHeader != null && requestTokenHeader.startsWith(token_prefix)) {
-			jwtToken = requestTokenHeader.substring(7);
-			try {
-				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-			} catch (IllegalArgumentException e) {
-				log.info("Unable to get JWT Token ", e);
-			} catch (ExpiredJwtException e) {
-				log.info("JWT Token has expired ", e);
-			}
-		} else {
-			log.warn("JWT Token does not begin with Bearer String");
+		if (requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer ")) {
+			chain.doFilter(request, response);
+			return;
 		}
+
+		final String jwtToken = requestTokenHeader.substring(7);
+		final String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-			UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+			final UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 
 			if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
 
-				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+				final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				usernamePasswordAuthenticationToken
 						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

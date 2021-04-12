@@ -66,8 +66,9 @@ public class CreditCardImpl implements ICreditCard {
 	@Override public TokenResponse saveCreditCard(final TokenResponse tokenResponse) {
 
 		log.debug("Save Credit Card", tokenResponse.toString());
-		if (isValidRegistration(tokenResponse)) {
-			final Customer customer = iCustomerService.findByDniNumber(tokenResponse.getCreditCard().getIdentificationNumber());
+		final Customer customer = iCustomerService.findByDniNumber(tokenResponse.getCreditCard().getIdentificationNumber());
+
+		if (isValidRegistration(customer, tokenResponse)) {
 			final CreditCard creditCard = CreditCardMapper.toCreditCard(tokenResponse, customer);
 			iCreditCardRepository.save(creditCard);
 		}
@@ -77,13 +78,16 @@ public class CreditCardImpl implements ICreditCard {
 	/**
 	 * Identify if the card should be registered
 	 *
+	 * @param customer      {@link Customer}
 	 * @param tokenResponse {@link TokenResponse}
 	 * @return
 	 */
-	private boolean isValidRegistration(final TokenResponse tokenResponse) {
+	private boolean isValidRegistration(final Customer customer, final TokenResponse tokenResponse) {
 
-		return tokenResponse != null && tokenResponse.getCreditCard() != null
-				&& !iCreditCardRepository.findByToken(tokenResponse.getCreditCard().getCreditCardTokenId().toString()).isPresent();
+		return tokenResponse != null && tokenResponse.getCreditCard() != null && customer != null && customer.getCreditCardList() != null
+				&& !customer.getCreditCardList().stream()
+							.filter(creditCard -> creditCard.getToken().equals(tokenResponse.getCreditCard().getCreditCardTokenId()))
+							.findFirst().isPresent();
 	}
 
 	/**
