@@ -40,3 +40,10 @@ feign:
       "[payment]":
         connectionTimeout: 30000
         readTimeout: 30000
+
+security:
+  secret: onboarding
+  token-prefix: "Bearer "
+  header-authorization: Authorization
+  validity:
+    time: 300_000

@@ -109,6 +109,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	@Transactional
 	@Override public void decline(DeclineRequest declineRequest) {
 
+		log.debug("decline(DeclineRequest) : ", declineRequest.toString());
 		final PurchaseOrder purchaseOrder = findByIdPurchaseOrder(declineRequest.getIdPurchaseOrder());
 		validToDecline(declineRequest, purchaseOrder);
 
@@ -147,6 +148,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	@Transactional
 	@Override public PurchaseOrderResponse updatePurchaseOrder(final PurchaseOrderRequest purchaseOrderRequest) {
 
+		log.debug("updatePurchaseOrder(PurchaseOrderRequest) : ", purchaseOrderRequest.toString());
 		final PurchaseOrder purchaseOrder = findByIdPurchaseOrder(purchaseOrderRequest.getId());
 
 		final List<Integer> listIds =
@@ -222,7 +224,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 	/**
 	 * @param declineRequest {@link DeclineRequest}
-	 * @param purchaseOrder
+	 * @param purchaseOrder  {@link PurchaseOrder}
 	 */
 	private void validToDecline(final DeclineRequest declineRequest,
 								final PurchaseOrder purchaseOrder) {
