@@ -1,7 +1,5 @@
 package com.onboarding.payu.model.authentication.response;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,9 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class AuthenticationResponse implements Serializable {
-
-	private static final long serialVersionUID = -8091879091924046844L;
+public class AuthenticationResponse {
 
 	private String token;
 

@@ -44,7 +44,4 @@ public class ProductRequest {
 
 	@NotNull(message = "Product stock cannot be empty")
 	private Integer stock;
-
-	@Builder.Default
-	private boolean enabled = true;
 }

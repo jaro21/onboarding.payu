@@ -1,9 +1,7 @@
 package com.onboarding.payu.repository.entity;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,12 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.onboarding.payu.model.refund.response.RefundDtoResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 /**
  * Entity that represents a refund object.
@@ -46,5 +42,5 @@ public class Refund {
 	private String reason;
 
 	@Column(name = "response_json")
-	private String response_json;
+	private String responseJson;
 }

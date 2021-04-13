@@ -12,7 +12,8 @@ import lombok.Getter;
 @Getter
 public enum ExceptionCodes {
 
-	UNCONTROLLED_ERROR("E001", "An uncontrolled error occurred in the application."),
+	UNCONTROLLED_ERROR("S001", "An uncontrolled error occurred in the application."),
+	JSON_ERROR("S002", "Failed to read json for payment"),
 	USERNAME_NOT_EXIST("SEC001", "Username %s does not exist."),
 	CUSTOMER_NUMBER_NOT_EXIST("C001", "Customer with identification %s does not exist."),
 	CUSTOMER_ID_NOT_EXIST("C002", "Customer id %s does not exist."),

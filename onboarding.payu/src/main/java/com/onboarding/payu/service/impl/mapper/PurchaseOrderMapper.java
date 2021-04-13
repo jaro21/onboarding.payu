@@ -78,7 +78,7 @@ public class PurchaseOrderMapper {
 					productList.stream().filter(product -> product.getIdProduct().equals(productPoDTO.getIdProduct())).findFirst().get()
 							   .getPrice())).reduce(BigDecimal.valueOf(0.0), (a, b) -> a.add(b));
 		} catch (NoSuchElementException e) {
-			log.debug("Invalid product in list [{}]", productPoDTOList.toString(), e);
+			log.error("Invalid product in list [{}]", productPoDTOList.toString(), e);
 			throw new BusinessAppException(ExceptionCodes.ERROR_TO_PROCESS_PRODUCT);
 		}
 	}

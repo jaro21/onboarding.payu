@@ -24,5 +24,4 @@ public class ProductResponse {
 	private String description;
 	private BigDecimal price;
 	private Integer stock;
-	private boolean enabled;
 }

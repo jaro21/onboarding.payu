@@ -55,7 +55,7 @@ public class RefundServiceImpl implements IRefundService {
 	@Transactional
 	@Override public RefundDtoResponse appyRefund(final RefundDtoRequest refundDtoRequest) {
 
-		log.debug("appyRefund : ", refundDtoRequest.toString());
+		log.info("Start refund to payment id {} ", refundDtoRequest.getIdPayment());
 		final Payment payment = iPaymentService.findById(refundDtoRequest.getIdPayment());
 		final RefundDtoResponse refundDtoResponse = iPaymentProvider.applyRefund(payment, refundDtoRequest.getReason());
 

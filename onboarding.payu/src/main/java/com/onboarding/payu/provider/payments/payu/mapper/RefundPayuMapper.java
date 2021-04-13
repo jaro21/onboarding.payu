@@ -8,6 +8,9 @@ import com.onboarding.payu.client.payu.model.refund.request.OrderPayU;
 import com.onboarding.payu.client.payu.model.refund.request.RefundPayURequest;
 import com.onboarding.payu.client.payu.model.refund.request.TransactionPayU;
 import com.onboarding.payu.client.payu.model.refund.response.RefundPayUResponse;
+import com.onboarding.payu.exception.ExceptionCodes;
+import com.onboarding.payu.exception.SystemAppException;
+import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.refund.response.RefundDtoResponse;
 import com.onboarding.payu.repository.entity.Payment;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +52,7 @@ public class RefundPayuMapper {
 								   final RefundPayURequest.RefundPayURequestBuilder refundPayURequestBuilder) {
 
 		try {
-			final JSONObject json = new JSONObject(payment.getResponse_json());
+			final JSONObject json = new JSONObject(payment.getResponseJson());
 
 			final TransactionPayU.TransactionPayUBuilder transactionPayUBuilder =
 					TransactionPayU.builder().type(TransactionType.REFUND.name())
@@ -59,7 +62,8 @@ public class RefundPayuMapper {
 
 			refundPayURequestBuilder.transaction(transactionPayUBuilder.build());
 		} catch (JSONException e) {
-			log.error("Json invalid payment id = {}", payment.getIdPayment());
+			log.error("Failed to read response_json for payment id = {} ", payment.getIdPayment(), e);
+			throw new SystemAppException(ExceptionCodes.JSON_ERROR);
 		}
 	}
 
@@ -70,7 +74,6 @@ public class RefundPayuMapper {
 	 */
 	public RefundDtoResponse toRefundDtoResponse(final RefundPayUResponse refundPayUResponse) {
 
-		log.info("toRefundDtoResponse : ", refundPayUResponse.toString());
 		final RefundDtoResponse.RefundDtoResponseBuilder refundDtoResponseBuilder =
 				RefundDtoResponse.builder().code(refundPayUResponse.getCode())
 								 .error(refundPayUResponse.getError());
@@ -88,7 +91,9 @@ public class RefundPayuMapper {
 										  final RefundDtoResponse.RefundDtoResponseBuilder refundDtoResponseBuilder) {
 
 		if (refundPayUResponse != null && refundPayUResponse.getTransactionResponse() != null) {
-			refundDtoResponseBuilder.status(refundPayUResponse.getTransactionResponse().getState());
+			if(StatusType.APPROVED.name().equals(refundPayUResponse.getTransactionResponse().getResponseCode())){
+				refundDtoResponseBuilder.status(StatusType.REFUNDED);
+			}
 
 			final JSONObject jsonObject = new JSONObject(refundPayUResponse);
 			refundDtoResponseBuilder.transactionResponse(jsonObject.toString());

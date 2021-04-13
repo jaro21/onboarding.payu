@@ -31,13 +31,6 @@ public interface IProductService {
 	List<ProductResponse> findProducts();
 
 	/**
-	 * Method to get all products
-	 *
-	 * @return {@link List<Product>}
-	 */
-	List<ProductResponse> findByEnabled();
-
-	/**
 	 * Method to get all products by ids
 	 *
 	 * @param ids {@link List<Integer>}

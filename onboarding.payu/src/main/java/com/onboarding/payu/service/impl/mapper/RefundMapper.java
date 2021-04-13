@@ -40,7 +40,7 @@ public class RefundMapper {
 		if (refundDtoResponse != null) {
 
 			final JSONObject jsonObject = new JSONObject(refundDtoResponse);
-			refundBuilder.response_json(jsonObject.toString());
+			refundBuilder.responseJson(jsonObject.toString());
 		}
 	}
 }

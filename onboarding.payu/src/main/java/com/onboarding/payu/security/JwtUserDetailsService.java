@@ -32,9 +32,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 		try {
 			final Customer customer = iCustomerService.findByUsername(username);
-			return User.builder().username(username).password(customer.getPassword_hash()).authorities(new ArrayList<>()).build();
+			return User.builder().username(username).password(customer.getPassword()).authorities(new ArrayList<>()).build();
 		}catch (Exception e){
-			log.debug("loadUserByUsername(username={})) ", username);
+			log.error("loadUserByUsername(username={})) ", username);
 			throw new UsernameNotFoundException(format(ExceptionCodes.USERNAME_NOT_EXIST.getMessage(), username));
 		}
 	}

@@ -73,7 +73,9 @@ public class PaymentServiceImpl implements IPaymentService {
 	@Transactional
 	@Override public PaymentWithTokenResponse paymentWithToken(final PaymentTransactionRequest paymentTransactionRequest) {
 
-		log.debug("PaymentWithToken : ", paymentTransactionRequest.toString());
+		log.info("Start payment purchase order id {}, credit card id {}, customer id {} : ", paymentTransactionRequest.getIdPurchaseOrder(),
+				 paymentTransactionRequest.getIdCreditCard(), paymentTransactionRequest.getIdCustomer());
+
 		final PurchaseOrder purchaseOrder = iPurchaseOrder
 				.findByIdPurchaseOrder(paymentTransactionRequest.getIdPurchaseOrder());
 		paymentValidator.runValidations(purchaseOrder);

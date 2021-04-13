@@ -47,9 +47,6 @@ public class Customer {
 	@Column(name = "dni_number", length = 45)
 	private String dniNumber;
 
-	@Column(name = "enabled", length = 1)
-	private Integer enabled;
-
 	@Column(name = "address", length = 200)
 	private String address;
 
@@ -63,13 +60,13 @@ public class Customer {
 	private String country;
 
 	@Column(name = "postal_code", length = 5)
-	private String postal_code;
+	private String postalCode;
 
 	@Column(name = "username", length = 45)
 	private String username;
 
 	@Column(name = "password_hash", length = 45)
-	private String password_hash;
+	private String password;
 
 	@Column(name = "id_rol")
 	private Integer idRol;

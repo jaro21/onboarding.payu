@@ -30,5 +30,4 @@ public class CustomerResponse {
 	private String state;
 	private String country;
 	private String postal_code;
-	private boolean enabled;
 }

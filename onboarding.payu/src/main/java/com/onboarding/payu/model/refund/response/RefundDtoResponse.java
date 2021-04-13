@@ -2,6 +2,7 @@ package com.onboarding.payu.model.refund.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.onboarding.payu.model.StatusType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -21,7 +22,7 @@ public class RefundDtoResponse {
 
 	private String code;
 	private String error;
-	private String status;
+	private StatusType status;
 
 	@JsonIgnore
 	private String transactionResponse;

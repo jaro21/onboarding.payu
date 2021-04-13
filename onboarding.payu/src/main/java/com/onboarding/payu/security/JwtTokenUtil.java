@@ -1,6 +1,5 @@
 package com.onboarding.payu.security;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtTokenUtil implements Serializable {
-
-	private static final long serialVersionUID = -2550185165626007488L;
+public class JwtTokenUtil {
 
 	@Value("${security.validity.time}")
 	private Long token_validity;

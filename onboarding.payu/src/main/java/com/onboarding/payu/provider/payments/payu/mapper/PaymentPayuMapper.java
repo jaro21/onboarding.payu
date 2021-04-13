@@ -23,6 +23,7 @@ import com.onboarding.payu.client.payu.model.payment.request.TxValue;
 import com.onboarding.payu.client.payu.model.payment.response.PaymentWithTokenPayUResponse;
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
+import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.payment.request.PaymentTransactionRequest;
 import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
 import com.onboarding.payu.repository.entity.CreditCard;
@@ -171,7 +172,9 @@ public class PaymentPayuMapper {
 									  final PaymentWithTokenResponse.PaymentWithTokenResponseBuilder paymentWithTokenResponseBuilder) {
 
 		if (paymentWithToken != null && paymentWithToken.getTransactionResponse() != null) {
-			paymentWithTokenResponseBuilder.status(paymentWithToken.getTransactionResponse().getState());
+			if(paymentWithToken.getTransactionResponse().getState().equals("APPROVED")){
+				paymentWithTokenResponseBuilder.status(StatusType.APPROVED);
+			}
 
 			final JSONObject jsonObject = new JSONObject(paymentWithToken);
 			paymentWithTokenResponseBuilder.transactionResponse(jsonObject.toString());

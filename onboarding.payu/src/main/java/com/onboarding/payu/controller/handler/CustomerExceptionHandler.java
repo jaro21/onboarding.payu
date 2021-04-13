@@ -3,6 +3,7 @@ package com.onboarding.payu.controller.handler;
 import com.onboarding.payu.controller.CustomerController;
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
+import com.onboarding.payu.exception.SystemAppException;
 import com.onboarding.payu.model.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -62,6 +63,24 @@ public class CustomerExceptionHandler extends ResponseEntityExceptionHandler {
 
 		log.info(ex.getMessage());
 		return ResponseEntity.status(HttpStatus.CONFLICT)
+							 .body(ResponseDto.builder()
+											  .message(ex.getMessage())
+											  .errorCode(ex.getCode())
+											  .build());
+	}
+
+	/**
+	 * Handle an {@link SystemAppException}.
+	 *
+	 * @param ex of {@link SystemAppException} with the information about the error.
+	 * @return {@link ResponseEntity<ResponseDto>} object with the formatted error information.
+	 */
+	@ResponseBody
+	@ExceptionHandler(SystemAppException.class)
+	public ResponseEntity<ResponseDto> handleSystemAppException(final SystemAppException ex) {
+
+		log.info(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 							 .body(ResponseDto.builder()
 											  .message(ex.getMessage())
 											  .errorCode(ex.getCode())

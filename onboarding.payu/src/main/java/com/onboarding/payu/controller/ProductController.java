@@ -53,12 +53,6 @@ public class ProductController {
 		return ResponseEntity.ok(iProductService.findProducts());
 	}
 
-	@GetMapping("/enabled")
-	public ResponseEntity<List<ProductResponse>> findByEnabled() {
-
-		return ResponseEntity.ok(iProductService.findByEnabled());
-	}
-
 	@GetMapping("/{id}")
 	public ResponseEntity<ProductResponse> findProductById(@NotNull @PathVariable Integer id) {
 

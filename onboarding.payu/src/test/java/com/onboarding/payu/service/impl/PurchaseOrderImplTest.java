@@ -61,15 +61,15 @@ class PurchaseOrderImplTest {
 	@Test
 	void addPurchaseOrderSuccessful() {
 
-		final PurchaseOrderRequest purchaseOrderRequest = PurchaseOrderDtoSample.getPurchasOrderDto();
-		when(iProductServiceMock.findProductsByIds(any(List.class))).thenReturn(ProductSample.getProductList());
-		when(iCustomerServiceMock.findById(any(Integer.class))).thenReturn(CustomerSample.getCustomer());
+		final PurchaseOrderRequest purchaseOrderRequest = PurchaseOrderDtoSample.buildPurchasOrderDto();
+		when(iProductServiceMock.findProductsByIds(any(List.class))).thenReturn(ProductSample.buildProductList());
+		when(iCustomerServiceMock.findById(any(Integer.class))).thenReturn(CustomerSample.buildCustomer());
 		when(purchaseOrderMapperMock.toPurchaseOrder(any(Customer.class), any(List.class), any(PurchaseOrderRequest.class)))
-				.thenReturn(PurchaseOrderDtoSample.getPurchaseOrder());
-		when(iPurchaseOrderRepositoryMock.save(any(PurchaseOrder.class))).thenReturn(PurchaseOrderDtoSample.getPurchaseOrder());
-		when(iOrderProductServiceMock.saveAll(any(List.class))).thenReturn(ProductSample.getOrderProductList());
+				.thenReturn(PurchaseOrderDtoSample.buildPurchaseOrder());
+		when(iPurchaseOrderRepositoryMock.save(any(PurchaseOrder.class))).thenReturn(PurchaseOrderDtoSample.buildPurchaseOrder());
+		when(iOrderProductServiceMock.saveAll(any(List.class))).thenReturn(ProductSample.buildOrderProductList());
 		when(purchaseOrderMapperMock.toPurchaseOrderResponse(any(PurchaseOrder.class)))
-				.thenReturn(PurchaseOrderDtoSample.getPurchaseOrderResponse());
+				.thenReturn(PurchaseOrderDtoSample.buildPurchaseOrderResponse());
 
 		final PurchaseOrderResponse purchaseOrderResponse = purchaseOrderImpl.addPurchaseOrder(purchaseOrderRequest);
 
@@ -86,9 +86,9 @@ class PurchaseOrderImplTest {
 	@Test
 	void addPurchaseOrder_StockInvalid() {
 
-		final PurchaseOrderRequest purchaseOrderRequest = PurchaseOrderDtoSample.getPurchasOrderDtoStockInvalid();
-		when(iProductServiceMock.findProductsByIds(any(List.class))).thenReturn(ProductSample.getProductList());
-		when(iCustomerServiceMock.findById(any(Integer.class))).thenReturn(CustomerSample.getCustomer());
+		final PurchaseOrderRequest purchaseOrderRequest = PurchaseOrderDtoSample.buildPurchasOrderDtoStockInvalid();
+		when(iProductServiceMock.findProductsByIds(any(List.class))).thenReturn(ProductSample.buildProductList());
+		when(iCustomerServiceMock.findById(any(Integer.class))).thenReturn(CustomerSample.buildCustomer());
 
 		try {
 			final PurchaseOrderResponse purchaseOrderResponse = purchaseOrderImpl.addPurchaseOrder(purchaseOrderRequest);

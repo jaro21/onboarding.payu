@@ -3,7 +3,6 @@ package com.onboarding.payu.service.impl.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.onboarding.payu.model.ActiveType;
 import com.onboarding.payu.model.product.request.ProductRequest;
 import com.onboarding.payu.model.product.response.ProductResponse;
 import com.onboarding.payu.repository.entity.Product;
@@ -27,7 +26,6 @@ public class ProductMapper {
 					  .description(productRequest.getDescription())
 					  .price(productRequest.getPrice())
 					  .stock(productRequest.getStock())
-					  .enabled(productRequest.isEnabled() ? ActiveType.ENABLED.getId() : ActiveType.DISABLED.getId())
 					  .build();
 	}
 
@@ -43,7 +41,7 @@ public class ProductMapper {
 
 	public List<ProductRequest> toProductDtoList(final List<Product> productList) {
 
-		return productList.stream().map(product -> toProductDto(product)).collect(Collectors.toList());
+		return productList.stream().map(this::toProductDto).collect(Collectors.toList());
 	}
 
 	public ProductResponse toProductResponse(final Product product) {
@@ -54,7 +52,6 @@ public class ProductMapper {
 							  .description(product.getDescription())
 							  .price(product.getPrice())
 							  .stock(product.getStock())
-							  .enabled(ActiveType.ENABLED.getId().equals(product.getEnabled()))
 							  .build();
 	}
 }

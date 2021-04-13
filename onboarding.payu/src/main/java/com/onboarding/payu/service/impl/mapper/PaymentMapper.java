@@ -28,7 +28,7 @@ public class PaymentMapper {
 		final Payment.PaymentBuilder paymentBuilder = Payment.builder().idPurchaseOrder(purchaseOrder.getIdPurchaseOrder())
 															 .value(purchaseOrder.getValue())
 															 .currency(CurrencyType.COP.name())
-															 .response_json(paymentWithTokenResponse.getTransactionResponse());
+															 .responseJson(paymentWithTokenResponse.getTransactionResponse());
 
 		buildStatus(paymentWithTokenResponse, paymentBuilder);
 
@@ -45,17 +45,17 @@ public class PaymentMapper {
 		if (paymentWithTokenResponse == null || paymentWithTokenResponse.getTransactionResponse() == null) {
 			paymentBuilder.status(StatusType.ERROR.name());
 		} else {
-			paymentBuilder.status(paymentWithTokenResponse.getStatus());
+			paymentBuilder.status(paymentWithTokenResponse.getStatus().name());
 		}
 	}
 
 	/**
-	 *
 	 * @param paymentWithTokenResponse {@link PaymentWithTokenResponse}
-	 * @param payment {@link Payment}
+	 * @param payment                  {@link Payment}
 	 * @return {@link PaymentWithTokenResponse}
 	 */
 	public PaymentWithTokenResponse buildPaymentWithToken(final PaymentWithTokenResponse paymentWithTokenResponse, final Payment payment) {
+
 		return PaymentWithTokenResponse.builder()
 									   .id(payment.getIdPayment())
 									   .code(paymentWithTokenResponse.getCode())

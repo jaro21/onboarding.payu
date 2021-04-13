@@ -11,7 +11,7 @@ import com.onboarding.payu.repository.entity.Customer;
  */
 public class CustomerSample {
 
-	public static Customer getCustomer() {
+	public static Customer buildCustomer() {
 
 		return Customer.builder()
 					   .idCustomer(1)
@@ -19,7 +19,7 @@ public class CustomerSample {
 					   .email("client@gmail.com")
 					   .phone("3141212222")
 					   .dniNumber("14")
-					   .creditCardList(CreditCardSample.getCreditCardList())
+					   .creditCardList(CreditCardSample.buildCreditCardList())
 					   .build();
 	}
 }

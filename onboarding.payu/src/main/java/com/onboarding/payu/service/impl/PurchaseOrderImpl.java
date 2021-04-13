@@ -70,7 +70,6 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	@Transactional
 	@Override public PurchaseOrderResponse addPurchaseOrder(final PurchaseOrderRequest purchaseOrderRequest) {
 
-		log.debug("addPurchaseOrder(PurchaseOrderDTO) : ", purchaseOrderRequest.toString());
 		final List<Product> productList = getProductsByIds(purchaseOrderRequest.getProductList());
 		final Customer customer = iCustomerService.findById(purchaseOrderRequest.getIdCustomer());
 
@@ -109,7 +108,8 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	@Transactional
 	@Override public void decline(DeclineRequest declineRequest) {
 
-		log.debug("decline(DeclineRequest) : ", declineRequest.toString());
+		log.info("Start decline purchase order id {}, customer id {} ", declineRequest.getIdPurchaseOrder(), declineRequest
+				.getIdCustomer());
 		final PurchaseOrder purchaseOrder = findByIdPurchaseOrder(declineRequest.getIdPurchaseOrder());
 		validToDecline(declineRequest, purchaseOrder);
 
@@ -148,7 +148,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	@Transactional
 	@Override public PurchaseOrderResponse updatePurchaseOrder(final PurchaseOrderRequest purchaseOrderRequest) {
 
-		log.debug("updatePurchaseOrder(PurchaseOrderRequest) : ", purchaseOrderRequest.toString());
+		log.info("Start update purchase order id {}, customer id {} ", purchaseOrderRequest.getId(), purchaseOrderRequest.getIdCustomer());
 		final PurchaseOrder purchaseOrder = findByIdPurchaseOrder(purchaseOrderRequest.getId());
 
 		final List<Integer> listIds =
@@ -202,7 +202,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 			if (productDtoOptional.isPresent()) {
 				stock = subtract.applyAsInt(stock, productDtoOptional.get().getQuantity());
 			}
-			if(stock < 0){
+			if (stock < 0) {
 				throw new BusinessAppException(ExceptionCodes.PRODUCT_NOT_AVAILABLE, product.getName());
 			}
 

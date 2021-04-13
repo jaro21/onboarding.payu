@@ -1,13 +1,11 @@
 package com.onboarding.payu.service.impl;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
-import com.onboarding.payu.model.ActiveType;
 import com.onboarding.payu.model.product.request.ProductRequest;
 import com.onboarding.payu.model.product.response.ProductResponse;
 import com.onboarding.payu.repository.IProductRepository;
@@ -47,7 +45,7 @@ public class ProductServiceImpl implements IProductService {
 	 */
 	@Override public ProductResponse saveProduct(final ProductRequest product) {
 
-		log.debug("saveProduct : ", product.toString());
+		log.info("Start saving a new product code({}), name({}) ", product.getCode(), product.getName());
 		productCreateValidation(product);
 		return productMapper.toProductResponse(iProductRepository.save(productMapper.toProduct(product)));
 	}
@@ -58,12 +56,6 @@ public class ProductServiceImpl implements IProductService {
 	@Override public List<ProductResponse> findProducts() {
 
 		return iProductRepository.findAll().stream().map(productMapper::toProductResponse).collect(Collectors.toList());
-	}
-
-	@Override public List<ProductResponse> findByEnabled() {
-
-		return iProductRepository.findByEnabled(ActiveType.ENABLED.getId()).orElse(Collections.emptyList())
-								 .stream().map(productMapper::toProductResponse).collect(Collectors.toList());
 	}
 
 	/**
@@ -102,7 +94,6 @@ public class ProductServiceImpl implements IProductService {
 	 */
 	@Override public void updateProduct(final ProductRequest product) {
 
-		log.debug("updateProduct : ", product.toString());
 		productValidation(product);
 		updateProduct(productMapper.toProduct(product));
 	}
@@ -112,14 +103,12 @@ public class ProductServiceImpl implements IProductService {
 	 */
 	@Override public Product updateProduct(final Product product) {
 
-		log.debug("updateProduct : ", product.toString());
 		findProductById(product.getIdProduct());
 		return iProductRepository.save(product);
 	}
 
 	@Override public Integer updateStockById(final Integer stock, final Integer id) {
 
-		log.debug("updateStockById(stock = {}, Id = {}) :", stock, id);
 		return iProductRepository.updateStockById(stock, id);
 	}
 

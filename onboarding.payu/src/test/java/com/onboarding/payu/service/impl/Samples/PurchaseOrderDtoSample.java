@@ -17,21 +17,21 @@ import com.onboarding.payu.repository.entity.PurchaseOrder;
  */
 public class PurchaseOrderDtoSample {
 
-	public static PurchaseOrderRequest getPurchasOrderDto() {
+	public static PurchaseOrderRequest buildPurchasOrderDto() {
 
 		return PurchaseOrderRequest.builder()
 								   .idCustomer(1)
-								   .productList(ProductSample.getProductDtoList()).build();
+								   .productList(ProductSample.buildProductDtoList()).build();
 	}
 
-	public static PurchaseOrderRequest getPurchasOrderDtoStockInvalid() {
+	public static PurchaseOrderRequest buildPurchasOrderDtoStockInvalid() {
 
 		return PurchaseOrderRequest.builder()
 								   .idCustomer(1)
-								   .productList(ProductSample.getProductDtoListStockInvalid()).build();
+								   .productList(ProductSample.buildProductDtoListStockInvalid()).build();
 	}
 
-	public static PurchaseOrderResponse getPurchaseOrderResponse() {
+	public static PurchaseOrderResponse buildPurchaseOrderResponse() {
 
 		return PurchaseOrderResponse.builder()
 									.id(1)
@@ -41,11 +41,11 @@ public class PurchaseOrderDtoSample {
 									.value(BigDecimal.valueOf(1055000L)).build();
 	}
 
-	public static PurchaseOrder getPurchaseOrder() {
+	public static PurchaseOrder buildPurchaseOrder() {
 
 		return PurchaseOrder.builder()
 							.idPurchaseOrder(1)
-							.customer(CustomerSample.getCustomer())
+							.customer(CustomerSample.buildCustomer())
 							.status(StatusType.SAVED.name())
 							.referenceCode("cc82a58e-cfd3-4198-9ae4-d350dc3f7498")
 							.value(BigDecimal.valueOf(1055000L))

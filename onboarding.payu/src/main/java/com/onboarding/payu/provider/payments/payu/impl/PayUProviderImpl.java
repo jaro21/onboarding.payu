@@ -68,8 +68,6 @@ public class PayUProviderImpl implements IPaymentProvider {
 													 final PurchaseOrder purchaseOrder,
 													 final Customer customer) {
 
-		log.debug("paymentWithToken : ", paymentTransactionRequest.toString());
-
 		final PaymentWithTokenPayURequest request = paymentPayUMapper.buildPaymentWithTokenRequest(getMerchant(),
 																								   paymentTransactionRequest,
 																								   purchaseOrder,

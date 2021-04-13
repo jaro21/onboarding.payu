@@ -58,7 +58,7 @@ public class CreditCardImpl implements ICreditCard {
 	 */
 	@Override public TokenResponse tokenizationCard(final CreditCardRequest creditCardRequest) {
 
-		log.debug("TokenizationCard : ", creditCardRequest.toString());
+		log.info("Start tokenization credit card identificationNumber({}) ", creditCardRequest.getIdentificationNumber());
 		creditCardValidator.runValidations(creditCardRequest);
 
 		return saveCreditCard(iPaymentProvider.tokenizationCard(creditCardRequest));
@@ -69,16 +69,18 @@ public class CreditCardImpl implements ICreditCard {
 	 */
 	@Override public TokenResponse saveCreditCard(final TokenResponse tokenResponse) {
 
-		log.debug("Save Credit Card", tokenResponse.toString());
-		final Customer customer = iCustomerService.findByDniNumber(tokenResponse.getCreditCard().getIdentificationNumber());
-		final Optional<CreditCard> creditCardOptional = findCreditCardByCustomerAndToken(customer, tokenResponse);
-		Integer idCreditCard = 0;
+		Integer idCreditCard = null;
+		if(tokenResponse.getCreditCard() != null) {
+			log.info("Start to save Credit Card token {}", tokenResponse.getCreditCard().getCreditCardTokenId());
+			final Customer customer = iCustomerService.findByDniNumber(tokenResponse.getCreditCard().getIdentificationNumber());
+			final Optional<CreditCard> creditCardOptional = findCreditCardByCustomerAndToken(customer, tokenResponse);
 
-		if (creditCardOptional.isPresent()) {
-			idCreditCard = creditCardOptional.get().getIdCreditCard();
-		}else{
-			final CreditCard creditCard = iCreditCardRepository.save(creditCardMapper.toCreditCard(tokenResponse, customer));
-			idCreditCard = creditCard.getIdCreditCard();
+			if (creditCardOptional.isPresent()) {
+				idCreditCard = creditCardOptional.get().getIdCreditCard();
+			} else {
+				final CreditCard creditCard = iCreditCardRepository.save(creditCardMapper.toCreditCard(tokenResponse, customer));
+				idCreditCard = creditCard.getIdCreditCard();
+			}
 		}
 
 		return creditCardMapper.buildTokenResponse(tokenResponse, idCreditCard);

@@ -1,6 +1,5 @@
 package com.onboarding.payu.service.impl.mapper;
 
-import com.onboarding.payu.model.ActiveType;
 import com.onboarding.payu.model.customer.request.CustomerRequest;
 import com.onboarding.payu.model.customer.response.CustomerResponse;
 import com.onboarding.payu.repository.entity.Customer;
@@ -31,12 +30,9 @@ public class CustomerMapper {
 					   .city(customerRequest.getCity())
 					   .state(customerRequest.getState())
 					   .country(customerRequest.getCountry())
-					   .postal_code(customerRequest.getPostal_code())
-					   .enabled(customerRequest.isEnabled() ?
-								ActiveType.ENABLED.getId() :
-								ActiveType.DISABLED.getId())
+					   .postalCode(customerRequest.getPostal_code())
 					   .username(customerRequest.getUsername())
-					   .password_hash(encoder.passwordEncoder().encode(customerRequest.getPassword()))
+					   .password(encoder.passwordEncoder().encode(customerRequest.getPassword()))
 					   .build();
 	}
 
@@ -47,7 +43,6 @@ public class CustomerMapper {
 							   .fullName(customer.getFullName())
 							   .email(customer.getEmail())
 							   .phone(customer.getPhone())
-							   .dniNumber(customer.getDniNumber())
-							   .enabled(ActiveType.ENABLED.getId().equals(customer.getEnabled())).build();
+							   .dniNumber(customer.getDniNumber()).build();
 	}
 }

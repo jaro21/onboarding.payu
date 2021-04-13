@@ -1,5 +1,7 @@
 package com.onboarding.payu.model.payment.request;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,10 +20,15 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PaymentTransactionRequest {
 
+	@NotNull(message = "Customer identification cannot be empty")
 	private Integer idCustomer;
-	private Integer idAddress;
+
+	@NotNull(message = "Credit Card identification cannot be empty")
 	private Integer idCreditCard;
+
+	@NotNull(message = "Purchase Order identification cannot be empty")
 	private Integer idPurchaseOrder;
+
 	private String deviceSessionId;
 	private String ipAddress;
 	private String cookie;
