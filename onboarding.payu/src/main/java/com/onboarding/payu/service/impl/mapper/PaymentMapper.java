@@ -48,4 +48,18 @@ public class PaymentMapper {
 			paymentBuilder.status(paymentWithTokenResponse.getStatus());
 		}
 	}
+
+	/**
+	 *
+	 * @param paymentWithTokenResponse {@link PaymentWithTokenResponse}
+	 * @param payment {@link Payment}
+	 * @return {@link PaymentWithTokenResponse}
+	 */
+	public PaymentWithTokenResponse buildPaymentWithToken(final PaymentWithTokenResponse paymentWithTokenResponse, final Payment payment) {
+		return PaymentWithTokenResponse.builder()
+									   .id(payment.getIdPayment())
+									   .code(paymentWithTokenResponse.getCode())
+									   .error(paymentWithTokenResponse.getError())
+									   .status(paymentWithTokenResponse.getStatus()).build();
+	}
 }

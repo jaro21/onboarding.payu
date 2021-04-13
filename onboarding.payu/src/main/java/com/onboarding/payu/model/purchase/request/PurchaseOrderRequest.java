@@ -23,7 +23,7 @@ public class PurchaseOrderRequest {
 	private Integer id;
 
 	@NotNull(message = "Customer identification cannot be empty")
-	private CustomerPoRequest customer;
+	private Integer idCustomer;
 
 	@NotEmpty(message = "Product cannot be empty")
 	private List<ProductPoDto> productList;

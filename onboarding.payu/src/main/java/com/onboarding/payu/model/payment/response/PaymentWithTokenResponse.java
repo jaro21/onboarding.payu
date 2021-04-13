@@ -19,6 +19,7 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PaymentWithTokenResponse {
 
+	private Integer id;
 	private String code;
 	private String error;
 	private String status;

@@ -20,14 +20,14 @@ public class PurchaseOrderDtoSample {
 	public static PurchaseOrderRequest getPurchasOrderDto() {
 
 		return PurchaseOrderRequest.builder()
-								   .customer(CustomerSample.getCustomerDto())
+								   .idCustomer(1)
 								   .productList(ProductSample.getProductDtoList()).build();
 	}
 
 	public static PurchaseOrderRequest getPurchasOrderDtoStockInvalid() {
 
 		return PurchaseOrderRequest.builder()
-								   .customer(CustomerSample.getCustomerDto())
+								   .idCustomer(1)
 								   .productList(ProductSample.getProductDtoListStockInvalid()).build();
 	}
 

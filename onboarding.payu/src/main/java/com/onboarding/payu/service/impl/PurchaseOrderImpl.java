@@ -72,7 +72,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 
 		log.debug("addPurchaseOrder(PurchaseOrderDTO) : ", purchaseOrderRequest.toString());
 		final List<Product> productList = getProductsByIds(purchaseOrderRequest.getProductList());
-		final Customer customer = iCustomerService.findById(purchaseOrderRequest.getCustomer().getIdCustomer());
+		final Customer customer = iCustomerService.findById(purchaseOrderRequest.getIdCustomer());
 
 		isValidOrder(productList, purchaseOrderRequest.getProductList());
 		final PurchaseOrder purchaseOrder = iPurchaseOrderRepository.save(purchaseOrderMapper.toPurchaseOrder(customer, productList,
@@ -202,6 +202,10 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 			if (productDtoOptional.isPresent()) {
 				stock = subtract.applyAsInt(stock, productDtoOptional.get().getQuantity());
 			}
+			if(stock < 0){
+				throw new BusinessAppException(ExceptionCodes.PRODUCT_NOT_AVAILABLE, product.getName());
+			}
+
 			iProductService.updateStockById(stock, product.getIdProduct());
 		});
 	}

@@ -16,6 +16,7 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TokenResponse {
 
+	private Integer id;
 	private String code;
 	private String error;
 	private CreditCardTokenResponse creditCard;

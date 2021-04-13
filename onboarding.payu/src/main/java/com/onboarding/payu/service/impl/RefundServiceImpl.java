@@ -1,12 +1,16 @@
 package com.onboarding.payu.service.impl;
 
+import java.util.function.IntBinaryOperator;
+
 import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.refund.request.RefundDtoRequest;
 import com.onboarding.payu.model.refund.response.RefundDtoResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
 import com.onboarding.payu.repository.IRefundRepository;
 import com.onboarding.payu.repository.entity.Payment;
+import com.onboarding.payu.repository.entity.PurchaseOrder;
 import com.onboarding.payu.service.IPaymentService;
+import com.onboarding.payu.service.IProductService;
 import com.onboarding.payu.service.IPurchaseOrder;
 import com.onboarding.payu.service.IRefundService;
 import com.onboarding.payu.service.impl.mapper.RefundMapper;
@@ -29,17 +33,20 @@ public class RefundServiceImpl implements IRefundService {
 
 	private final RefundMapper refundMapper;
 
+	private final IProductService iProductService;
+
 	@Autowired
 	public RefundServiceImpl(final IPaymentService iPaymentService,
 							 final IRefundRepository iRefundRepository,
 							 final IPaymentProvider iPaymentProvider, final IPurchaseOrder iPurchaseOrder,
-							 final RefundMapper refundMapper) {
+							 final RefundMapper refundMapper, final IProductService iProductService) {
 
 		this.iPaymentService = iPaymentService;
 		this.iRefundRepository = iRefundRepository;
 		this.iPaymentProvider = iPaymentProvider;
 		this.iPurchaseOrder = iPurchaseOrder;
 		this.refundMapper = refundMapper;
+		this.iProductService = iProductService;
 	}
 
 	/**
@@ -96,6 +103,15 @@ public class RefundServiceImpl implements IRefundService {
 		if (refundDtoResponse.getCode().equals(StatusType.SUCCESS.name())) {
 
 			iPurchaseOrder.updateStatusById(StatusType.REFUNDED.name(), idPurchaseOrder);
+
+			final PurchaseOrder purchaseOrder = iPurchaseOrder.findByIdPurchaseOrder(idPurchaseOrder);
+
+			purchaseOrder.getProducts().stream()
+						 .forEach(orderProduct -> iProductService.updateStockById(add.applyAsInt(orderProduct.getQuantity(),
+																								 orderProduct.getProduct().getStock()),
+																				  orderProduct.getProduct().getIdProduct()));
 		}
 	}
+
+	IntBinaryOperator add = (n1, n2) -> n1 + n2;
 }

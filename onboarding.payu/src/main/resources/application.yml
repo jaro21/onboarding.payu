@@ -46,4 +46,4 @@ security:
   token-prefix: "Bearer "
   header-authorization: Authorization
   validity:
-    time: 18_000_000
+    time: 600_000

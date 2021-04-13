@@ -2,6 +2,7 @@ package com.onboarding.payu.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.onboarding.payu.model.tokenization.request.CreditCardRequest;
 import com.onboarding.payu.model.tokenization.response.TokenResponse;
@@ -36,16 +37,20 @@ public class CreditCardImpl implements ICreditCard {
 
 	private final CreditCardValidator creditCardValidator;
 
+	private final CreditCardMapper creditCardMapper;
+
 	@Autowired
 	public CreditCardImpl(final IPaymentProvider iPaymentProvider,
 						  final ICreditCardRepository iCreditCardRepository,
 						  final ICustomerService iCustomerService,
-						  final CreditCardValidator creditCardValidator) {
+						  final CreditCardValidator creditCardValidator,
+						  final CreditCardMapper creditCardMapper) {
 
 		this.iPaymentProvider = iPaymentProvider;
 		this.iCreditCardRepository = iCreditCardRepository;
 		this.iCustomerService = iCustomerService;
 		this.creditCardValidator = creditCardValidator;
+		this.creditCardMapper = creditCardMapper;
 	}
 
 	/**
@@ -55,9 +60,8 @@ public class CreditCardImpl implements ICreditCard {
 
 		log.debug("TokenizationCard : ", creditCardRequest.toString());
 		creditCardValidator.runValidations(creditCardRequest);
-		final TokenResponse tokenResponse = iPaymentProvider.tokenizationCard(creditCardRequest);
-		saveCreditCard(tokenResponse);
-		return iPaymentProvider.tokenizationCard(creditCardRequest);
+
+		return saveCreditCard(iPaymentProvider.tokenizationCard(creditCardRequest));
 	}
 
 	/**
@@ -67,12 +71,17 @@ public class CreditCardImpl implements ICreditCard {
 
 		log.debug("Save Credit Card", tokenResponse.toString());
 		final Customer customer = iCustomerService.findByDniNumber(tokenResponse.getCreditCard().getIdentificationNumber());
+		final Optional<CreditCard> creditCardOptional = findCreditCardByCustomerAndToken(customer, tokenResponse);
+		Integer idCreditCard = 0;
 
-		if (isValidRegistration(customer, tokenResponse)) {
-			final CreditCard creditCard = CreditCardMapper.toCreditCard(tokenResponse, customer);
-			iCreditCardRepository.save(creditCard);
+		if (creditCardOptional.isPresent()) {
+			idCreditCard = creditCardOptional.get().getIdCreditCard();
+		}else{
+			final CreditCard creditCard = iCreditCardRepository.save(creditCardMapper.toCreditCard(tokenResponse, customer));
+			idCreditCard = creditCard.getIdCreditCard();
 		}
-		return tokenResponse;
+
+		return creditCardMapper.buildTokenResponse(tokenResponse, idCreditCard);
 	}
 
 	/**
@@ -82,12 +91,15 @@ public class CreditCardImpl implements ICreditCard {
 	 * @param tokenResponse {@link TokenResponse}
 	 * @return
 	 */
-	private boolean isValidRegistration(final Customer customer, final TokenResponse tokenResponse) {
+	private Optional<CreditCard> findCreditCardByCustomerAndToken(final Customer customer, final TokenResponse tokenResponse) {
 
-		return tokenResponse != null && tokenResponse.getCreditCard() != null && customer != null && customer.getCreditCardList() != null
-				&& !customer.getCreditCardList().stream()
-							.filter(creditCard -> creditCard.getToken().equals(tokenResponse.getCreditCard().getCreditCardTokenId()))
-							.findFirst().isPresent();
+		if(tokenResponse != null && tokenResponse.getCreditCard() != null && customer != null && customer.getCreditCardList() != null){
+			return customer.getCreditCardList().stream()
+						   .filter(creditCard -> creditCard.getToken().equals(tokenResponse.getCreditCard().getCreditCardTokenId()))
+						   .findFirst();
+		}
+
+		return Optional.empty();
 	}
 
 	/**

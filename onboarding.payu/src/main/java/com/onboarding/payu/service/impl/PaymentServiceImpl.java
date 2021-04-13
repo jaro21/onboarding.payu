@@ -82,8 +82,7 @@ public class PaymentServiceImpl implements IPaymentService {
 		final PaymentWithTokenResponse paymentWithTokenResponse =
 				iPaymentProvider.paymentWithToken(paymentTransactionRequest, purchaseOrder, customer);
 
-		savePayment(paymentWithTokenResponse, purchaseOrder);
-		return paymentWithTokenResponse;
+		return savePayment(paymentWithTokenResponse, purchaseOrder);
 	}
 
 	/**
@@ -98,15 +97,15 @@ public class PaymentServiceImpl implements IPaymentService {
 	 * @param paymentWithTokenResponse
 	 * @param purchaseOrder
 	 */
-	private void savePayment(final PaymentWithTokenResponse paymentWithTokenResponse,
+	private PaymentWithTokenResponse savePayment(final PaymentWithTokenResponse paymentWithTokenResponse,
 							 final PurchaseOrder purchaseOrder) {
 
-		final Payment payment = paymentMapper.buildPayment(paymentWithTokenResponse, purchaseOrder);
-		iPaymentRepository.save(payment);
+		final Payment payment = iPaymentRepository.save(paymentMapper.buildPayment(paymentWithTokenResponse, purchaseOrder));
 
 		if (StatusType.APPROVED.name().equals(payment.getStatus())) {
 			iPurchaseOrder.updateStatusById(StatusType.PAID.name(), purchaseOrder.getIdPurchaseOrder());
 		}
-	}
 
+		return paymentMapper.buildPaymentWithToken(paymentWithTokenResponse, payment);
+	}
 }
