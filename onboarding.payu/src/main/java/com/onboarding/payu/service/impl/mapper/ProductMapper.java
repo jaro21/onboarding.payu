@@ -1,8 +1,5 @@
 package com.onboarding.payu.service.impl.mapper;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.onboarding.payu.model.product.request.ProductRequest;
 import com.onboarding.payu.model.product.response.ProductResponse;
 import com.onboarding.payu.repository.entity.Product;
@@ -26,22 +23,8 @@ public class ProductMapper {
 					  .description(productRequest.getDescription())
 					  .price(productRequest.getPrice())
 					  .stock(productRequest.getStock())
+					  .photoUrl(productRequest.getPhotoUrl())
 					  .build();
-	}
-
-	public ProductRequest toProductDto(final Product product) {
-
-		return ProductRequest.builder().idProduct(product.getIdProduct())
-							 .name(product.getName())
-							 .code(product.getCode())
-							 .description(product.getDescription())
-							 .price(product.getPrice())
-							 .stock(product.getStock()).build();
-	}
-
-	public List<ProductRequest> toProductDtoList(final List<Product> productList) {
-
-		return productList.stream().map(this::toProductDto).collect(Collectors.toList());
 	}
 
 	public ProductResponse toProductResponse(final Product product) {
@@ -52,6 +35,7 @@ public class ProductMapper {
 							  .description(product.getDescription())
 							  .price(product.getPrice())
 							  .stock(product.getStock())
+							  .photoUrl(product.getPhotoUrl())
 							  .build();
 	}
 }

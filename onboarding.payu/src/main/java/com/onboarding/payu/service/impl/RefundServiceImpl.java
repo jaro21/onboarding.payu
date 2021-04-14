@@ -2,6 +2,8 @@ package com.onboarding.payu.service.impl;
 
 import java.util.function.IntBinaryOperator;
 
+import com.onboarding.payu.exception.BusinessAppException;
+import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.refund.request.RefundDtoRequest;
 import com.onboarding.payu.model.refund.response.RefundDtoResponse;
@@ -57,13 +59,38 @@ public class RefundServiceImpl implements IRefundService {
 
 		log.info("Start refund to payment id {} ", refundDtoRequest.getIdPayment());
 		final Payment payment = iPaymentService.findById(refundDtoRequest.getIdPayment());
+		final PurchaseOrder purchaseOrder = iPurchaseOrder.findByIdPurchaseOrder(payment.getIdPurchaseOrder());
+
+		isRefundValid(payment, refundDtoRequest.getIdCustomer(), purchaseOrder);
+
 		final RefundDtoResponse refundDtoResponse = iPaymentProvider.applyRefund(payment, refundDtoRequest.getReason());
 
-		updatePurchaseOrder(refundDtoResponse, payment.getIdPurchaseOrder());
+		updatePurchaseOrder(refundDtoResponse, purchaseOrder);
 		updatePayment(payment, refundDtoResponse.getCode());
 		saveRefund(refundDtoResponse, refundDtoRequest, payment);
 
 		return refundDtoResponse;
+	}
+
+	/**
+	 * Validations before apply the refund
+	 *
+	 * @param payment       {@link Payment}
+	 * @param idCustomer    {@link Integer}
+	 * @param purchaseOrder {@link PurchaseOrder}
+	 */
+	private void isRefundValid(final Payment payment, final Integer idCustomer,
+							   final PurchaseOrder purchaseOrder) {
+
+		if (idCustomer.compareTo(purchaseOrder.getCustomer().getIdCustomer()) != 0) {
+			throw new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_INVALID_CUSTOMER);
+		}
+		if (!StatusType.PAID.name().equals(purchaseOrder.getStatus())) {
+			throw new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_CANNOT_REFUND, purchaseOrder.getStatus());
+		}
+		if (!StatusType.APPROVED.name().equals(payment.getStatus())) {
+			throw new BusinessAppException(ExceptionCodes.PAYMENT_CANNOT_REFUND, payment.getStatus());
+		}
 	}
 
 	/**
@@ -96,15 +123,13 @@ public class RefundServiceImpl implements IRefundService {
 	 * update purchase order information
 	 *
 	 * @param refundDtoResponse {@link RefundDtoResponse}
-	 * @param idPurchaseOrder   {@link Integer}
+	 * @param purchaseOrder     {@link PurchaseOrder}
 	 */
-	private void updatePurchaseOrder(final RefundDtoResponse refundDtoResponse, final Integer idPurchaseOrder) {
+	private void updatePurchaseOrder(final RefundDtoResponse refundDtoResponse, final PurchaseOrder purchaseOrder) {
 
 		if (refundDtoResponse.getCode().equals(StatusType.SUCCESS.name())) {
 
-			iPurchaseOrder.updateStatusById(StatusType.REFUNDED.name(), idPurchaseOrder);
-
-			final PurchaseOrder purchaseOrder = iPurchaseOrder.findByIdPurchaseOrder(idPurchaseOrder);
+			iPurchaseOrder.updateStatusById(StatusType.REFUNDED.name(), purchaseOrder.getIdPurchaseOrder());
 
 			purchaseOrder.getProducts().stream()
 						 .forEach(orderProduct -> iProductService.updateStockById(add.applyAsInt(orderProduct.getQuantity(),

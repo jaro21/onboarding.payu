@@ -44,4 +44,8 @@ public class ProductRequest {
 
 	@NotNull(message = "Product stock cannot be empty")
 	private Integer stock;
+
+	@NotBlank(message = "Photo url cannot be empty")
+	@Size(max = 200, message = "The size of the photo url must be a maximum of 200 characters.")
+	private String photoUrl;
 }

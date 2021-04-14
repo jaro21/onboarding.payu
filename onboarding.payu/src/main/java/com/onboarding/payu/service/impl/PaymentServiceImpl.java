@@ -78,7 +78,9 @@ public class PaymentServiceImpl implements IPaymentService {
 
 		final PurchaseOrder purchaseOrder = iPurchaseOrder
 				.findByIdPurchaseOrder(paymentTransactionRequest.getIdPurchaseOrder());
+
 		paymentValidator.runValidations(purchaseOrder);
+
 		final Customer customer = iCustomerService.findById(paymentTransactionRequest.getIdCustomer());
 
 		final PaymentWithTokenResponse paymentWithTokenResponse =

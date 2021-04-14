@@ -34,9 +34,22 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_product", updatable = false, nullable = false)
 	private Integer idProduct;
+
+	@Column(name = "name", length = 25)
 	private String name;
+
+	@Column(name = "code", length = 10)
 	private String code;
+
+	@Column(name = "description", length = 50)
 	private String description;
+
+	@Column(name = "price")
 	private BigDecimal price;
+
+	@Column(name = "stock")
 	private Integer stock;
+
+	@Column(name = "photo_url", length = 200)
+	private String photoUrl;
 }

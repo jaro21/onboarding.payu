@@ -19,6 +19,9 @@ import lombok.ToString;
 @ToString
 public class RefundDtoRequest {
 
+	@NotNull(message = "Customer identification cannot be empty")
+	private Integer idCustomer;
+
 	@NotNull(message = "Payment Id cannot be empty")
 	private Integer idPayment;
 
