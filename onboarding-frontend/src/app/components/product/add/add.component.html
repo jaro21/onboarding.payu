@@ -1,0 +1,43 @@
+<mat-card>
+    <mat-card-title>New Product</mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="add()">
+            <p>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Name" formControlName="name" required>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Code" formControlName="code" required>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Description" formControlName="description" required>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Price" formControlName="price" required>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Stock" formControlName="stock" required>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Image" formControlName="image" required>
+                </mat-form-field>
+            </p>
+
+            <div class="button">
+                <button mat-button mat-dialog-close>Cancel</button>
+                <button mat-button mat-flat-button type="submit">Save</button>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>
