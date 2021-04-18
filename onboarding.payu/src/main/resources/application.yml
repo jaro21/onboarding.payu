@@ -6,9 +6,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: root
+    url: jdbc:postgresql://localhost:5432/onboarding_db
+    username: onboarding_db
+    password: onboarding
   jpa:
     hibernate:
       ddl-auto: update # When you launch the application for the first time - switch "none" at "create"
@@ -35,11 +35,11 @@ feign:
   client:
     config:
       default:
-        connectionTimeout: 30000
-        readTimeout: 30000
+        connectionTimeout: 60000
+        readTimeout: 60000
       "[payment]":
-        connectionTimeout: 30000
-        readTimeout: 30000
+        connectionTimeout: 60000
+        readTimeout: 60000
 
 security:
   secret: Qr8CgzOBIYi#8z!s

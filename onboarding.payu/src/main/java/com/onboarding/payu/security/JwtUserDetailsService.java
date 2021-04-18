@@ -2,8 +2,6 @@ package com.onboarding.payu.security;
 
 import static java.lang.String.format;
 
-import java.util.ArrayList;
-
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.service.ICustomerService;
@@ -32,8 +30,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 		try {
 			final Customer customer = iCustomerService.findByUsername(username);
-			return User.builder().username(username).password(customer.getPassword()).authorities(new ArrayList<>()).build();
-		}catch (Exception e){
+			return User.builder().username(username).password(customer.getPassword()).roles(customer.getRole()).build();
+		} catch (Exception e) {
 			log.error("loadUserByUsername(username={})) ", username);
 			throw new UsernameNotFoundException(format(ExceptionCodes.USERNAME_NOT_EXIST.getMessage(), username));
 		}

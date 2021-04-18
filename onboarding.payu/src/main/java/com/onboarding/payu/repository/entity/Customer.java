@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Entity that represents a Customer object.
@@ -65,12 +66,12 @@ public class Customer {
 	@Column(name = "username", length = 45)
 	private String username;
 
-	@Column(name = "password_hash", length = 45)
+	@Column(name = "password_hash", length = 100)
 	private String password;
 
-	@Column(name = "id_rol")
-	private Integer idRol;
+	@Column(name = "role")
+	private String role;
 
-	@OneToMany(mappedBy = "idCustomer", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "idCustomer", fetch = FetchType.LAZY)
 	private List<CreditCard> creditCardList;
 }

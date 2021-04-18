@@ -3,6 +3,7 @@ package com.onboarding.payu.model.product.request;
 import java.math.BigDecimal;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -47,5 +48,6 @@ public class ProductRequest {
 
 	@NotBlank(message = "Photo url cannot be empty")
 	@Size(max = 200, message = "The size of the photo url must be a maximum of 200 characters.")
+	@Pattern(regexp = "^https?:\\/\\/[\\w\\-]+(\\.[\\w\\-]+)+[/#?]?.*$", message = "The URL of the photo is not valid.")
 	private String photoUrl;
 }

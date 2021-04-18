@@ -1,5 +1,6 @@
 package com.onboarding.payu.security;
 
+import com.onboarding.payu.model.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,8 +58,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.cors().and().csrf().disable()
 					.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 					.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-					.authorizeRequests().antMatchers("/v1.0/authenticate").permitAll()
+					.authorizeRequests()
+					.antMatchers("/v1.0/authenticate").permitAll()
 					.antMatchers(HttpMethod.POST, "/v1.0/customers").permitAll()
+					.antMatchers(HttpMethod.GET, "/v1.0/products").permitAll()
+					.antMatchers(HttpMethod.POST, "/v1.0/products").hasRole(RoleType.USER_ADMIN.getRole())
+					.antMatchers(HttpMethod.PUT, "/v1.0/products").hasRole(RoleType.USER_ADMIN.getRole())
+					.antMatchers(HttpMethod.DELETE, "/v1.0/products").hasRole(RoleType.USER_ADMIN.getRole())
+					.antMatchers("/v1.0/credit-cards").hasAnyRole(RoleType.USER_ADMIN.getRole(), RoleType.USER.getRole())
+					.antMatchers("/v1.0/payments").hasRole(RoleType.USER.getRole())
+					.antMatchers("/v1.0/purchase-orders").hasAnyRole(RoleType.USER_ADMIN.getRole(), RoleType.USER.getRole())
 					.anyRequest().authenticated();
 
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

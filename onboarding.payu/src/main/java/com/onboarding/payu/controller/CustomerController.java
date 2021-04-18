@@ -39,7 +39,11 @@ public class CustomerController {
 	}
 
 	@PostMapping
-	public ResponseEntity<CustomerResponse> createCustomer(@Valid @NotNull @RequestBody final CustomerRequest customerRequest){
+	public ResponseEntity<CustomerResponse> createCustomer(@Valid @NotNull @RequestBody final CustomerRequest customerRequest) {
+
+		Validate.notEmpty(customerRequest.getUsername(), "Username cannot be empty");
+		Validate.notEmpty(customerRequest.getPassword(), "Username cannot be empty");
+
 		return new ResponseEntity<>(iCustomerService.save(customerRequest), HttpStatus.CREATED);
 	}
 

@@ -65,13 +65,12 @@ public class CustomerRequest {
 	@Size(max = 5, message = "The size of the postal code must be a maximum of 5 characters.")
 	private String postal_code;
 
-	@NotBlank(message = "Username cannot be empty")
+	//@NotBlank(message = "Username cannot be empty")
 	@Size(max = 45, message = "The size of the username must be a maximum of 45 characters.")
 	private String username;
 
-	@NotBlank(message = "Password cannot be empty")
-	@Size(max = 45, message = "The size of the password must be a maximum of 45 characters.")
+	//@NotBlank(message = "Password cannot be empty")
+	//@Size(max = 45, message = "The size of the password must be a maximum of 45 characters.")
 	private String password;
 
-	private Integer idRol;
 }
