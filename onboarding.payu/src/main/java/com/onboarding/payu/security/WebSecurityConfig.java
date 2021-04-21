@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					.antMatchers(HttpMethod.PUT, "/v1.0/products").hasRole(RoleType.USER_ADMIN.getRole())
 					.antMatchers(HttpMethod.DELETE, "/v1.0/products").hasRole(RoleType.USER_ADMIN.getRole())
 					.antMatchers("/v1.0/credit-cards").hasAnyRole(RoleType.USER_ADMIN.getRole(), RoleType.USER.getRole())
-					.antMatchers("/v1.0/payments").hasRole(RoleType.USER.getRole())
+					.antMatchers("/v1.0/payments").hasAnyRole(RoleType.USER.getRole())
 					.antMatchers("/v1.0/purchase-orders").hasAnyRole(RoleType.USER_ADMIN.getRole(), RoleType.USER.getRole())
 					.anyRequest().authenticated();
 

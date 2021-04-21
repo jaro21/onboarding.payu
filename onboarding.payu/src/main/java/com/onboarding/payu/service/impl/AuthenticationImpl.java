@@ -2,9 +2,11 @@ package com.onboarding.payu.service.impl;
 
 import com.onboarding.payu.model.authentication.request.AuthenticationRequest;
 import com.onboarding.payu.model.authentication.response.AuthenticationResponse;
+import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.security.JwtTokenUtil;
 import com.onboarding.payu.security.JwtUserDetailsService;
 import com.onboarding.payu.service.IAuthentication;
+import com.onboarding.payu.service.ICustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,13 +31,17 @@ public class AuthenticationImpl implements IAuthentication {
 
 	private JwtUserDetailsService userDetailsService;
 
+	private ICustomerService iCustomerService;
+
 	@Autowired
 	public AuthenticationImpl(final AuthenticationManager authenticationManager,
-							  final JwtTokenUtil jwtTokenUtil, final JwtUserDetailsService userDetailsService) {
+							  final JwtTokenUtil jwtTokenUtil, final JwtUserDetailsService userDetailsService,
+							  final ICustomerService iCustomerService) {
 
 		this.authenticationManager = authenticationManager;
 		this.jwtTokenUtil = jwtTokenUtil;
 		this.userDetailsService = userDetailsService;
+		this.iCustomerService = iCustomerService;
 	}
 
 	/**
@@ -48,6 +54,13 @@ public class AuthenticationImpl implements IAuthentication {
 
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
-		return AuthenticationResponse.builder().token(jwtTokenUtil.generateToken(userDetails)).build();
+		final Customer customer = iCustomerService.findByUsername(authenticationRequest.getUsername());
+
+		return AuthenticationResponse.builder()
+									 .token(jwtTokenUtil.generateToken(userDetails))
+									 .role(customer.getRole())
+									 .name(customer.getFullName())
+									 .dni(customer.getDniNumber())
+									 .idCustomer(customer.getIdCustomer()).build();
 	}
 }
