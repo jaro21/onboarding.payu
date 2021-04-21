@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Product } from 'src/app/model/product';
 import { ProductsService } from 'src/app/services/products.service';
+import { LoginComponent } from '../../login/login.component';
 
 @Component({
   selector: 'app-add',
@@ -12,7 +14,7 @@ export class AddComponent {
   product!: Product;
   prod!: Product;
 
-  constructor(public productService : ProductsService, private fb: FormBuilder) { }
+  constructor(public productService : ProductsService, private fb: FormBuilder, private dialogRef: MatDialogRef<LoginComponent>) { }
 
   form = this.fb.group({
     name: ['', Validators.required],
@@ -31,6 +33,7 @@ export class AddComponent {
         rest => {
           console.log(rest);
           this.product = rest;
+          this.dialogRef.close(this.form.value);
         },
         err => console.log(err)
       );

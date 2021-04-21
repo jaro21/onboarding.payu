@@ -12,16 +12,15 @@ export class AuthInterceptorService implements HttpInterceptor {
   constructor(private router: Router) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token: string = localStorage.getItem('token') || '';
+    const token: string = sessionStorage.getItem('token') || '';
     const uri_auth = '/shop/v1.0/authenticate';
-    //const uri_get_prod = '/shop/v1.0/products';
+    const uri_get_prod = '/shop/v1.0/products';
 
     console.log(req);
 
     let request = req;
 
-    //if (token && uri_auth != req.url && (uri_get_prod == req.url && req.method != 'GET'))  {
-    if (token && uri_auth != req.url)  {
+    if (token && uri_auth != req.url && (uri_get_prod == req.url && req.method != 'GET'))  {
       request = req.clone({
         setHeaders: {
           Authorization: `Bearer ${ token }`

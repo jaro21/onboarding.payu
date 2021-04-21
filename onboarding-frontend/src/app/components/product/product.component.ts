@@ -1,4 +1,4 @@
-import { AfterViewInit, ViewChild } from '@angular/core';
+import { AfterViewInit, OnInit, ViewChild } from '@angular/core';
 import { Component } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -6,20 +6,14 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Product } from 'src/app/model/product';
 import { ProductsService } from 'src/app/services/products.service';
 
-/** Constants used to fill up our data base. */
-const COLORS: string[] = [
-  'maroon', 'red', 'orange', 'yellow', 'olive', 'green', 'purple', 'fuchsia', 'lime', 'teal',
-  'aqua', 'blue', 'navy', 'black', 'gray'
-];
-
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
 })
-export class ProductComponent implements AfterViewInit {
-  displayedColumns: string[] = ['idproduct','name','code','description','price','stock','image'];
-  dataSource: MatTableDataSource<Product>;
+export class ProductComponent implements OnInit {
+  displayedColumns: string[] = ['code','name','price','stock'];
+  dataSource!: MatTableDataSource<Product>;
 
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
@@ -27,22 +21,21 @@ export class ProductComponent implements AfterViewInit {
   sort!: MatSort;
   products!: Product[];
 
-  constructor(productService: ProductsService) {
-    productService.getProducts()
+  constructor(public productService: ProductsService) {}
+
+  ngOnInit(): void {
+    this.productService.getProducts()
       .subscribe(
-        products => {
-          console.log(products)
-          this.products = products;
+        prods => {
+          console.log("prods 1 : "+prods)
+          this.products = prods;
+          console.log("products 1 : "+this.products)
+          this.dataSource = new MatTableDataSource(prods);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
         },
         err => console.log(err)
       )
-
-    this.dataSource = new MatTableDataSource(this.products);
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   applyFilter(event: Event) {

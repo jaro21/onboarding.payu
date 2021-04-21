@@ -5,9 +5,9 @@ import { ListComponent } from './components/product/list/list.component';
 import { ProductComponent } from './components/product/product.component';
 
 const routes: Routes = [
-  {path: 'list',component:ListComponent},
   {path: 'product',component:ProductComponent},
-  {path: 'add-product', component:AddComponent}
+  {path: 'add-product', component:AddComponent},
+  {path: 'list',component:ListComponent}
   //{path: '**',component:ListComponent}
 ];
 

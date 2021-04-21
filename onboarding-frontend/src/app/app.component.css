@@ -15,3 +15,8 @@ mat-card, app-product {
 mat-form-field, input {
     width: 100%;
 }
+
+mat-toolbar {
+    width: 100%;
+    align-items: flex-end;
+}

@@ -12,11 +12,9 @@ export class ProductsService {
 
   parametros = {}
 
-  url = '/shop/v1.0/products/';
+  url = '/shop/v1.0/products';
 
   getProducts() : Observable<any> {
-    //return this.http.get<Photo[]>('https://jsonplaceholder.typicode.com/photos?_limit=5');
-    //return this.http.get<Product[]>('http://127.0.0.1:8081/shop/v1.0/products/');
     return this.http.get<Product[]>(this.url);
   }
 

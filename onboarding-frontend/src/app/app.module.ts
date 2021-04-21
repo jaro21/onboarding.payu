@@ -26,6 +26,7 @@ import { ListComponent } from './components/product/list/list.component';
 import { AddComponent } from './components/product/add/add.component';
 import { ModifyComponent } from './components/customer/modify/modify.component';
 import { ShoppingCartComponent } from './components/shopping-cart/shopping-cart.component';
+import { ShowcaseComponent } from './components/showcase/showcase.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { ShoppingCartComponent } from './components/shopping-cart/shopping-cart.
     AddComponent,
     ModifyComponent,
     ShoppingCartComponent,
+    ShowcaseComponent,
   ],
   imports: [
     BrowserModule,

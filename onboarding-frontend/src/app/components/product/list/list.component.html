@@ -12,6 +12,17 @@
         Stock {{product.stock}}
     </mat-card-content>
     <mat-card-actions>
-        <button mat-raised-button color="primary">Add</button>
+        <button mat-menu-item (click)="onRemoveToCart(product)" [disabled]="!product.quantity || product.quantity === 0">
+            <mat-icon>remove_shopping_cart</mat-icon>
+        </button>
+        <p *ngIf="!product.quantity">
+            0
+        </p>
+        <p *ngIf="product.quantity">
+            {{product.quantity}}
+        </p>
+        <button mat-menu-item (click)="onAddToCart(product)" [disabled]="product.quantity === product.stock">
+            <mat-icon>add_shopping_cart</mat-icon>
+        </button>
     </mat-card-actions>
 </mat-card>
