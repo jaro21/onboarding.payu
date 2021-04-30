@@ -38,10 +38,13 @@ public enum ExceptionCodes {
 	MINIMUM_AMOUNT_INVALID("A001", "Minimum amount must be greater than or equal to $ %s"),
 	MAXIMUM_AMOUNT_INVALID("A002", "Maximum amount must be less than or equal to $ %s"),
 	PAYMENT_NOT_EXIST("PA001", "Payment id %s does not exist."),
+	PAYMENT_STATUS_NOT_EXIST("PA002", "The payment for the purchase order does not exist"),
+	PAYMENT_COULD_NOT_BE_PROCESSED("PA002","The payment could not be processed"),
 	PERIOD_INVALID("CC001", "The expiration date of the credit card must be greater than the current date."),
 	PERIOD_FORMAT_INVALID("CC002", "The expiration date must be in the format 'YYYY/MM'."),
 	CREDIT_CARD_INVALID("CC003", "The credit card number is invalid."),
-	PAYMENT_METHOD_IVALID("CC004", "The payment method %s is invalid.");
+	PAYMENT_METHOD_IVALID("CC004", "The payment method %s is invalid."),
+	REFUND_COULD_NOT_BE_PROCESSED("R001","The refund could not be processed");
 
 
 	private final String code;

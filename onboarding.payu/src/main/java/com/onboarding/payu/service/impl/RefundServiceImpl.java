@@ -57,8 +57,8 @@ public class RefundServiceImpl implements IRefundService {
 	@Transactional
 	@Override public RefundDtoResponse appyRefund(final RefundDtoRequest refundDtoRequest) {
 
-		log.info("Start refund to payment id {} ", refundDtoRequest.getIdPayment());
-		final Payment payment = iPaymentService.findById(refundDtoRequest.getIdPayment());
+		log.info("Start refund to purchase order id {} ", refundDtoRequest.getIdPurchaseOrder());
+		final Payment payment = iPaymentService.findByIdPurchaseOrderStatus(refundDtoRequest.getIdPurchaseOrder(), StatusType.APPROVED.name());
 		final PurchaseOrder purchaseOrder = iPurchaseOrder.findByIdPurchaseOrder(payment.getIdPurchaseOrder());
 
 		isRefundValid(payment, refundDtoRequest.getIdCustomer(), purchaseOrder);

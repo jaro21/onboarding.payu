@@ -9,7 +9,6 @@ import java.util.List;
 import com.onboarding.payu.client.payu.model.CommanType;
 import com.onboarding.payu.client.payu.model.CountryType;
 import com.onboarding.payu.client.payu.model.CurrencyType;
-import com.onboarding.payu.client.payu.model.ExtraParameterType;
 import com.onboarding.payu.client.payu.model.LanguageType;
 import com.onboarding.payu.client.payu.model.Merchant;
 import com.onboarding.payu.client.payu.model.TransactionType;
@@ -21,11 +20,14 @@ import com.onboarding.payu.client.payu.model.payment.request.PaymentWithTokenPay
 import com.onboarding.payu.client.payu.model.payment.request.TransactionPayU;
 import com.onboarding.payu.client.payu.model.payment.request.TxValue;
 import com.onboarding.payu.client.payu.model.payment.response.PaymentWithTokenPayUResponse;
+import com.onboarding.payu.client.payu.model.refund.response.RefundPayUResponse;
+import com.onboarding.payu.client.payu.model.tokenization.request.CreditCardPayU;
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.StatusType;
 import com.onboarding.payu.model.payment.request.PaymentTransactionRequest;
 import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
+import com.onboarding.payu.model.refund.response.RefundDtoResponse;
 import com.onboarding.payu.repository.entity.CreditCard;
 import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
@@ -94,19 +96,22 @@ public class PaymentPayuMapper {
 							  final PurchaseOrder purchaseOrder,
 							  final Customer customer) {
 
-		final CreditCard creditCard = getCreditCardById(customer.getCreditCardList(), transactionRequest.getIdCreditCard());
-
 		final TransactionPayU.TransactionPayUBuilder transactionPayU =
 				TransactionPayU.builder()
-							   .creditCardTokenId(creditCard.getToken())
 							   .type(TransactionType.AUTHORIZATION_AND_CAPTURE.toString())
-							   .paymentMethod(creditCard.getPaymentMethod())
 							   .paymentCountry(CountryType.COLOMBIA.getCountry())
-							   .deviceSessionId(transactionRequest.getDeviceSessionId())
 							   .ipAddress(transactionRequest.getIpAddress())
-							   .cookie(transactionRequest.getCookie())
-							   .userAgent(transactionRequest.getUserAgent())
-							   .extraParameters(getExtraParameter());
+							   .extraParameters(getExtraParameter(transactionRequest.getInstallmentNumber()));
+
+		if (transactionRequest.getIdCreditCard() != 0) {
+			final CreditCard creditCard = getCreditCardById(customer.getCreditCardList(), transactionRequest.getIdCreditCard());
+			transactionPayU.creditCardTokenId(creditCard.getToken()).paymentMethod(creditCard.getPaymentMethod());
+		} else {
+			toCreditCard(transactionRequest, transactionPayU);
+			if (transactionRequest.getCreditCard() != null) {
+				transactionPayU.paymentMethod(transactionRequest.getCreditCard().getPaymentMethod());
+			}
+		}
 
 		toOrder(purchaseOrder, signatureMd5, transactionPayU);
 		toPayer(customer, transactionPayU);
@@ -114,9 +119,26 @@ public class PaymentPayuMapper {
 		paymentWithTokenPayURequest.transaction(transactionPayU.build());
 	}
 
-	private ExtraParameters getExtraParameter() {
+	private void toCreditCard(final PaymentTransactionRequest paymentTransactionRequest,
+							  final TransactionPayU.TransactionPayUBuilder transactionPayU) {
 
-		return ExtraParameters.builder().installmentsNumber(ExtraParameterType.INSTALLMENTS_NUMBER.getId()).build();
+		if (paymentTransactionRequest.getCreditCard() != null) {
+
+			final CreditCardPayU creditCardPayU = CreditCardPayU.builder()
+																.number(paymentTransactionRequest.getCreditCard().getNumber())
+																.securityCode(paymentTransactionRequest.getCreditCard().getCvv())
+																.expirationDate(
+																		paymentTransactionRequest.getCreditCard().getExpirationDate())
+																.name(paymentTransactionRequest.getCreditCard().getName())
+																.build();
+
+			transactionPayU.creditCard(creditCardPayU);
+		}
+	}
+
+	private ExtraParameters getExtraParameter(final Integer installmentNumber) {
+
+		return ExtraParameters.builder().installmentsNumber(installmentNumber).build();
 	}
 
 	private void toPayer(final Customer customer,
@@ -163,21 +185,44 @@ public class PaymentPayuMapper {
 										.error(paymentWithToken.getError());
 
 		toTransactionResponse(paymentWithToken, paymentWithTokenResponseBuilder);
+		setError(paymentWithToken, paymentWithTokenResponseBuilder);
 
 		return paymentWithTokenResponseBuilder.build();
-
 	}
 
 	public void toTransactionResponse(final PaymentWithTokenPayUResponse paymentWithToken,
-									  final PaymentWithTokenResponse.PaymentWithTokenResponseBuilder paymentWithTokenResponseBuilder) {
+									  final PaymentWithTokenResponse.PaymentWithTokenResponseBuilder responseBuilder) {
 
 		if (paymentWithToken != null && paymentWithToken.getTransactionResponse() != null) {
-			if(paymentWithToken.getTransactionResponse().getState().equals("APPROVED")){
-				paymentWithTokenResponseBuilder.status(StatusType.APPROVED);
+			if (StatusType.APPROVED.name().equals(paymentWithToken.getTransactionResponse().getState())) {
+				responseBuilder.status(StatusType.APPROVED);
+			} else {
+				responseBuilder.status(StatusType.ERROR);
+				responseBuilder.code(ExceptionCodes.PAYMENT_COULD_NOT_BE_PROCESSED.getCode());
+				responseBuilder.error(ExceptionCodes.PAYMENT_COULD_NOT_BE_PROCESSED.getMessage());
 			}
 
 			final JSONObject jsonObject = new JSONObject(paymentWithToken);
-			paymentWithTokenResponseBuilder.transactionResponse(jsonObject.toString());
+			responseBuilder.transactionResponse(jsonObject.toString());
+		} else {
+			responseBuilder.status(StatusType.ERROR);
+			responseBuilder.code(ExceptionCodes.PAYMENT_COULD_NOT_BE_PROCESSED.getCode());
+			responseBuilder.error(ExceptionCodes.PAYMENT_COULD_NOT_BE_PROCESSED.getMessage());
+		}
+	}
+
+	/**
+	 * @param paymentWithToken {@link RefundPayUResponse}
+	 * @param responseBuilder  {@link RefundDtoResponse.RefundDtoResponseBuilder}
+	 */
+	private void setError(final PaymentWithTokenPayUResponse paymentWithToken,
+						  final PaymentWithTokenResponse.PaymentWithTokenResponseBuilder responseBuilder) {
+
+		if (StatusType.ERROR.name().equals(paymentWithToken.getCode())) {
+			responseBuilder.code(StatusType.ERROR.name());
+			responseBuilder.error(ExceptionCodes.PAYMENT_COULD_NOT_BE_PROCESSED.getMessage());
+		} else {
+			responseBuilder.code(StatusType.SUCCESS.name());
 		}
 	}
 

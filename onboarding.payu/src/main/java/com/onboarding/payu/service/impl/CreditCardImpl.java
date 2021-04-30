@@ -65,12 +65,15 @@ public class CreditCardImpl implements ICreditCard {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Service to save a tokenized credit card
+	 *
+	 * @param tokenResponse {@link TokenResponse}
+	 * @return {@link TokenResponse}
 	 */
-	@Override public TokenResponse saveCreditCard(final TokenResponse tokenResponse) {
+	public TokenResponse saveCreditCard(final TokenResponse tokenResponse) {
 
 		Integer idCreditCard = null;
-		if(tokenResponse.getCreditCard() != null) {
+		if (tokenResponse.getCreditCard() != null) {
 			log.info("Start to save Credit Card token {}", tokenResponse.getCreditCard().getCreditCardTokenId());
 			final Customer customer = iCustomerService.findByDniNumber(tokenResponse.getCreditCard().getIdentificationNumber());
 			final Optional<CreditCard> creditCardOptional = findCreditCardByCustomerAndToken(customer, tokenResponse);
@@ -95,7 +98,7 @@ public class CreditCardImpl implements ICreditCard {
 	 */
 	private Optional<CreditCard> findCreditCardByCustomerAndToken(final Customer customer, final TokenResponse tokenResponse) {
 
-		if(tokenResponse != null && tokenResponse.getCreditCard() != null && customer != null && customer.getCreditCardList() != null){
+		if (tokenResponse != null && tokenResponse.getCreditCard() != null && customer != null && customer.getCreditCardList() != null) {
 			return customer.getCreditCardList().stream()
 						   .filter(creditCard -> creditCard.getToken().equals(tokenResponse.getCreditCard().getCreditCardTokenId()))
 						   .findFirst();

@@ -43,12 +43,14 @@ public class PaymentServiceImpl implements IPaymentService {
 
 	private final PaymentMapper paymentMapper;
 
+	private final CreditCardImpl creditCardImpl;
+
 	@Autowired
 	public PaymentServiceImpl(final IPaymentProvider iPaymentProvider, final ICustomerService iCustomerService,
 							  final IPurchaseOrder iPurchaseOrder,
 							  final PaymentValidator paymentValidator,
 							  final IPaymentRepository iPaymentRepository,
-							  final PaymentMapper paymentMapper) {
+							  final PaymentMapper paymentMapper, final CreditCardImpl creditCardImpl) {
 
 		this.iPaymentProvider = iPaymentProvider;
 		this.iCustomerService = iCustomerService;
@@ -56,6 +58,7 @@ public class PaymentServiceImpl implements IPaymentService {
 		this.paymentValidator = paymentValidator;
 		this.iPaymentRepository = iPaymentRepository;
 		this.paymentMapper = paymentMapper;
+		this.creditCardImpl = creditCardImpl;
 	}
 
 	/**
@@ -67,13 +70,19 @@ public class PaymentServiceImpl implements IPaymentService {
 				() -> new BusinessAppException(ExceptionCodes.PAYMENT_NOT_EXIST, idPayment.toString()));
 	}
 
+	@Override public Payment findByIdPurchaseOrderStatus(final Integer idPurchaseOrder, final String status) {
+
+		return iPaymentRepository.findByIdPurchaseOrderAndStatus(idPurchaseOrder, status).orElseThrow(
+				() -> new BusinessAppException(ExceptionCodes.PAYMENT_STATUS_NOT_EXIST));
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Transactional
 	@Override public PaymentWithTokenResponse paymentWithToken(final PaymentTransactionRequest paymentTransactionRequest) {
 
-		log.info("Start payment purchase order id {}, credit card id {}, customer id {} : ", paymentTransactionRequest.getIdPurchaseOrder(),
+		log.info("Start payment purchase order id {}, credit card id {}, customer id {} ", paymentTransactionRequest.getIdPurchaseOrder(),
 				 paymentTransactionRequest.getIdCreditCard(), paymentTransactionRequest.getIdCustomer());
 
 		final PurchaseOrder purchaseOrder = iPurchaseOrder
@@ -86,7 +95,16 @@ public class PaymentServiceImpl implements IPaymentService {
 		final PaymentWithTokenResponse paymentWithTokenResponse =
 				iPaymentProvider.paymentWithToken(paymentTransactionRequest, purchaseOrder, customer);
 
+		saveNewCard(paymentTransactionRequest);
+
 		return savePayment(paymentWithTokenResponse, purchaseOrder);
+	}
+
+	private void saveNewCard(final PaymentTransactionRequest paymentTransactionRequest) {
+
+		if (paymentTransactionRequest.getCreditCard() != null && paymentTransactionRequest.getCreditCard().isSaveCard()) {
+			creditCardImpl.tokenizationCard(paymentTransactionRequest.getCreditCard());
+		}
 	}
 
 	/**
@@ -102,7 +120,7 @@ public class PaymentServiceImpl implements IPaymentService {
 	 * @param purchaseOrder
 	 */
 	private PaymentWithTokenResponse savePayment(final PaymentWithTokenResponse paymentWithTokenResponse,
-							 final PurchaseOrder purchaseOrder) {
+												 final PurchaseOrder purchaseOrder) {
 
 		final Payment payment = iPaymentRepository.save(paymentMapper.buildPayment(paymentWithTokenResponse, purchaseOrder));
 

@@ -72,6 +72,6 @@ public class Customer {
 	@Column(name = "role")
 	private String role;
 
-	@OneToMany(mappedBy = "idCustomer", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "idCustomer", fetch = FetchType.EAGER)
 	private List<CreditCard> creditCardList;
 }

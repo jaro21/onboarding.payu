@@ -23,9 +23,8 @@ import org.springframework.stereotype.Component;
 public class RefundPayuMapper {
 
 	/**
-	 *
-	 * @param payment {@link Payment}
-	 * @param reason {@link String}
+	 * @param payment  {@link Payment}
+	 * @param reason   {@link String}
 	 * @param merchant {@link Merchant}
 	 * @return {@link RefundPayURequest}
 	 */
@@ -43,9 +42,8 @@ public class RefundPayuMapper {
 	}
 
 	/**
-	 *
-	 * @param payment {@link Payment}
-	 * @param reason {@link String}
+	 * @param payment                  {@link Payment}
+	 * @param reason                   {@link String}
 	 * @param refundPayURequestBuilder {@link RefundPayURequest}
 	 */
 	private void toTransactionPayU(final Payment payment, final String reason,
@@ -68,19 +66,33 @@ public class RefundPayuMapper {
 	}
 
 	/**
-	 *
 	 * @param refundPayUResponse {@link RefundPayUResponse}
 	 * @return {@link RefundDtoResponse}
 	 */
 	public RefundDtoResponse toRefundDtoResponse(final RefundPayUResponse refundPayUResponse) {
 
 		final RefundDtoResponse.RefundDtoResponseBuilder refundDtoResponseBuilder =
-				RefundDtoResponse.builder().code(refundPayUResponse.getCode())
-								 .error(refundPayUResponse.getError());
+				RefundDtoResponse.builder();
 
+		setError(refundPayUResponse, refundDtoResponseBuilder);
 		toTransactionDtoResponse(refundPayUResponse, refundDtoResponseBuilder);
 
 		return refundDtoResponseBuilder.build();
+	}
+
+	/**
+	 * @param refundPayUResponse       {@link RefundPayUResponse}
+	 * @param refundDtoResponseBuilder {@link RefundDtoResponse.RefundDtoResponseBuilder}
+	 */
+	private void setError(final RefundPayUResponse refundPayUResponse,
+						  final RefundDtoResponse.RefundDtoResponseBuilder refundDtoResponseBuilder) {
+
+		if (StatusType.ERROR.name().equals(refundPayUResponse.getCode())) {
+			refundDtoResponseBuilder.code(StatusType.ERROR.name());
+			refundDtoResponseBuilder.error(ExceptionCodes.REFUND_COULD_NOT_BE_PROCESSED.getMessage());
+		} else {
+			refundDtoResponseBuilder.code(StatusType.SUCCESS.name());
+		}
 	}
 
 	/**
@@ -90,13 +102,13 @@ public class RefundPayuMapper {
 	private void toTransactionDtoResponse(final RefundPayUResponse refundPayUResponse,
 										  final RefundDtoResponse.RefundDtoResponseBuilder refundDtoResponseBuilder) {
 
-		if (refundPayUResponse != null && refundPayUResponse.getTransactionResponse() != null) {
-			if(StatusType.APPROVED.name().equals(refundPayUResponse.getTransactionResponse().getResponseCode())){
+		final JSONObject jsonObject = new JSONObject(refundPayUResponse);
+		refundDtoResponseBuilder.transactionResponse(jsonObject.toString());
+
+		if (refundPayUResponse.getTransactionResponse() != null) {
+			if (StatusType.APPROVED.name().equals(refundPayUResponse.getTransactionResponse().getResponseCode())) {
 				refundDtoResponseBuilder.status(StatusType.REFUNDED);
 			}
-
-			final JSONObject jsonObject = new JSONObject(refundPayUResponse);
-			refundDtoResponseBuilder.transactionResponse(jsonObject.toString());
 		}
 	}
 }

@@ -156,6 +156,7 @@ public class PurchaseOrderMapper {
 		return ProductPurchaseResponse.builder()
 									  .idProduct(orderProduct.getProduct().getIdProduct())
 									  .code(orderProduct.getProduct().getCode())
+									  .name(orderProduct.getProduct().getName())
 									  .description(orderProduct.getProduct().getDescription())
 									  .price(orderProduct.getUnitValue())
 									  .quantity(orderProduct.getQuantity())

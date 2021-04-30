@@ -39,11 +39,16 @@ public class CreditCardRequest {
 
 	@ToString.Exclude
 	@NotBlank(message = "Credit card number cannot be empty")
-	@Size(min = 13, max = 16, message = "The card number must be between 13 and 15 numeric characters.")
+	@Size(min = 13, max = 16, message = "The card number must be between 13 and 16 numeric characters.")
 	@Pattern(regexp = "[0-9]+", message = "The card number must contain only numeric characters")
 	private String number;
 
 	@ToString.Exclude
 	@NotBlank(message = "Credit card expiration date cannot be empty")
 	private String expirationDate;
+
+	@Size(max = 4, message = "The size of the security code must be a maximum of 4 characters.")
+	private String cvv;
+
+	private boolean saveCard;
 }

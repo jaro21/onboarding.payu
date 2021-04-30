@@ -1,5 +1,7 @@
 package com.onboarding.payu.repository;
 
+import java.util.Optional;
+
 import com.onboarding.payu.repository.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,4 +20,8 @@ public interface IPaymentRepository extends JpaRepository<Payment, Integer> {
 	@Modifying
 	@Query("update Payment set status = :status where idPayment = :id")
 	Integer updateStatusById(@Param("status") String status, @Param("id") Integer id);
+
+
+	Optional<Payment> findByIdPurchaseOrderAndStatus(@Param("idPurchaseOrder") final Integer idPurchaseOrder,
+												  @Param("status") final String status);
 }

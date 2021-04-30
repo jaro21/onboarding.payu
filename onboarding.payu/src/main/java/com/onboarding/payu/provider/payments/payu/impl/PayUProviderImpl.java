@@ -37,6 +37,8 @@ public class PayUProviderImpl implements IPaymentProvider {
 
 	private final RefundPayuMapper refundPayUMapper;
 
+	private final TokenizationPayuMapper tokenizationPayuMapper;
+
 	@Value("${payment-api.apiKey}")
 	private String apiKey;
 	@Value("${payment-api.apiLogin}")
@@ -44,11 +46,13 @@ public class PayUProviderImpl implements IPaymentProvider {
 
 	@Autowired
 	public PayUProviderImpl(final PaymentClient paymentClient,
-							final PaymentPayuMapper paymentPayUMapper, final RefundPayuMapper refundPayUMapper) {
+							final PaymentPayuMapper paymentPayUMapper, final RefundPayuMapper refundPayUMapper,
+							final TokenizationPayuMapper tokenizationPayuMapper) {
 
 		this.paymentClient = paymentClient;
 		this.paymentPayUMapper = paymentPayUMapper;
 		this.refundPayUMapper = refundPayUMapper;
+		this.tokenizationPayuMapper = tokenizationPayuMapper;
 	}
 
 	/**
@@ -56,8 +60,8 @@ public class PayUProviderImpl implements IPaymentProvider {
 	 */
 	@Override public TokenResponse tokenizationCard(final CreditCardRequest creditCardRequest) {
 
-		return TokenizationPayuMapper.getTokenResponse(paymentClient.tokenizationCard(
-				TokenizationPayuMapper.getTokenizationRequest(creditCardRequest, getMerchant())));
+		return tokenizationPayuMapper.getTokenResponse(paymentClient.tokenizationCard(
+				tokenizationPayuMapper.getTokenizationRequest(creditCardRequest, getMerchant())));
 	}
 
 	/**
