@@ -10,19 +10,14 @@ import { ProductsService } from 'src/app/services/products.service';
 })
 export class ListComponent implements OnInit {
 
-  @Input()
-  product!: Product;
+  productsView : Product[] = [];
   
-  products : Product[] = [];
-
   constructor(public productService : ProductsService, private cartService: CartService) { }
 
   ngOnInit(): void {
-    this.productService.getProducts()
-      .subscribe(
+    this.productService.getProducts().subscribe(
         products => {
-          console.log(products)
-          this.products = products;
+          this.productsView = products;
         },
         err => console.log(err)
       )
@@ -32,37 +27,33 @@ export class ListComponent implements OnInit {
     this.productService.getProducts()
       .subscribe(
         products => {
-          console.log(products)
-          this.products = products;
+          this.productsView = products;
         },
         err => console.log(err)
       )
   }
 
   onAddToCart(product: Product) {
-    console.log('product name '+product.name);
     this.cartService.addProductToCart(product);
-    this.products.map(_product => {
-      if (_product.idproduct === product.idproduct) {
-        console.log('quantity '+_product.name);
+    
+    this.productsView.forEach(_product => {
+      if (_product.idProduct === product.idProduct) {
         if(_product.quantity){
           _product.quantity++;
         }else{
           _product.quantity = 1;
         }
       }
-      console.log('quantity 2 '+_product.quantity);
-      return _product;
     });
   }
 
   onRemoveToCart(product: Product) {
     this.cartService.deleteProductFromCart(product);
-    this.products.map(_product => {
-      if (_product.idproduct === product.idproduct) {
+
+    this.productsView.forEach(_product => {
+      if (_product.idProduct === product.idProduct) {
         _product.quantity--;
       }
-      return _product;
     });
   }
 }

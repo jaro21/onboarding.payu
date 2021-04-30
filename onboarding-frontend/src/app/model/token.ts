@@ -4,4 +4,5 @@ export interface Token {
     role : string;
     name : string;
     dni : string;
+    idCustomer: string;
 }

@@ -15,8 +15,7 @@ mat-card img {
 }
 
 button {
-    width: 50px;
-    height: 50px;
+    width: 100%;
     margin-left: 2rem;
     margin-right: 2rem;
 }

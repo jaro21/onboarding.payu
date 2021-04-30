@@ -1,39 +1,49 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <button mat-icon-button [matMenuTriggerFor]="menu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="openDialogLogin()" *ngIf="isShowLogin">
+    <div class="align-right">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>account_circle</mat-icon>
-        <span>Login</span>
       </button>
-      <button mat-menu-item (click)="logout()" *ngIf="!isShowLogin">
-        <mat-icon>exit_to_app</mat-icon>
-        <span>Logout</span>
-      </button>
-      <button mat-menu-item routerLink="/list">
-        <mat-icon>home</mat-icon>
-        <span>Home</span>
-      </button>
-      <button mat-menu-item (click)="openDialogAddProduct()" *ngIf="currentRole == 'ADMIN'">
-        <mat-icon>add_circle_outline</mat-icon>
-        <span>AddProduct</span>
-      </button>
-      <button mat-menu-item disabled>
-        <mat-icon>credit_card</mat-icon>
-        <span>Check voice mail</span>
-      </button>
-      <button mat-menu-item>
-        <mat-icon>add_shopping_cart</mat-icon>
-        <mat-icon>remove_shopping_cart</mat-icon>
-        <mat-icon>shopping_cart</mat-icon>
-        <mat-icon>account_box</mat-icon>
-        <mat-icon>account_circle</mat-icon>
-        <mat-icon>home</mat-icon>
-        <span>Disable alerts</span>
-      </button>
-    </mat-menu>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="openDialogLogin()" *ngIf="isShowLogin">
+          <mat-icon>account_circle</mat-icon>
+          <span>Login</span>
+        </button>
+        <button mat-menu-item (click)="openDialogAddCustomer()" *ngIf="isShowLogin">
+          <mat-icon>accessibility_new</mat-icon>
+          <span>Sign Up</span>
+        </button>
+        <button mat-menu-item (click)="logout()" *ngIf="!isShowLogin">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Logout</span>
+        </button>
+        <button mat-menu-item (click)="openDialogAddCreditCard()" *ngIf="!isShowLogin && currentRole !== 'ADMIN'">
+          <mat-icon>credit_card</mat-icon>
+          <span>Add Credit Card</span>
+        </button>
+        <button mat-menu-item (click)="openDialogPurchaseOrders()" *ngIf="!isShowLogin && currentRole !== 'ADMIN'">
+          <mat-icon>credit_card</mat-icon>
+          <span>My Purchase Orders</span>
+        </button>
+        <button mat-menu-item (click)="openDialogAddProduct()" *ngIf="currentRole === 'ADMIN'">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>AddProduct</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>add_shopping_cart</mat-icon>
+          <mat-icon>remove_shopping_cart</mat-icon>
+          <mat-icon>shopping_cart</mat-icon>
+          <mat-icon>account_box</mat-icon>
+          <mat-icon>account_circle</mat-icon>
+          <mat-icon>home</mat-icon>
+          <span>Disable alerts</span>
+        </button>
+      </mat-menu>
+      <app-shopping-cart *ngIf="currentRole != 'ADMIN'"></app-shopping-cart>
+      </div>
+      <div class="align-right">
+        <mat-label *ngIf="!isShowLogin" class="align-right">{{name}}</mat-label>    
+    </div>
   </mat-toolbar-row>
 </mat-toolbar>
 

@@ -18,5 +18,21 @@ mat-form-field, input {
 
 mat-toolbar {
     width: 100%;
-    align-items: flex-end;
+    text-align: right;
+}
+
+mat-toolbar-row {
+    text-align: right;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+button {
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.align-right {
+    text-align: right;
+    margin-left: 2rem;
 }

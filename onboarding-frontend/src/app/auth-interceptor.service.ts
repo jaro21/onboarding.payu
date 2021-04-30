@@ -20,7 +20,7 @@ export class AuthInterceptorService implements HttpInterceptor {
 
     let request = req;
 
-    if (token && uri_auth != req.url && (uri_get_prod == req.url && req.method != 'GET'))  {
+    if (token && uri_auth != req.url && !(uri_get_prod == req.url && req.method == 'GET'))  {
       request = req.clone({
         setHeaders: {
           Authorization: `Bearer ${ token }`

@@ -1,0 +1,86 @@
+<div class="title">
+    <mat-label>Purchase Orders</mat-label>
+</div>
+<mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Enter search filter" #input>
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+    <table mat-table  matSort [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+            <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+            <td mat-cell *matCellDef="let row"> {{row.date}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Value </th>
+            <td mat-cell *matCellDef="let row"> {{row.value}} </td>
+          </ng-container>
+          
+          <ng-container matColumnDef="decline">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Decline </th>
+            <td mat-cell *matCellDef="let row"> 
+                <button mat-flat-button (click)="openDialogDecline(row)" [disabled]="row.status !== 'SAVED'">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="payment">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Payment </th>
+            <td mat-cell *matCellDef="let row"> 
+                <button mat-flat-button (click)="openDialogPayment(row)" [disabled]="row.status !== 'SAVED'">
+                    <mat-icon>payment</mat-icon>
+                </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="refund">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Refund </th>
+            <td mat-cell *matCellDef="let row"> 
+                <button mat-flat-button (click)="openDialogRefund(row)" [disabled]="row.status !== 'PAID'">
+                    <mat-icon>assignment_returned</mat-icon>
+                </button>
+            </td>
+          </ng-container>
+
+        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+        <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                <div class="example-element-detail"
+                    [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                    <div class="example-element-description" *ngFor="let item of element.products">
+                        <span class="example-element-description-attribution">
+                            {{item.code}} : {{item.name}}, Unit Value = {{item.price}}, Quantity = {{item.quantity}}, 
+                            Total Value = {{item.price * item.quantity}}
+                        </span>
+                        <br/>
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="example-element-row"
+            [class.example-expanded-row]="expandedElement === element"
+            (click)="expandedElement = expandedElement === element ? null : element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+        </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>
+
+<div class="close">
+    <button mat-raised-button mat-dialog-close>Close</button>
+</div>

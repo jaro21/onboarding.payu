@@ -19,14 +19,22 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { ProductComponent } from './components/product/product.component';
 import { ListComponent } from './components/product/list/list.component';
 import { AddComponent } from './components/product/add/add.component';
-import { ModifyComponent } from './components/customer/modify/modify.component';
 import { ShoppingCartComponent } from './components/shopping-cart/shopping-cart.component';
 import { ShowcaseComponent } from './components/showcase/showcase.component';
+import { AddCustomerComponent } from './components/customer/add-customer/add-customer.component';
+import { ModifyCustomerComponent } from './components/customer/modify-customer/modify-customer.component';
+import { AddCreditcardComponent } from './components/creditcard/add-creditcard/add-creditcard.component';
+import { PurchaseOrderListComponent } from './components/purchase-order/purchase-order-list/purchase-order-list.component';
+import { PaymentComponent } from './components/payment/payment.component';
+import { RefundComponent } from './components/refund/refund.component';
+import { DeclineComponent } from './components/purchase-order/decline/decline.component';
 
 
 @NgModule({
@@ -36,9 +44,15 @@ import { ShowcaseComponent } from './components/showcase/showcase.component';
     ProductComponent,
     ListComponent,
     AddComponent,
-    ModifyComponent,
     ShoppingCartComponent,
     ShowcaseComponent,
+    AddCustomerComponent,
+    ModifyCustomerComponent,
+    AddCreditcardComponent,
+    PurchaseOrderListComponent,
+    PaymentComponent,
+    RefundComponent,
+    DeclineComponent
   ],
   imports: [
     BrowserModule,
@@ -57,7 +71,10 @@ import { ShowcaseComponent } from './components/showcase/showcase.component';
     MatTooltipModule,
     MatDialogModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatBadgeModule,
+    MatRadioModule,
+    MatCheckboxModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

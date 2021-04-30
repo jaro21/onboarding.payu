@@ -1,0 +1,74 @@
+<mat-card>
+    <mat-card-title>Payment</mat-card-title>
+    <mat-error *ngIf="error">{{message}}</mat-error>
+    <mat-label *ngIf="isSuccess" class="success">{{message}}</mat-label>
+    <mat-card-content>
+        <section>
+            <label>Total to pay = {{data.value}}</label>
+        </section>
+        <section>
+            <mat-form-field>
+                <input matInput placeholder="Installments Number" [formControl]="installmentNumber" maxlength="4"
+                    required>
+                <mat-error *ngIf="installmentNumber.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+        </section>
+        <section>
+            <label>Credit Cards : </label>
+            <mat-radio-group [(ngModel)]="cardSelected" class="radio-group">
+                <mat-radio-button class="radio-button" *ngFor="let card of creditCards" [value]="card.idCreditCard">
+                    {{card.maskedNumber}}
+                    {{card.paymentMethod}}
+                </mat-radio-button>
+                <mat-radio-button class="radio-button" value="0">New Credit Card</mat-radio-button>
+            </mat-radio-group>
+        </section>
+        <section *ngIf="cardSelected && cardSelected == 0" class="card-data">
+            <p class="line">
+                <mat-form-field>
+                    <input matInput placeholder="Number" [formControl]="number" maxlength="16" required
+                        (keyup)="getPaymentMethod($event)">
+                    <mat-error *ngIf="number.invalid">{{getErrorMessage()}}</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="CVV" [formControl]="cvv" maxlength="4" required>
+                    <mat-error *ngIf="cvv.invalid">{{getErrorMessage()}}</mat-error>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input matInput placeholder="Expiration Date (YYYY/MM)" [formControl]="expirationDate" maxlength="7"
+                        required>
+                    <mat-error *ngIf="expirationDate.invalid">{{getErrorMessage()}}</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-select placeholder="Payment Method" [formControl]="paymentMethod" required>
+                        <mat-option *ngFor="let card of cards" [value]="card">
+                            {{card}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="paymentMethod.hasError('required')">{{getErrorMessage()}}</mat-error>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input matInput placeholder="Name" [formControl]="name" maxlength="15" required>
+                    <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Identification Number" [formControl]="identificationNumber" required>
+                    <mat-error *ngIf="identificationNumber.invalid">{{getErrorMessage()}}</mat-error>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-checkbox [(ngModel)]="saveCard">Save Credit Card</mat-checkbox>
+            </p>
+        </section>
+    </mat-card-content>
+    <mat-card-actions>
+        <div class="button">
+            <button mat-raised-button mat-dialog-close>Cancel</button>
+            <button mat-raised-button (click)="payment()" [disabled]="isSuccess">Payment</button>
+        </div>
+    </mat-card-actions>
+</mat-card>

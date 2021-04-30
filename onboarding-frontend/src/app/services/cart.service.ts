@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/internal/Subject';
+import { Subject } from 'rxjs';
 import { Product } from '../model/product';
 
 @Injectable({
@@ -7,11 +7,11 @@ import { Product } from '../model/product';
 })
 export class CartService {
 
+  productMap = new Map();
   products: any[] = [];
   cartTotal = 0;
 
   private productAddedSource = new Subject<any>();
-
 
   productAdded$ = this.productAddedSource.asObservable();
 
@@ -22,35 +22,32 @@ export class CartService {
     this.cartTotal += product.price;
     
     this.products = this.products.map(_product => {
-      if (_product.product.id === product.idproduct) {
+      if (_product.product.idProduct === product.idProduct) {
         _product.quantity++;
         exists = true;
       }
       return _product;
     });
-    // Add a new product to the cart if it's a new product
+    
     if (!exists) {
-      //product.price = parsedPrice;
       this.products.push({
         product: product,
         quantity: 1
       });
     }
-
     this.productAddedSource.next({ products: this.products, cartTotal: this.cartTotal });
   }
 
   deleteProductFromCart(product: Product) {
     this.products = this.products.filter(_product => {
-      if (_product.product.id === product.idproduct) {
-        this.cartTotal -= _product.product.parsedPrice * _product.quantity;
+      if (_product.product.idProduct === product.idProduct) {
+        this.cartTotal -= _product.product.price * _product.quantity;
         return false;
       }
       return true;
      });
     this.productAddedSource.next({ products: this.products, cartTotal: this.cartTotal });
   }
-
 
   flushCart() {
     this.products = [];

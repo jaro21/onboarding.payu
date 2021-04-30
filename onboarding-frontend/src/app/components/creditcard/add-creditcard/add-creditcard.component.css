@@ -1,0 +1,27 @@
+mat-card {
+  width: 95%;
+}
+
+mat-card-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+mat-form-field {
+  width: 40%;
+  padding-left: 2rem;
+}
+
+mat-card-actions {
+  text-align: right;
+}
+
+.line {
+  width: 100%;
+}
+
+mat-card-header {
+  text-align: center;
+}

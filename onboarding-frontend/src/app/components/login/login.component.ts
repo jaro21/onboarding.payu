@@ -36,6 +36,7 @@ export class LoginComponent {
           sessionStorage.setItem('fullname', token.name);
           sessionStorage.setItem('role', token.role);
           sessionStorage.setItem('dni', token.dni);
+          sessionStorage.setItem('idCustomer', token.idCustomer);
           this.dialogRef.close(this.username.value);
         },
         err => {

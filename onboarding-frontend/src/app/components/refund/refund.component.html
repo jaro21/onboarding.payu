@@ -1,0 +1,22 @@
+<mat-card>
+    <mat-card-title>Refund</mat-card-title>
+    <mat-error *ngIf="error">{{message}}</mat-error>
+    <div *ngIf="isSuccess">
+        <p class="success">
+            {{message}}
+        </p>
+    </div>
+    <mat-card-content>
+        <mat-form-field>
+            <textarea matInput placeholder="Reason" maxlength="1024" [formControl]="reason" required></textarea>
+            <mat-hint align="end">{{reason.value.length}} / 1024</mat-hint>
+            <mat-error *ngIf="reason.invalid">{{getErrorMessage()}}</mat-error>
+        </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+        <div class="button">
+            <button mat-raised-button mat-dialog-close>Cancel</button>
+            <button mat-raised-button (click)="refund()" [disabled]="isDisabled">Refund</button>
+        </div>
+    </mat-card-actions>
+</mat-card>

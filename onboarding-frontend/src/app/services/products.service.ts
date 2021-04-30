@@ -30,4 +30,18 @@ export class ProductsService {
 
     return this.http.post<Product>(this.url,this.parametros);
   }
+
+  editProduct(id: number, name: string, code: string, description: string, price: number, stock: number, image: string) : Observable<any> {
+    this.parametros = {
+      'idProduct': id,
+      'name': name,
+      'code': code,
+      'description': description,
+      'price': price,
+      'stock': stock,
+      'photoUrl': image,
+    }
+
+    return this.http.put<Product>(this.url,this.parametros);
+  }
 }
