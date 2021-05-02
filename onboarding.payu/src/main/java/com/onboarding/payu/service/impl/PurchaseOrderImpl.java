@@ -97,6 +97,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Transactional
 	@Override public void updateStatusById(final String status, final Integer id) {
 
 		iPurchaseOrderRepository.updateStatusById(status, id);
@@ -175,6 +176,16 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		iOrderProductService.saveAll(orderProductList);
 
 		return purchaseOrderMapper.toPurchaseOrderResponse(purchaseOrderUpdate);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public List<PurchaseOrderResponse> getAllPurchaseOrderByStatus(final String status) {
+
+		final List<PurchaseOrder> purchaseOrderList = iPurchaseOrderRepository.findByStatus(status).orElse(Collections.emptyList());
+
+		return purchaseOrderMapper.toListPurchaseOrderResponse(purchaseOrderList);
 	}
 
 	/**

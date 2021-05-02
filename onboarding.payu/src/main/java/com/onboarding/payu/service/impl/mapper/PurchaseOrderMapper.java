@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.StatusType;
+import com.onboarding.payu.model.customer.response.CustomerResponse;
 import com.onboarding.payu.model.purchase.request.ProductPoDto;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.response.ProductPurchaseResponse;
@@ -103,25 +105,21 @@ public class PurchaseOrderMapper {
 	 */
 	public PurchaseOrderResponse toPurchaseOrderResponse(final PurchaseOrder purchaseOrder, final List<Product> products) {
 
-		final PurchaseOrderResponse.PurchaseOrderResponseBuilder purchaseOrderResponseBuilder =
+		final var purchaseOrderResponseBuilder =
 				PurchaseOrderResponse.builder().id(purchaseOrder.getIdPurchaseOrder())
 									 .status(purchaseOrder.getStatus())
 									 .referenceCode(purchaseOrder.getReferenceCode())
 									 .date(purchaseOrder.getDate())
 									 .value(purchaseOrder.getValue());
 
-		toProductPurchaseResponseList(purchaseOrderResponseBuilder, products);
+		Optional.ofNullable(products).ifPresent(prod -> purchaseOrderResponseBuilder.products(toProductPurchaseResponseList(products)));
 
 		return purchaseOrderResponseBuilder.build();
 	}
 
-	private void toProductPurchaseResponseList(final PurchaseOrderResponse.PurchaseOrderResponseBuilder purchaseOrderResponseBuilder,
-											   final List<Product> products) {
+	private List<ProductPurchaseResponse> toProductPurchaseResponseList(final List<Product> products) {
 
-		if (products != null && !products.isEmpty()) {
-			purchaseOrderResponseBuilder
-					.products(products.stream().map(this::toProductPurchaseResponse).collect(Collectors.toList()));
-		}
+		return products.stream().map(this::toProductPurchaseResponse).collect(Collectors.toList());
 	}
 
 	private ProductPurchaseResponse toProductPurchaseResponse(final Product product) {
@@ -161,5 +159,42 @@ public class PurchaseOrderMapper {
 									  .price(orderProduct.getUnitValue())
 									  .quantity(orderProduct.getQuantity())
 									  .build();
+	}
+
+	/**
+	 * @param purchaseOrders {@link List<PurchaseOrder>}
+	 * @return {@link List<PurchaseOrderResponse>}
+	 */
+	public List<PurchaseOrderResponse> toListPurchaseOrderResponse(final List<PurchaseOrder> purchaseOrders) {
+
+		return purchaseOrders.stream().map(this::toPurchaseOrderResponseWithCustomer).collect(Collectors.toList());
+	}
+
+	/**
+	 * @param purchaseOrder {@link PurchaseOrder}
+	 * @return {@link PurchaseOrderResponse}
+	 */
+	public PurchaseOrderResponse toPurchaseOrderResponseWithCustomer(final PurchaseOrder purchaseOrder) {
+
+		final var response = PurchaseOrderResponse.builder().id(purchaseOrder.getIdPurchaseOrder())
+												  .status(purchaseOrder.getStatus())
+												  .referenceCode(purchaseOrder.getReferenceCode())
+												  .date(purchaseOrder.getDate())
+												  .value(purchaseOrder.getValue());
+
+		Optional.ofNullable(purchaseOrder.getCustomer()).ifPresent(customer -> toCustomerResponse(customer, response));
+
+		return response.build();
+	}
+
+	/**
+	 * @param customer {@link Customer}
+	 * @param response {@link PurchaseOrderResponse.PurchaseOrderResponseBuilder}
+	 */
+	public void toCustomerResponse(final Customer customer, final PurchaseOrderResponse.PurchaseOrderResponseBuilder response) {
+
+		response.fullName(customer.getFullName())
+				.dniNumber(customer.getDniNumber())
+				.email(customer.getEmail());
 	}
 }

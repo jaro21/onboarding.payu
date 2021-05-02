@@ -24,4 +24,6 @@ public interface IPurchaseOrderRepository extends JpaRepository<PurchaseOrder, I
 	void updateStatusById(@Param("status") String status, @Param("id") Integer id);
 
 	Optional<List<PurchaseOrder>> findByCustomerIdCustomer(Integer idCustomer);
+
+	Optional<List<PurchaseOrder>> findByStatus(String status);
 }

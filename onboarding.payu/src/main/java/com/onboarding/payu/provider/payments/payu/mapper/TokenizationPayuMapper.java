@@ -1,5 +1,7 @@
 package com.onboarding.payu.provider.payments.payu.mapper;
 
+import java.util.Optional;
+
 import com.onboarding.payu.client.payu.model.CommanType;
 import com.onboarding.payu.client.payu.model.LanguageType;
 import com.onboarding.payu.client.payu.model.Merchant;
@@ -24,31 +26,31 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenizationPayuMapper {
 
+	/**
+	 * Build the {@link TokenizationPayURequest}
+	 *
+	 * @param creditCardRequest {@link CreditCardRequest}
+	 * @param merchant          {@link Merchant}
+	 * @return {@link TokenizationPayURequest}
+	 */
 	public TokenizationPayURequest getTokenizationRequest(final CreditCardRequest creditCardRequest, final Merchant merchant) {
 
-		final TokenizationPayURequest tokenizationPayURequest =
-		 TokenizationPayURequest.builder().creditCardToken(getCreditCardToken(creditCardRequest))
+		return TokenizationPayURequest.builder().creditCardToken(getCreditCardToken(creditCardRequest))
 									  .merchant(merchant)
 									  .command(CommanType.CREATE_TOKEN.toString())
 									  .language(LanguageType.EN.getLanguage())
-				.build();
-
-		log.error("TokenizationPayURequest "+tokenizationPayURequest);
-		return tokenizationPayURequest;
+									  .build();
 	}
 
 	public CreditCardPayU getCreditCardToken(final CreditCardRequest creditCardRequest) {
 
-		final CreditCardPayU.CreditCardPayUBuilder creditCardPayUBuilder =
-				CreditCardPayU.builder()
-							  .payerId(creditCardRequest.getPayerId())
+		return CreditCardPayU.builder()
+							 .payerId(creditCardRequest.getPayerId())
 							 .name(creditCardRequest.getName())
 							 .identificationNumber(creditCardRequest.getIdentificationNumber())
 							 .paymentMethod(creditCardRequest.getPaymentMethod())
 							 .number(creditCardRequest.getNumber())
-							 .expirationDate(creditCardRequest.getExpirationDate());
-
-		return creditCardPayUBuilder.build();
+							 .expirationDate(creditCardRequest.getExpirationDate()).build();
 	}
 
 	public TokenResponse getTokenResponse(final TokenizationPayUResponse tokenizationResponse) {
@@ -56,26 +58,25 @@ public class TokenizationPayuMapper {
 		final TokenResponse.TokenResponseBuilder tokenResponse = TokenResponse.builder().code(tokenizationResponse.getCode())
 																			  .error(tokenizationResponse.getError());
 
-		getCreditCardToken(tokenizationResponse.getCreditCardToken(), tokenResponse);
+		Optional.ofNullable(tokenizationResponse.getCreditCardToken())
+				.ifPresent(response -> getCreditCardToken(tokenizationResponse.getCreditCardToken(), tokenResponse));
 
 		return tokenResponse.build();
 	}
 
 	public void getCreditCardToken(final CreditCardTokenPayU creditCardTokenPayU,
-										  final TokenResponse.TokenResponseBuilder tokenResponse) {
+								   final TokenResponse.TokenResponseBuilder tokenResponse) {
 
-		if (creditCardTokenPayU != null) {
-			tokenResponse.creditCard(
-					CreditCardTokenResponse.builder().creditCardTokenId(creditCardTokenPayU.getCreditCardTokenId())
-										   .name(creditCardTokenPayU.getName())
-										   .payerId(creditCardTokenPayU.getPayerId())
-										   .identificationNumber(creditCardTokenPayU.getIdentificationNumber())
-										   .paymentMethod(creditCardTokenPayU.getPaymentMethod())
-										   .number(creditCardTokenPayU.getNumber())
-										   .expirationDate(creditCardTokenPayU.getExpirationDate())
-										   .creationDate(creditCardTokenPayU.getCreationDate())
-										   .maskedNumber(creditCardTokenPayU.getMaskedNumber())
-										   .errorDescription(creditCardTokenPayU.getErrorDescription()).build());
-		}
+		tokenResponse.creditCard(
+				CreditCardTokenResponse.builder().creditCardTokenId(creditCardTokenPayU.getCreditCardTokenId())
+									   .name(creditCardTokenPayU.getName())
+									   .payerId(creditCardTokenPayU.getPayerId())
+									   .identificationNumber(creditCardTokenPayU.getIdentificationNumber())
+									   .paymentMethod(creditCardTokenPayU.getPaymentMethod())
+									   .number(creditCardTokenPayU.getNumber())
+									   .expirationDate(creditCardTokenPayU.getExpirationDate())
+									   .creationDate(creditCardTokenPayU.getCreationDate())
+									   .maskedNumber(creditCardTokenPayU.getMaskedNumber())
+									   .errorDescription(creditCardTokenPayU.getErrorDescription()).build());
 	}
 }

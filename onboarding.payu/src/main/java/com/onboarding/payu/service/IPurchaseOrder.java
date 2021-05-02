@@ -73,4 +73,11 @@ public interface IPurchaseOrder {
 	 * @return {@link PurchaseOrderResponse}
 	 */
 	PurchaseOrderResponse updatePurchaseOrder(PurchaseOrderRequest purchaseOrderRequest);
+
+	/**
+	 * Get all purchase orders
+	 *
+	 * @return {@link List<PurchaseOrderResponse>}
+	 */
+	List<PurchaseOrderResponse> getAllPurchaseOrderByStatus(String status);
 }

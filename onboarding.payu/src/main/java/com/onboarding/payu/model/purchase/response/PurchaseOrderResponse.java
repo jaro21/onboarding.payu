@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.onboarding.payu.model.customer.response.CustomerResponse;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -26,4 +27,7 @@ public class PurchaseOrderResponse {
 	private LocalDate date;
 	private BigDecimal value;
 	private List<ProductPurchaseResponse> products;
+	private String fullName;
+	private String email;
+	private String dniNumber;
 }

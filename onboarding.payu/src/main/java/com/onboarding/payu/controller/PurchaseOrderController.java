@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 
 import com.onboarding.payu.model.purchase.request.DeclineRequest;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
+import com.onboarding.payu.model.purchase.request.StatusRequest;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.service.IPurchaseOrder;
 import org.apache.commons.lang.Validate;
@@ -54,11 +55,24 @@ public class PurchaseOrderController {
 		return new ResponseEntity<>(iPurchaseOrder.updatePurchaseOrder(purchaseOrderRequest), HttpStatus.CREATED);
 	}
 
+	@GetMapping("/{status}")
+	public ResponseEntity<List<PurchaseOrderResponse>> getAllPurchaseOrderByStatus(@NotNull @PathVariable String status){
+
+		return new ResponseEntity(iPurchaseOrder.getAllPurchaseOrderByStatus(status), HttpStatus.OK);
+	}
+
 
 	@PostMapping("/decline")
 	public ResponseEntity decline(@Valid @NotNull @RequestBody final DeclineRequest declineRequest){
 
 		iPurchaseOrder.decline(declineRequest);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@PostMapping("/updateStatus")
+	public ResponseEntity updateStatus(@Valid @NotNull @RequestBody final StatusRequest statusRequest){
+
+		iPurchaseOrder.updateStatusById(statusRequest.getStatus().name(), statusRequest.getIdPurchaseOrder());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

@@ -25,7 +25,7 @@ public enum ExceptionCodes {
 	PRODUCT_NOT_AVAILABLE("P003", "Product quantity (%s) is not available."),
 	PRODUCT_STOCK_INVALID("P004", "Stock must be greater than or equal to zero !!!"),
 	PRODUCT_PRICE_INVALID("P005", "Price must be greater than zero !!!"),
-	ERROR_TO_DELETE_PRODUCT("P006", "Failed to delete product."),
+	ERROR_TO_DELETE_PRODUCT("P006", "The product could not be removed because it is associated with purchase orders."),
 	ERROR_TO_PROCESS_PRODUCT("P007", "Products could not be processed."),
 	PURCHASE_ORDER_INVALID("PO001", "Purchase Order does not exist"),
 	PURCHASE_ORDER_STATUS_INVALID("PO002", "Purchase order not available for payment"),
