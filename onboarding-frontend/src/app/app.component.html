@@ -25,21 +25,12 @@
           <mat-icon>credit_card</mat-icon>
           <span>My Purchase Orders</span>
         </button>
-        <button mat-menu-item (click)="openDialogAddProduct()" *ngIf="currentRole === 'ADMIN'">
+        <button mat-menu-item (click)="openDialogPurchaseOrdersAdmin()" *ngIf="currentRole === 'ADMIN'">
           <mat-icon>add_circle_outline</mat-icon>
-          <span>AddProduct</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>add_shopping_cart</mat-icon>
-          <mat-icon>remove_shopping_cart</mat-icon>
-          <mat-icon>shopping_cart</mat-icon>
-          <mat-icon>account_box</mat-icon>
-          <mat-icon>account_circle</mat-icon>
-          <mat-icon>home</mat-icon>
-          <span>Disable alerts</span>
+          <span>Purchase Orders</span>
         </button>
       </mat-menu>
-      <app-shopping-cart *ngIf="currentRole != 'ADMIN'"></app-shopping-cart>
+      <app-shopping-cart *ngIf="!isShowLogin && currentRole != 'ADMIN'"></app-shopping-cart>
       </div>
       <div class="align-right">
         <mat-label *ngIf="!isShowLogin" class="align-right">{{name}}</mat-label>    

@@ -7,6 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Product } from 'src/app/model/product';
 import { ProductsService } from 'src/app/services/products.service';
 import { AddComponent } from './add/add.component';
+import { DeleteProductComponent } from './delete-product/delete-product.component';
 
 @Component({
   selector: 'app-product',
@@ -14,7 +15,7 @@ import { AddComponent } from './add/add.component';
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit {
-  displayedColumns: string[] = ['code','name','price','stock','edit'];
+  displayedColumns: string[] = ['code','name','price','stock','edit','delete'];
   dataSource!: MatTableDataSource<Product>;
 
   @ViewChild(MatPaginator)
@@ -69,6 +70,20 @@ export class ProductComponent implements OnInit {
     dialogConfig.width = "700px";
     dialogConfig.data = product;
     const dialogRef = this.dialog.open(AddComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+        window.location.reload();
+      }
+    )
+  }
+
+  openDialogDeleteProduct(product : Product) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = "700px";
+    dialogConfig.data = product;
+    const dialogRef = this.dialog.open(DeleteProductComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
         window.location.reload();
       }

@@ -39,7 +39,7 @@
   <ng-container matColumnDef="disclaimer">
     <td mat-footer-cell *matFooterCellDef colspan="6" class="text-right">
       <button mat-raised-button mat-dialog-close>Close</button>
-      <button mat-raised-button (click)="save()" [disabled]="isSave">Save</button>
+      <button mat-raised-button (click)="save()" [disabled]="isSave || products.length === 0">Save</button>
       <button mat-raised-button (click)="openDialogPayment()" [disabled]="!isSave">Payment</button>
     </td>
   </ng-container>

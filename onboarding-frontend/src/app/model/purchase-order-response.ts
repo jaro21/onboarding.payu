@@ -4,5 +4,8 @@ export interface PurchasOrderResponse{
 	referenceCode: string,
 	date: string,
 	value: number,
-	products: any[]
+	products: any[],
+	fullName: string,
+	email: string,
+	dniNumber: string
 }

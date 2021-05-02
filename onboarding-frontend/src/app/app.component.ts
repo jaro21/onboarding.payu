@@ -5,6 +5,7 @@ import { AddCreditcardComponent } from './components/creditcard/add-creditcard/a
 import { AddCustomerComponent } from './components/customer/add-customer/add-customer.component';
 import { LoginComponent } from './components/login/login.component';
 import { AddComponent } from './components/product/add/add.component';
+import { PurchaseOrderAdminComponent } from './components/purchase-order/purchase-order-admin/purchase-order-admin.component';
 import { PurchaseOrderListComponent } from './components/purchase-order/purchase-order-list/purchase-order-list.component';
 import { CartService } from './services/cart.service';
 
@@ -135,6 +136,19 @@ export class AppComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.width = "900px";
     const dialogRef = this.dialog.open(PurchaseOrderListComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(result => {
+        window.location.reload();
+      }
+    )
+  }
+
+  openDialogPurchaseOrdersAdmin(){
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = "900px";
+    const dialogRef = this.dialog.open(PurchaseOrderAdminComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
         window.location.reload();
       }

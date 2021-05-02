@@ -4,74 +4,70 @@
         <mat-card-title>New Customer</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <div class="example-container">
-            <p>
-                <mat-form-field>
-                    <input matInput placeholder="Full Name" [formControl]="fullName" required>
-                    <mat-error *ngIf="fullName.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-            </p>
-            <p>    
-                <mat-form-field>
-                    <input matInput placeholder="Dni Number" [formControl]="dniNumber" required>
-                    <mat-error *ngIf="dniNumber.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Address" [formControl]="address" required>
-                    <mat-error *ngIf="address.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-            </p>
-            <p>
-                <mat-form-field>
-                    <input matInput placeholder="Email" [formControl]="email" required>
-                    <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Phone" [formControl]="phone" required>
-                    <mat-icon matSuffix>phone</mat-icon>
-                    <mat-error *ngIf="phone.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-            </p>
-            <p>    
-                <mat-form-field>
-                    <input matInput placeholder="Postal code" [formControl]="postal_code" required>
-                    <mat-error *ngIf="postal_code.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Country" [formControl]="country" required>
-                    <mat-error *ngIf="country.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-            </p>
-            <p>    
-                <mat-form-field>
-                    <input matInput placeholder="State" [formControl]="state" required>
-                    <mat-error *ngIf="state.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="City" [formControl]="city" required>
-                    <mat-error *ngIf="city.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-            </p>
-            <p>
-                <mat-form-field>
-                    <input matInput placeholder="Username" [formControl]="username" required>
-                    <mat-error *ngIf="username.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'" [formControl]="password" required>
-                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                        [attr.aria-pressed]="hide">
-                        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-                    </button>
-                    <mat-error *ngIf="password.invalid">{{getErrorMessage()}}</mat-error>
-                </mat-form-field>
-            </p>    
-        </div> 
-        <div *ngIf="error">
-            <p class="error">
-                {{mensajeError}}
-            </p>
-        </div>
+        <mat-error *ngIf="error">{{message}}</mat-error>
+        <mat-label *ngIf="isSuccess" class="success">{{message}}</mat-label>
+        <p>
+            <mat-form-field>
+                <input matInput placeholder="Full Name" [formControl]="fullName" maxlength="45" required>
+                <mat-error *ngIf="fullName.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Dni Number" [formControl]="dniNumber" maxlength="45" required>
+                <mat-error *ngIf="dniNumber.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+                <input matInput placeholder="Address" [formControl]="address" maxlength="200" required>
+                <mat-error *ngIf="address.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Email" [formControl]="email" maxlength="45" required>
+                <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+                <input matInput placeholder="Phone" [formControl]="phone" maxlength="45" required>
+                <mat-icon matSuffix>phone</mat-icon>
+                <mat-error *ngIf="phone.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Postal code" [formControl]="postal_code"  maxlength="5" required>
+                <mat-error *ngIf="postal_code.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+                <input matInput placeholder="Country" [formControl]="country" maxlength="50" required>
+                <mat-error *ngIf="country.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="State" [formControl]="state" maxlength="50" required>
+                <mat-error *ngIf="state.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+                <input matInput placeholder="City" [formControl]="city" maxlength="50" required>
+                <mat-error *ngIf="city.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field>
+                <input matInput placeholder="Username" [formControl]="username"  maxlength="45" required>
+                <mat-error *ngIf="username.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'" [formControl]="password"
+                    maxlength="45" required>
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="password.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+        </p>
     </mat-card-content>
     <mat-card-actions>
         <button mat-raised-button mat-dialog-close>Cancel</button>

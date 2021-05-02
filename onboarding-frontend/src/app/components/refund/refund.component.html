@@ -1,11 +1,7 @@
 <mat-card>
     <mat-card-title>Refund</mat-card-title>
     <mat-error *ngIf="error">{{message}}</mat-error>
-    <div *ngIf="isSuccess">
-        <p class="success">
-            {{message}}
-        </p>
-    </div>
+    <mat-label *ngIf="isSuccess" class="success">{{message}}</mat-label>
     <mat-card-content>
         <mat-form-field>
             <textarea matInput placeholder="Reason" maxlength="1024" [formControl]="reason" required></textarea>

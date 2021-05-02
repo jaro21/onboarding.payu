@@ -35,6 +35,9 @@ import { PurchaseOrderListComponent } from './components/purchase-order/purchase
 import { PaymentComponent } from './components/payment/payment.component';
 import { RefundComponent } from './components/refund/refund.component';
 import { DeclineComponent } from './components/purchase-order/decline/decline.component';
+import { DeleteProductComponent } from './components/product/delete-product/delete-product.component';
+import { PurchaseOrderAdminComponent } from './components/purchase-order/purchase-order-admin/purchase-order-admin.component';
+import { ConfirmSentComponent } from './components/purchase-order/confirm-sent/confirm-sent.component';
 
 
 @NgModule({
@@ -52,7 +55,10 @@ import { DeclineComponent } from './components/purchase-order/decline/decline.co
     PurchaseOrderListComponent,
     PaymentComponent,
     RefundComponent,
-    DeclineComponent
+    DeclineComponent,
+    DeleteProductComponent,
+    PurchaseOrderAdminComponent,
+    ConfirmSentComponent
   ],
   imports: [
     BrowserModule,

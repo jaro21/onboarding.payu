@@ -8,6 +8,16 @@
 
 <div class="mat-elevation-z8">
     <table mat-table matSort [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+        <ng-container matColumnDef="dni">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Dni Number </th>
+            <td mat-cell *matCellDef="let row" [ngClass]="getStyle(row.status)"> {{row.dniNumber}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let row" [ngClass]="getStyle(row.status)"> {{row.fullName}} </td>
+        </ng-container>
+
         <ng-container matColumnDef="status">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
             <td mat-cell *matCellDef="let row" [ngClass]="getStyle(row.status)"> {{row.status}} </td>
@@ -17,35 +27,17 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
             <td mat-cell *matCellDef="let row" [ngClass]="getStyle(row.status)"> {{row.date}} </td>
         </ng-container>
-
+        
         <ng-container matColumnDef="value">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Value </th>
             <td mat-cell *matCellDef="let row" [ngClass]="getStyle(row.status)"> {{row.value}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="decline">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Decline </th>
+        <ng-container matColumnDef="sent">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Sent </th>
             <td mat-cell *matCellDef="let row">
-                <button mat-flat-button (click)="openDialogDecline(row)" [disabled]="row.status !== 'SAVED'">
+                <button mat-flat-button (click)="openDialogSent(row)" [disabled]="row.status !== 'PAID'">
                     <mat-icon>delete</mat-icon>
-                </button>
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="payment">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Payment </th>
-            <td mat-cell *matCellDef="let row">
-                <button mat-flat-button (click)="openDialogPayment(row)" [disabled]="row.status !== 'SAVED'">
-                    <mat-icon>payment</mat-icon>
-                </button>
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="refund">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Refund </th>
-            <td mat-cell *matCellDef="let row">
-                <button mat-flat-button (click)="openDialogRefund(row)" [disabled]="row.status !== 'PAID'">
-                    <mat-icon>assignment_returned</mat-icon>
                 </button>
             </td>
         </ng-container>

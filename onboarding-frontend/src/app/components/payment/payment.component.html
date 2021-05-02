@@ -8,8 +8,11 @@
         </section>
         <section>
             <mat-form-field>
-                <input matInput placeholder="Installments Number" [formControl]="installmentNumber" maxlength="4"
-                    required>
+                <mat-select placeholder="Installments Number" [formControl]="installmentNumber" required>
+                    <mat-option *ngFor="let number of numbers" [value]="number">
+                        {{number}}
+                    </mat-option>
+                </mat-select>    
                 <mat-error *ngIf="installmentNumber.invalid">{{getErrorMessage()}}</mat-error>
             </mat-form-field>
         </section>
@@ -67,8 +70,8 @@
     </mat-card-content>
     <mat-card-actions>
         <div class="button">
-            <button mat-raised-button mat-dialog-close>Cancel</button>
-            <button mat-raised-button (click)="payment()" [disabled]="isSuccess">Payment</button>
+            <button mat-raised-button mat-dialog-close>Close</button>
+            <button mat-raised-button (click)="payment()" [disabled]="isProgress">Payment</button>
         </div>
     </mat-card-actions>
 </mat-card>

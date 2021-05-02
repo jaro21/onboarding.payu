@@ -22,6 +22,7 @@ export class PaymentComponent implements OnInit {
   message: any;
   error = false;
   isSuccess = false;
+  isProgress = false;
 
   name = new FormControl('', [Validators.required, Validators.maxLength(15)]);
   identificationNumber = new FormControl('', [Validators.required, Validators.pattern("[0-9]+")]);
@@ -31,6 +32,7 @@ export class PaymentComponent implements OnInit {
   installmentNumber = new FormControl('', [Validators.required, Validators.pattern("[0-9]+")]);
   cvv = new FormControl('', [Validators.required, Validators.pattern("[0-9]+"), Validators.maxLength(4)]);
   cards = ['VISA','DINERS','DISCOVER','AMEX','MASTERCARD','NARANJA','CODENSA'];
+  numbers = Array.from({length: 32}, (_, k) => k + 1);
   saveCard = false;
 
   ngOnInit(): void {
@@ -84,6 +86,7 @@ export class PaymentComponent implements OnInit {
 
   payment(){
     if(this.installmentNumber.valid){
+      this.isProgress = true;
       console.log("CardSelected "+this.cardSelected);
       if(this.cardSelected == 0){
         this.paymentWithNewCard();
@@ -97,7 +100,7 @@ export class PaymentComponent implements OnInit {
     const idCustomer = sessionStorage.getItem('idCustomer');
     this.paymentService.applyPayment(Number(idCustomer), this.cardSelected, this.data.id, this.installmentNumber.value).subscribe(
       resp => {
-        if(resp.status && resp.statuts === 'APPROVED'){
+        if(resp.status && resp.status === 'APPROVED'){
           this.message  = "Payment successful"
           this.isSuccess = true;
           this.error = false;
@@ -105,12 +108,14 @@ export class PaymentComponent implements OnInit {
           this.message = resp.error;
           this.error = true;
           this.isSuccess = false;
+          this.isProgress = false;
         }
       },
       err => {
         this.message = err.error.message;
         this.error = true;
         this.isSuccess = false;
+        this.isProgress = false;
       }
     )
   }
@@ -129,12 +134,14 @@ export class PaymentComponent implements OnInit {
           this.message = response.error;
           this.error = true;
           this.isSuccess = false;
+          this.isProgress = false;
         }
       },
       err => {
         this.message = err.error.message;
         this.error = true;
         this.isSuccess = false;
+        this.isProgress = false;
       }
     )
   }

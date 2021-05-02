@@ -11,11 +11,12 @@ import { LoginComponent } from '../../login/login.component';
   styleUrls: ['./add-customer.component.css']
 })
 export class AddCustomerComponent implements OnInit {
-  mensajeError: any;
+  message: any;
   constructor(private customerService: CustomerService, private fb: FormBuilder, private dialogRef: MatDialogRef<LoginComponent>) { }
 
   hide = true;
   error = false;
+  isSuccess = false;
   customer!: Customer;
   
   fullName = new FormControl('', [Validators.required]);
@@ -51,14 +52,16 @@ export class AddCustomerComponent implements OnInit {
                                       this.address.value, this.city.value, this.state.value, this.country.value, 
                                       this.postal_code.value, this.username.value, this.password.value).subscribe(
       response => {
-        console.log(response);
         this.customer = response;
         this.dialogRef.close(this.username.value);
+        this.error = false;
+        this.isSuccess = true;
       },
       err => {
         console.log(err)
-        this.mensajeError = err.error.message;
+        this.message = err.error.message;
         this.error = true;
+        this.isSuccess = false;
       }
     );
   }

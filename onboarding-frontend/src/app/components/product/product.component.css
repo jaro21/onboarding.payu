@@ -11,6 +11,10 @@ td, th {
     width: 25%;
 }
 
+.with-10 {
+    width: 15%;
+}
+
 .text-left {
     text-align: left;
 }

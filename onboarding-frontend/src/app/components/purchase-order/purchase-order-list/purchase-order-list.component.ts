@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { PurchasOrderResponse } from 'src/app/model/purchase-order-response';
 import { PurchaseOrderService } from 'src/app/services/purchase-order.service';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { PaymentService } from 'src/app/services/payment.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PaymentComponent } from '../../payment/payment.component';
@@ -39,6 +39,7 @@ export class PurchaseOrderListComponent implements OnInit {
   error = false;
 
   purchase: PurchasOrderResponse[] = [];
+  
   ngOnInit(): void {
     const idCustomer = sessionStorage.getItem('idCustomer');
     this.purchaseOrderService.getPurchaseOrders(Number(idCustomer)).subscribe(
@@ -101,5 +102,19 @@ export class PurchaseOrderListComponent implements OnInit {
         this.ngOnInit();
       }
     )
+  }
+
+  getStyle(status: string): string {
+    if(status == 'SAVED'){
+      return "blue";
+    } else if(status == 'PAID'){
+      return "green";
+    } else if(status == 'DECLINED'){
+      return "red";
+    } else if(status == 'REFUNDED'){
+      return "grey";
+    } else{
+      return "yellow";
+    }
   }
 }

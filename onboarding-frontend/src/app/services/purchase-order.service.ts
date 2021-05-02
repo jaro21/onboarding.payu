@@ -16,6 +16,10 @@ export class PurchaseOrderService {
   url = '/shop/v1.0/purchase-orders';
   url_decline = '/shop/v1.0/purchase-orders/decline';
 
+  getPurchaseOrdersByStatus(status: string) : Observable<any> {
+    return this.http.get<PurchasOrderResponse[]>(this.url+"/"+status);
+  }
+
   getPurchaseOrders(idCustomer: number) : Observable<any> {
     return this.http.get<PurchasOrderResponse[]>(this.url+"/customer-id/"+idCustomer);
   }
@@ -34,7 +38,15 @@ export class PurchaseOrderService {
       'idCustomer': idCustomer,
       'idPurchaseOrder': idPurchaseOrder,
     }
-    return this.http.post<PurchasOrderResponse>(this.url_decline,this.parametros);
+    return this.http.post(this.url_decline,this.parametros);
+  }
+
+  updateStatusById(status: string, idPurchaseOrder: number) : Observable<any> {
+    this.parametros = {
+      'status': status,
+      'idPurchaseOrder': idPurchaseOrder
+    }
+    return this.http.post(this.url+"/updateStatus", this.parametros);
   }
 }
 
