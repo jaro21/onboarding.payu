@@ -21,10 +21,10 @@ public class CustomerMapper {
 		this.encoder = encoder;
 	}
 
-	public Customer toCustomer(final CustomerRequest customerRequest) {
+	public Customer toCustomer(final CustomerRequest customerRequest, final Integer id) {
 
 		 return Customer.builder()
-					   .idCustomer(customerRequest.getIdCustomer())
+					   .idCustomer(id)
 					   .fullName(customerRequest.getFullName())
 					   .email(customerRequest.getEmail())
 					   .phone(customerRequest.getPhone())

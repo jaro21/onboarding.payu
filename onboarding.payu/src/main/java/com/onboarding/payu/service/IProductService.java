@@ -59,7 +59,7 @@ public interface IProductService {
 	 * @param product {@link ProductRequest}
 	 * @return {@link Product}
 	 */
-	void updateProduct(ProductRequest product);
+	void updateProduct(ProductRequest product, Integer id);
 
 	/**
 	 * Method to update product

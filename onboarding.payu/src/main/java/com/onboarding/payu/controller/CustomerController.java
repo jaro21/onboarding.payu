@@ -54,11 +54,12 @@ public class CustomerController {
 		return ResponseEntity.ok(iCustomerService.findCustomerById(id));
 	}
 
-	@PutMapping
-	public ResponseEntity<CustomerResponse> updateCustomer(@Valid @NotNull @RequestBody CustomerRequest customerRequest) {
+	@PutMapping("/{id}")
+	public ResponseEntity<CustomerResponse> updateCustomer(@Valid @NotNull @RequestBody CustomerRequest customerRequest,
+														   @NotNull @PathVariable Integer id) {
 
-		Validate.notNull(customerRequest.getIdCustomer(), "Client id cannot be empty");
-		return ResponseEntity.ok(iCustomerService.update(customerRequest));
+		Validate.notNull(id, "Client id cannot be empty");
+		return ResponseEntity.ok(iCustomerService.update(customerRequest, id));
 	}
 
 	@DeleteMapping("/{id}")

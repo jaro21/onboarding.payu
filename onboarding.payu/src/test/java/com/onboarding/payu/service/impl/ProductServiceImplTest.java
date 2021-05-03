@@ -52,7 +52,7 @@ class ProductServiceImplTest {
 		final Product product = ProductSample.buildProduct();
 		when(iProductRepositoryMock.findByCode(any(String.class))).thenReturn(Optional.empty());
 		when(iProductRepositoryMock.save(any(Product.class))).thenReturn(product);
-		when(productMapper.toProduct(any(ProductRequest.class))).thenReturn(product);
+		when(productMapper.toProduct(any(ProductRequest.class), any(Integer.class))).thenReturn(product);
 		when(productMapper.toProductResponse(any(Product.class))).thenReturn(ProductSample.buildProductResponse());
 
 		final ProductResponse productRes = productServiceImpl.saveProduct(productRequestSample);
@@ -170,9 +170,9 @@ class ProductServiceImplTest {
 		final Product product = ProductSample.buildProduct();
 		when(iProductRepositoryMock.findById(any(Integer.class))).thenReturn(Optional.of(product));
 		when(iProductRepositoryMock.save(any(Product.class))).thenReturn(product);
-		when(productMapper.toProduct(any(ProductRequest.class))).thenReturn(product);
+		when(productMapper.toProduct(any(ProductRequest.class), any(Integer.class))).thenReturn(product);
 
-		productServiceImpl.updateProduct(productRequestSample);
+		productServiceImpl.updateProduct(productRequestSample, productRequestSample.getIdProduct());
 
 		verify(iProductRepositoryMock).findById(any(Integer.class));
 		verify(iProductRepositoryMock).save(any(Product.class));

@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
 
-	public Product toProduct(final ProductRequest productRequest) {
+	public Product toProduct(final ProductRequest productRequest, final Integer id) {
 
-		return Product.builder().idProduct(productRequest.getIdProduct())
+		return Product.builder().idProduct(id)
 					  .name(productRequest.getName())
 					  .code(productRequest.getCode())
 					  .description(productRequest.getDescription())

@@ -74,23 +74,18 @@ public class CustomerServiceImpl implements ICustomerService {
 	@Override public CustomerResponse save(final CustomerRequest customerRequest) {
 
 		createValidation(customerRequest);
-		final Customer customer = iCustomerRepository.save(customerMapper.toCustomer(customerRequest));
+		final Customer customer = iCustomerRepository.save(customerMapper.toCustomer(customerRequest, null));
 		return customerMapper.toCustomerResponse(customer);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public CustomerResponse update(final CustomerRequest customerRequest) {
+	@Override public CustomerResponse update(final CustomerRequest customerRequest, final Integer id) {
 
-		updateValidation(customerRequest);
-		final Customer customer = iCustomerRepository.save(customerMapper.toCustomer(customerRequest));
+		findById(id);
+		final Customer customer = iCustomerRepository.save(customerMapper.toCustomer(customerRequest, id));
 		return customerMapper.toCustomerResponse(customer);
-	}
-
-	private void updateValidation(final CustomerRequest customerRequest) {
-
-		findById(customerRequest.getIdCustomer());
 	}
 
 	/**

@@ -63,7 +63,7 @@ public interface ICustomerService {
 	 * @param customerRequest {@link CustomerRequest}
 	 * @return {@link CustomerResponse}
 	 */
-	CustomerResponse update(CustomerRequest customerRequest);
+	CustomerResponse update(CustomerRequest customerRequest, Integer id);
 
 	/**
 	 * Method to delete a Customer by id

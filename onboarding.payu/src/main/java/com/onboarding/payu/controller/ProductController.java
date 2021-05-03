@@ -60,11 +60,12 @@ public class ProductController {
 		return ResponseEntity.ok(iProductService.findProductById(id));
 	}
 
-	@PutMapping
-	public ResponseEntity updateProduct(@Valid @NotNull @RequestBody ProductRequest productRequest) {
+	@PutMapping("/{id}")
+	public ResponseEntity updateProduct(@Valid @NotNull @RequestBody ProductRequest productRequest,
+										@NotNull @PathVariable Integer id) {
 
-		Validate.notNull(productRequest.getIdProduct(), "Product identification cannot be empty");
-		iProductService.updateProduct(productRequest);
+		Validate.notNull(id, "Product identification cannot be empty");
+		iProductService.updateProduct(productRequest, id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

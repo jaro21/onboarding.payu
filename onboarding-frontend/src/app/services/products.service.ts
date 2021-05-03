@@ -42,7 +42,7 @@ export class ProductsService {
       'photoUrl': image,
     }
 
-    return this.http.put<Product>(this.url,this.parametros);
+    return this.http.put<Product>(this.url+"/"+id,this.parametros);
   }
 
   deleteProduct(id: number) : Observable<any> {
