@@ -47,7 +47,7 @@ public class ProductServiceImpl implements IProductService {
 
 		log.info("Start saving a new product code({}), name({}) ", product.getCode(), product.getName());
 		productCreateValidation(product);
-		return productMapper.toProductResponse(iProductRepository.save(productMapper.toProduct(product, null)));
+		return productMapper.toProductResponse(iProductRepository.save(productMapper.toProduct(product)));
 	}
 
 	/**
