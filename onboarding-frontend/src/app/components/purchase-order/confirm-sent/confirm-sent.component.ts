@@ -18,7 +18,7 @@ export class ConfirmSentComponent {
   isSuccess = false;
 
   sent(){
-    this.purchaseOrderService.updateStatusById('SENT', this.data.id).subscribe(
+    this.purchaseOrderService.updateStatusById('SENT', this.data.id, this.data.idCustomer).subscribe(
       rest => {
         this.dialogRef.close();
       },

@@ -7,5 +7,6 @@ export interface PurchasOrderResponse{
 	products: any[],
 	fullName: string,
 	email: string,
-	dniNumber: string
+	dniNumber: string,
+	idCustomer: number
 }

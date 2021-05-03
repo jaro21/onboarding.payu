@@ -19,7 +19,7 @@ export class DeclineComponent {
 
   decline(){
     const idCustomer = sessionStorage.getItem('idCustomer');
-    this.purchaseOrderService.decline(Number(idCustomer), this.data.id).subscribe(
+    this.purchaseOrderService.updateStatusById('DECLINED', this.data.id, Number(idCustomer)).subscribe(
       rest => {
         this.dialogRef.close();
       },

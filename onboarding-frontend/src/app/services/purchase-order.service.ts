@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Product } from '../model/product';
 import { PurchasOrderResponse } from '../model/purchase-order-response';
 
 @Injectable({
@@ -17,7 +16,7 @@ export class PurchaseOrderService {
   url_decline = '/shop/v1.0/purchase-orders/decline';
 
   getPurchaseOrdersByStatus(status: string) : Observable<any> {
-    return this.http.get<PurchasOrderResponse[]>(this.url+"/"+status);
+    return this.http.get<PurchasOrderResponse[]>(this.url+"?status="+status);
   }
 
   getPurchaseOrders(idCustomer: number) : Observable<any> {
@@ -33,20 +32,12 @@ export class PurchaseOrderService {
     return this.http.post<PurchasOrderResponse>(this.url,this.parametros);
   }
 
-  decline(idCustomer: number, idPurchaseOrder: number) : Observable<any> {
-    this.parametros = {
-      'idCustomer': idCustomer,
-      'idPurchaseOrder': idPurchaseOrder,
-    }
-    return this.http.post(this.url_decline,this.parametros);
-  }
-
-  updateStatusById(status: string, idPurchaseOrder: number) : Observable<any> {
+  updateStatusById(status: string, idPurchaseOrder: number, idCustomer: number) : Observable<any> {
     this.parametros = {
       'status': status,
-      'idPurchaseOrder': idPurchaseOrder
+      'idCustomer': idCustomer
     }
-    return this.http.post(this.url+"/updateStatus", this.parametros);
+    return this.http.patch(this.url+"/"+idPurchaseOrder, this.parametros);
   }
 }
 

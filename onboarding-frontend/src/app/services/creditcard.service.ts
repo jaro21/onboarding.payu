@@ -30,6 +30,6 @@ export class CreditcardService {
   }
 
   getCreditCardsByCustomer(dni: string) : Observable<any> {
-    return this.http.get<Creditcard[]>(this.url+"/"+dni);
+    return this.http.get<Creditcard[]>(this.url+"?dni="+dni);
   }
 }
