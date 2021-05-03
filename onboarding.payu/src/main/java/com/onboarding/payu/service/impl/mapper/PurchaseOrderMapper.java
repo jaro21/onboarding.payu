@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.StatusType;
-import com.onboarding.payu.model.customer.response.CustomerResponse;
 import com.onboarding.payu.model.purchase.request.ProductPoDto;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.response.ProductPurchaseResponse;
@@ -195,6 +194,29 @@ public class PurchaseOrderMapper {
 
 		response.fullName(customer.getFullName())
 				.dniNumber(customer.getDniNumber())
-				.email(customer.getEmail());
+				.email(customer.getEmail())
+				.idCustomer(customer.getIdCustomer());
+	}
+
+	/**
+	 * @param purchaseOrderRequest {@link PurchaseOrderRequest}
+	 * @param purchaseOrder        {@link PurchaseOrder}
+	 * @return {@link PurchaseOrder}
+	 */
+	public PurchaseOrder toPurchaseOrder(final PurchaseOrderRequest purchaseOrderRequest, final PurchaseOrder purchaseOrder) {
+
+		final var order = PurchaseOrder.builder()
+									   .idPurchaseOrder(purchaseOrder.getIdPurchaseOrder())
+									   .referenceCode(purchaseOrder.getReferenceCode())
+									   .value(purchaseOrder.getValue())
+									   .products(purchaseOrder.getProducts())
+									   .date(purchaseOrder.getDate())
+									   .customer(purchaseOrder.getCustomer());
+
+		Optional.ofNullable(purchaseOrderRequest.getStatus()).ifPresentOrElse(
+										status -> order.status(status),
+										() -> order.status(purchaseOrder.getStatus()));
+
+		return order.build();
 	}
 }

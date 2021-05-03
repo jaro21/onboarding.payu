@@ -4,9 +4,7 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import com.onboarding.payu.model.purchase.request.DeclineRequest;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
-import com.onboarding.payu.model.purchase.request.StatusRequest;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.service.IPurchaseOrder;
 import org.apache.commons.lang.Validate;
@@ -14,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -55,25 +55,17 @@ public class PurchaseOrderController {
 		return new ResponseEntity<>(iPurchaseOrder.updatePurchaseOrder(purchaseOrderRequest), HttpStatus.CREATED);
 	}
 
-	@GetMapping("/{status}")
-	public ResponseEntity<List<PurchaseOrderResponse>> getAllPurchaseOrderByStatus(@NotNull @PathVariable String status){
+	@GetMapping
+	public ResponseEntity<List<PurchaseOrderResponse>> getAllPurchaseOrderByStatus(@NotNull @RequestParam("status") String status){
 
 		return new ResponseEntity(iPurchaseOrder.getAllPurchaseOrderByStatus(status), HttpStatus.OK);
 	}
 
+	@PatchMapping("/{id}")
+	public ResponseEntity patchPurchaseOrder(@Valid @NotNull @PathVariable Integer id,
+											 @NotNull @RequestBody final PurchaseOrderRequest purchaseOrderRequest){
 
-	@PostMapping("/decline")
-	public ResponseEntity decline(@Valid @NotNull @RequestBody final DeclineRequest declineRequest){
-
-		iPurchaseOrder.decline(declineRequest);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@PostMapping("/updateStatus")
-	public ResponseEntity updateStatus(@Valid @NotNull @RequestBody final StatusRequest statusRequest){
-
-		iPurchaseOrder.updateStatusById(statusRequest.getStatus().name(), statusRequest.getIdPurchaseOrder());
-		return new ResponseEntity<>(HttpStatus.OK);
+		return ResponseEntity.ok(iPurchaseOrder.patch(purchaseOrderRequest, id));
 	}
 
 	@GetMapping("/customer-id/{idCustomer}")

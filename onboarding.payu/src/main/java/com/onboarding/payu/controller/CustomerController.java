@@ -42,7 +42,7 @@ public class CustomerController {
 	public ResponseEntity<CustomerResponse> createCustomer(@Valid @NotNull @RequestBody final CustomerRequest customerRequest) {
 
 		Validate.notEmpty(customerRequest.getUsername(), "Username cannot be empty");
-		Validate.notEmpty(customerRequest.getPassword(), "Username cannot be empty");
+		Validate.notEmpty(customerRequest.getPassword(), "Password cannot be empty");
 
 		return new ResponseEntity<>(iCustomerService.save(customerRequest), HttpStatus.CREATED);
 	}

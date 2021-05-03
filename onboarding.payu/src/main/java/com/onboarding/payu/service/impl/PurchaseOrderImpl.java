@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.StatusType;
-import com.onboarding.payu.model.purchase.request.DeclineRequest;
 import com.onboarding.payu.model.purchase.request.ProductPoDto;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
@@ -24,6 +23,7 @@ import com.onboarding.payu.service.IOrderProductService;
 import com.onboarding.payu.service.IProductService;
 import com.onboarding.payu.service.IPurchaseOrder;
 import com.onboarding.payu.service.impl.mapper.PurchaseOrderMapper;
+import com.onboarding.payu.service.validator.PurchaseOrderValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -97,29 +97,9 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Transactional
 	@Override public void updateStatusById(final String status, final Integer id) {
 
 		iPurchaseOrderRepository.updateStatusById(status, id);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Transactional
-	@Override public void decline(DeclineRequest declineRequest) {
-
-		log.info("Start decline purchase order id {}, customer id {} ", declineRequest.getIdPurchaseOrder(), declineRequest
-				.getIdCustomer());
-		final PurchaseOrder purchaseOrder = findByIdPurchaseOrder(declineRequest.getIdPurchaseOrder());
-		validToDecline(declineRequest, purchaseOrder);
-
-		iPurchaseOrderRepository.updateStatusById(StatusType.DECLINED.name(), declineRequest.getIdPurchaseOrder());
-
-		purchaseOrder.getProducts().stream()
-					 .forEach(orderProduct -> iProductService.updateStockById(add.applyAsInt(orderProduct.getQuantity(),
-																							 orderProduct.getProduct().getStock()),
-																			  orderProduct.getProduct().getIdProduct()));
 	}
 
 	/**
@@ -189,6 +169,39 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional
+	@Override public PurchaseOrderResponse patch(final PurchaseOrderRequest purchaseOrderRequest, final Integer id) {
+
+		log.info("Start patch purchase order id {}, customer id {} ", id, purchaseOrderRequest.getIdCustomer());
+
+		final PurchaseOrder purchaseOrder = findByIdPurchaseOrder(id);
+		PurchaseOrderValidator.validToStatus(purchaseOrderRequest, purchaseOrder);
+
+		rejected(purchaseOrderRequest, purchaseOrder);
+
+		return purchaseOrderMapper.toPurchaseOrderResponse(
+				iPurchaseOrderRepository.save(purchaseOrderMapper.toPurchaseOrder(purchaseOrderRequest, purchaseOrder)));
+	}
+
+	/**
+	 * Update stock when purchase order is rejected
+	 *
+	 * @param purchaseOrderRequest {@link PurchaseOrderRequest}
+	 * @param purchaseOrder        {@link PurchaseOrder}
+	 */
+	private void rejected(final PurchaseOrderRequest purchaseOrderRequest, final PurchaseOrder purchaseOrder) {
+
+		if (StatusType.DECLINED.name().equals(purchaseOrderRequest.getStatus())) {
+			purchaseOrder.getProducts().stream()
+						 .forEach(orderProduct -> iProductService.updateStockById(add.applyAsInt(orderProduct.getQuantity(),
+																								 orderProduct.getProduct().getStock()),
+																				  orderProduct.getProduct().getIdProduct()));
+		}
+	}
+
+	/**
 	 * @param productList          {@link List<Product>List<Product>List<Product>}
 	 * @param purchaseOrder        {@link PurchaseOrder}
 	 * @param purchaseOrderRequest {@link PurchaseOrderRequest}
@@ -207,6 +220,7 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 										.filter(productPoDto -> productPoDto.getIdProduct().equals(product.getIdProduct())).findFirst();
 
 			Integer stock = product.getStock();
+
 			if (productOptional.isPresent()) {
 				stock = add.applyAsInt(stock, productOptional.get().getQuantity());
 			}
@@ -235,22 +249,6 @@ public class PurchaseOrderImpl implements IPurchaseOrder {
 		}
 
 		return purchaseOrderList;
-	}
-
-	/**
-	 * @param declineRequest {@link DeclineRequest}
-	 * @param purchaseOrder  {@link PurchaseOrder}
-	 */
-	private void validToDecline(final DeclineRequest declineRequest,
-								final PurchaseOrder purchaseOrder) {
-
-		if (!purchaseOrder.getStatus().equals(StatusType.SAVED.name())) {
-			throw new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_CANNOT_BE_DECLINED);
-		}
-
-		if (purchaseOrder.getCustomer() == null || !declineRequest.getIdCustomer().equals(purchaseOrder.getCustomer().getIdCustomer())) {
-			throw new BusinessAppException(ExceptionCodes.PURCHASE_ORDER_INVALID_CUSTOMER);
-		}
 	}
 
 	/**

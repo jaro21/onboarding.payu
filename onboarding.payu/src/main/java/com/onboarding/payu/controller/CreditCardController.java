@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -42,8 +43,8 @@ public class CreditCardController {
 		return iCreditCard.tokenizationCard(creditCardRequest);
 	}
 
-	@GetMapping("/{dni}")
-	public ResponseEntity<List<CreditCard>> findAllCardsByCustomer(@NotNull @PathVariable String dni) {
+	@GetMapping
+	public ResponseEntity<List<CreditCard>> findAllCardsByCustomer(@NotNull @RequestParam("dni") String dni) {
 
 		return ResponseEntity.ok(iCreditCard.findAllCardsByCustomer(dni));
 	}

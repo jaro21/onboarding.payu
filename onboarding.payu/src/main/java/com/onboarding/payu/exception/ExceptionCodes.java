@@ -35,6 +35,7 @@ public enum ExceptionCodes {
 	CUSTOMER_HAS_NO_PURCHASE_ORDER("PO006", "The customer has no purchase orders."),
 	PURCHASE_ORDER_CANNOT_REFUND("PO007", "The purchase order cannot be refunded because this is in state (%s)."),
 	PAYMENT_CANNOT_REFUND("PO008", "The payment cannot be refunded because this is in state (%s)."),
+	PURCHASE_ORDER_CANNOT_BE_SENT("PO009", "The purchase order cannot be sent if it has a different status than PAID."),
 	MINIMUM_AMOUNT_INVALID("A001", "Minimum amount must be greater than or equal to $ %s"),
 	MAXIMUM_AMOUNT_INVALID("A002", "Maximum amount must be less than or equal to $ %s"),
 	PAYMENT_NOT_EXIST("PA001", "Payment id %s does not exist."),

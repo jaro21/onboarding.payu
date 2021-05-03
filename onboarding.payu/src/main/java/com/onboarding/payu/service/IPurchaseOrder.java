@@ -2,7 +2,6 @@ package com.onboarding.payu.service;
 
 import java.util.List;
 
-import com.onboarding.payu.model.purchase.request.DeclineRequest;
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
@@ -43,13 +42,6 @@ public interface IPurchaseOrder {
 	void updateStatusById(String status, Integer id);
 
 	/**
-	 * Decline Purchase Order by id
-	 *
-	 * @param declineRequest {@link DeclineRequest}
-	 */
-	void decline(DeclineRequest declineRequest);
-
-	/**
 	 * Method to get Purchase Order by idCustomer and idPurchaseOrder
 	 *
 	 * @param idCustomer {@link Integer}
@@ -80,4 +72,13 @@ public interface IPurchaseOrder {
 	 * @return {@link List<PurchaseOrderResponse>}
 	 */
 	List<PurchaseOrderResponse> getAllPurchaseOrderByStatus(String status);
+
+	/**
+	 *
+	 *
+	 * @param purchaseOrderRequest {@link PurchaseOrderRequest}
+	 * @param id {@link Integer}
+	 * @return {@link PurchaseOrderResponse}
+	 */
+	PurchaseOrderResponse patch(PurchaseOrderRequest purchaseOrderRequest, Integer id);
 }

@@ -25,6 +25,8 @@ public class PurchaseOrderRequest {
 	@NotNull(message = "Customer identification cannot be empty")
 	private Integer idCustomer;
 
+	private String status;
+
 	@NotEmpty(message = "Product cannot be empty")
 	private List<ProductPoDto> productList;
 }
