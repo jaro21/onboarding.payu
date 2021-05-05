@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderProductServicesImpl implements IOrderProductService {
 
-	private IOrderProductRepository iOrderProductRepository;
+	private final IOrderProductRepository iOrderProductRepository;
 
 	@Autowired
 	public OrderProductServicesImpl(final IOrderProductRepository iOrderProductRepository) {
@@ -32,5 +32,10 @@ public class OrderProductServicesImpl implements IOrderProductService {
 	@Override public List<OrderProduct> saveAll(final List<OrderProduct> orderProductList) {
 
 		return iOrderProductRepository.saveAll(orderProductList);
+	}
+
+	@Override public void deleteByIdPurchaseOrder(final Integer idPurchasOrder) {
+
+		iOrderProductRepository.deleteByIdPurchaseOrder(idPurchasOrder);
 	}
 }

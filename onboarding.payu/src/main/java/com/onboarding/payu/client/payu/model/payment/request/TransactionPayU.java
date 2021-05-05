@@ -1,6 +1,7 @@
 package com.onboarding.payu.client.payu.model.payment.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.onboarding.payu.client.payu.model.tokenization.request.CreditCardPayU;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -29,4 +30,5 @@ public class TransactionPayU {
 	private String ipAddress;
 	private String cookie;
 	private String userAgent;
+	private CreditCardPayU creditCard;
 }

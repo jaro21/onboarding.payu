@@ -1,0 +1,8 @@
+<mat-card>
+    <mat-error *ngIf="error">{{message}}</mat-error>
+    <mat-card-title>Are you sure to sent the purchase order?</mat-card-title>
+    <mat-card-actions>
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-button mat-flat-button (click)="sent()">Sent</button>
+    </mat-card-actions>
+</mat-card>

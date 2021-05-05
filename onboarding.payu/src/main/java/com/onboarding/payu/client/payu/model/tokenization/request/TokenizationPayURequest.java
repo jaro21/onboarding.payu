@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.onboarding.payu.client.payu.model.Merchant;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Object for tokenization's resquest
@@ -14,6 +15,7 @@ import lombok.Getter;
  */
 @Builder
 @Getter
+@ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TokenizationPayURequest {
 

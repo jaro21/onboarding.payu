@@ -1,6 +1,5 @@
 package com.onboarding.payu.service.impl.Samples;
 
-import com.onboarding.payu.model.purchase.request.CustomerPoRequest;
 import com.onboarding.payu.repository.entity.Customer;
 
 /**
@@ -12,18 +11,7 @@ import com.onboarding.payu.repository.entity.Customer;
  */
 public class CustomerSample {
 
-	public static CustomerPoRequest getCustomerDto() {
-
-		return CustomerPoRequest.builder()
-								.idCustomer(1)
-								.street1("Prueba street1")
-								.city("Tulua")
-								.state("Valle del cauca")
-								.country("Colombia")
-								.postalCode("00000").build();
-	}
-
-	public static Customer getCustomer() {
+	public static Customer buildCustomer() {
 
 		return Customer.builder()
 					   .idCustomer(1)
@@ -31,7 +19,7 @@ public class CustomerSample {
 					   .email("client@gmail.com")
 					   .phone("3141212222")
 					   .dniNumber("14")
-					   .creditCardList(CreditCardSample.getCreditCardList())
+					   .creditCardList(CreditCardSample.buildCreditCardList())
 					   .build();
 	}
 }

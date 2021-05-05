@@ -1,0 +1,38 @@
+main {
+    width: 90%;
+    margin-top: 2rem;
+    text-align: center;
+    display: inline-block;
+}
+
+mat-card, app-product {
+    margin: auto;
+    width: 90%;
+    display: inline-block;
+    margin-top: 2rem;
+}
+
+mat-form-field, input {
+    width: 100%;
+}
+
+mat-toolbar {
+    width: 100%;
+    text-align: right;
+}
+
+mat-toolbar-row {
+    text-align: right;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+button {
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.align-right {
+    text-align: right;
+    margin-left: 2rem;
+}

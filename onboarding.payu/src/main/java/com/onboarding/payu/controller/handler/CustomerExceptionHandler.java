@@ -1,15 +1,14 @@
 package com.onboarding.payu.controller.handler;
 
-import java.util.NoSuchElementException;
-
 import com.onboarding.payu.controller.CustomerController;
 import com.onboarding.payu.exception.BusinessAppException;
+import com.onboarding.payu.exception.ExceptionCodes;
+import com.onboarding.payu.exception.SystemAppException;
 import com.onboarding.payu.model.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -52,17 +51,6 @@ public class CustomerExceptionHandler extends ResponseEntityExceptionHandler {
 											  .build());
 	}
 
-	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
-																  HttpStatus status, WebRequest request) {
-
-		log.info(ex.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-							 .body(ResponseDto.builder()
-											  .message(ex.getMessage())
-											  .build());
-	}
-
 	/**
 	 * Handle an {@link BusinessAppException}.
 	 *
@@ -81,19 +69,36 @@ public class CustomerExceptionHandler extends ResponseEntityExceptionHandler {
 											  .build());
 	}
 
-
 	/**
-	 * Handle an {@link NoSuchElementException}.
+	 * Handle an {@link SystemAppException}.
 	 *
-	 * @param ex of {@link NoSuchElementException} with the information about the error.
+	 * @param ex of {@link SystemAppException} with the information about the error.
 	 * @return {@link ResponseEntity<ResponseDto>} object with the formatted error information.
 	 */
 	@ResponseBody
-	@ExceptionHandler(NoSuchElementException.class)
-	public ResponseEntity<ResponseDto> handleNoSuchElementException(final NoSuchElementException ex) {
+	@ExceptionHandler(SystemAppException.class)
+	public ResponseEntity<ResponseDto> handleSystemAppException(final SystemAppException ex) {
 
 		log.info(ex.getMessage());
-		return ResponseEntity.status(HttpStatus.CONFLICT)
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+							 .body(ResponseDto.builder()
+											  .message(ex.getMessage())
+											  .errorCode(ex.getCode())
+											  .build());
+	}
+
+	/**
+	 * Handle an {@link IllegalArgumentException}.
+	 *
+	 * @param ex of {@link IllegalArgumentException} with the information about the error.
+	 * @return {@link ResponseEntity<ResponseDto>} object with the formatted error information.
+	 */
+	@ResponseBody
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ResponseDto> handleIllegalArgumentException(final IllegalArgumentException ex) {
+
+		log.info(ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 							 .body(ResponseDto.builder()
 											  .message(ex.getMessage())
 											  .build());
@@ -112,7 +117,8 @@ public class CustomerExceptionHandler extends ResponseEntityExceptionHandler {
 		log.error("Unhandled exception : ", e);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 							 .body(ResponseDto.builder()
-											  .message(e.getMessage())
+											  .message(ExceptionCodes.UNCONTROLLED_ERROR.getMessage())
+											  .errorCode(ExceptionCodes.UNCONTROLLED_ERROR.getCode())
 											  .build());
 	}
 }

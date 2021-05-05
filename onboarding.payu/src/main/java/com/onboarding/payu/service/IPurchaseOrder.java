@@ -1,5 +1,7 @@
 package com.onboarding.payu.service;
 
+import java.util.List;
+
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.repository.entity.PurchaseOrder;
@@ -29,29 +31,54 @@ public interface IPurchaseOrder {
 	 * @return {@link PurchaseOrder}
 	 * @
 	 */
-	PurchaseOrder findById(Integer idPurchaseOrder);
+	PurchaseOrder findByIdPurchaseOrder(Integer idPurchaseOrder);
 
 	/**
 	 * Update Purchase Order's status by id
 	 *
 	 * @param status {@link String}
 	 * @param id     {@link Integer}
-	 * @return {@link Integer}
 	 */
-	Integer updateStatusById(String status, Integer id);
+	void updateStatusById(String status, Integer id);
 
 	/**
-	 * Update Purchase Order
+	 * Method to get Purchase Order by idCustomer and idPurchaseOrder
 	 *
-	 * @param purchaseOrder {@link PurchaseOrder}
-	 * @return {@link PurchaseOrder}
+	 * @param idCustomer {@link Integer}
+	 * @param idPurchaseOrder {@link Integer}
+	 * @return {@link PurchaseOrderResponse}
 	 */
-	PurchaseOrder update(PurchaseOrder purchaseOrder);
+	PurchaseOrderResponse findByIdCustomerAndIdPurchaseOrder(Integer idCustomer, Integer idPurchaseOrder);
 
 	/**
-	 * Decline Purchase Order by id
+	 * Method to get Purchase Order by idCustomer and idPurchaseOrder
 	 *
+	 * @param idCustomer {@link Integer}
+	 * @return {@link List<PurchaseOrderResponse>}
+	 */
+	List<PurchaseOrderResponse> findByIdCustomer(Integer idCustomer);
+
+	/**
+	 *
+	 *
+	 * @param purchaseOrderRequest {@link PurchaseOrderResponse}
+	 * @return {@link PurchaseOrderResponse}
+	 */
+	PurchaseOrderResponse updatePurchaseOrder(PurchaseOrderRequest purchaseOrderRequest);
+
+	/**
+	 * Get all purchase orders
+	 *
+	 * @return {@link List<PurchaseOrderResponse>}
+	 */
+	List<PurchaseOrderResponse> getAllPurchaseOrderByStatus(String status);
+
+	/**
+	 *
+	 *
+	 * @param purchaseOrderRequest {@link PurchaseOrderRequest}
 	 * @param id {@link Integer}
+	 * @return {@link PurchaseOrderResponse}
 	 */
-	void decline(Integer id);
+	PurchaseOrderResponse patch(PurchaseOrderRequest purchaseOrderRequest, Integer id);
 }

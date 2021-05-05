@@ -13,5 +13,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @since 1.0.0
  */
 public interface ICustomerRepository extends JpaRepository<Customer, Integer> {
+
 	Optional<Customer> findByDniNumber(String dniNumber);
+
+	Optional<Customer> findByUsername(String username);
 }

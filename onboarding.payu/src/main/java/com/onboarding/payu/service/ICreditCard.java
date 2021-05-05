@@ -25,15 +25,6 @@ public interface ICreditCard {
 	TokenResponse tokenizationCard(CreditCardRequest creditCardRequest);
 
 	/**
-	 * Service to save a tokenized credit card
-	 *
-	 * @param tokenResponse {@link TokenResponse}
-	 * @return {@link TokenResponse}
-	 * @
-	 */
-	TokenResponse saveCreditCard(TokenResponse tokenResponse);
-
-	/**
 	 * Find all credit cards for a customer by ID number
 	 *
 	 * @param dniNumber {@link String}

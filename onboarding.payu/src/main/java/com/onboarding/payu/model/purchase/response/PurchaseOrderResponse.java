@@ -2,6 +2,7 @@ package com.onboarding.payu.model.purchase.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -24,4 +25,9 @@ public class PurchaseOrderResponse {
 	private String referenceCode;
 	private LocalDate date;
 	private BigDecimal value;
+	private List<ProductPurchaseResponse> products;
+	private String fullName;
+	private String email;
+	private String dniNumber;
+	private Integer idCustomer;
 }

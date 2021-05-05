@@ -1,32 +1,43 @@
 package com.onboarding.payu.service.impl.mapper;
 
-import com.onboarding.payu.model.ActiveType;
-import com.onboarding.payu.model.client.request.CustomerRequest;
-import com.onboarding.payu.model.client.response.CustomerResponse;
+import com.onboarding.payu.model.RoleType;
+import com.onboarding.payu.model.customer.request.CustomerRequest;
+import com.onboarding.payu.model.customer.response.CustomerResponse;
 import com.onboarding.payu.repository.entity.Customer;
+import com.onboarding.payu.security.Encoder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class CustomerMapper {
 
-	public Customer toCustomer(final CustomerRequest customerRequest) {
+	private Encoder encoder;
 
-		Customer.CustomerBuilder customerBuilder = Customer.builder()
-													   .idCustomer(customerRequest.getIdCustomer())
-													   .fullName(customerRequest.getFullName())
-													   .email(customerRequest.getEmail())
-													   .phone(customerRequest.getPhone())
-													   .dniNumber(customerRequest.getDniNumber())
-													   .address(customerRequest.getAddress())
-													   .city(customerRequest.getCity())
-													   .state(customerRequest.getState())
-													   .country(customerRequest.getCountry())
-													   .postal_code(customerRequest.getPostal_code())
-													   .active(customerRequest.getActive() != null ?
-															   customerRequest.getActive() :
-															   ActiveType.ACTIVE.getId());
+	@Autowired
+	public CustomerMapper(final Encoder encoder) {
 
-		return customerBuilder.build();
+		this.encoder = encoder;
+	}
+
+	public Customer toCustomer(final CustomerRequest customerRequest, final Integer id) {
+
+		 return Customer.builder()
+					   .idCustomer(id)
+					   .fullName(customerRequest.getFullName())
+					   .email(customerRequest.getEmail())
+					   .phone(customerRequest.getPhone())
+					   .dniNumber(customerRequest.getDniNumber())
+					   .address(customerRequest.getAddress())
+					   .city(customerRequest.getCity())
+					   .state(customerRequest.getState())
+					   .country(customerRequest.getCountry())
+					   .postalCode(customerRequest.getPostal_code())
+					   .username(customerRequest.getUsername())
+					   .password(encoder.passwordEncoder().encode(customerRequest.getPassword()))
+					   .role(RoleType.USER.getRole())
+					   .build();
 	}
 
 	public CustomerResponse toCustomerResponse(final Customer customer) {
@@ -36,7 +47,6 @@ public class CustomerMapper {
 							   .fullName(customer.getFullName())
 							   .email(customer.getEmail())
 							   .phone(customer.getPhone())
-							   .dniNumber(customer.getDniNumber())
-							   .active(customer.getActive()).build();
+							   .dniNumber(customer.getDniNumber()).build();
 	}
 }

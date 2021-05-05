@@ -1,5 +1,6 @@
 package com.onboarding.payu.client.payu.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Merchant {
 
 	private String apiKey;

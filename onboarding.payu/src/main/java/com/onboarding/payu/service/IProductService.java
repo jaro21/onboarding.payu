@@ -3,6 +3,7 @@ package com.onboarding.payu.service;
 import java.util.List;
 
 import com.onboarding.payu.model.product.request.ProductRequest;
+import com.onboarding.payu.model.product.response.ProductResponse;
 import com.onboarding.payu.repository.entity.Product;
 
 /**
@@ -18,23 +19,16 @@ public interface IProductService {
 	 * Method to create product
 	 *
 	 * @param product {@link ProductRequest}
-	 * @return {@link Product}
+	 * @return {@link ProductResponse}
 	 */
-	Product saveProduct(ProductRequest product);
+	ProductResponse saveProduct(ProductRequest product);
 
 	/**
 	 * Method to get all products
 	 *
-	 * @return {@link List<Product>}
+	 * @return {@link List<ProductResponse>}
 	 */
-	List<Product> findProducts();
-
-	/**
-	 * Method to get all products
-	 *
-	 * @return {@link List<Product>}
-	 */
-	List<Product> findByActive();
+	List<ProductResponse> findProducts();
 
 	/**
 	 * Method to get all products by ids
@@ -50,7 +44,7 @@ public interface IProductService {
 	 * @param id {@link Integer}
 	 * @return {@link Product}
 	 */
-	Product findProductById(Integer id);
+	ProductResponse findProductById(Integer id);
 
 	/**
 	 * Method to delete one product by id
@@ -65,7 +59,7 @@ public interface IProductService {
 	 * @param product {@link ProductRequest}
 	 * @return {@link Product}
 	 */
-	Product updateProduct(ProductRequest product);
+	void updateProduct(ProductRequest product, Integer id);
 
 	/**
 	 * Method to update product

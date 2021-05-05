@@ -2,15 +2,16 @@ package com.onboarding.payu.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.onboarding.payu.model.tokenization.request.CreditCardRequest;
 import com.onboarding.payu.model.tokenization.response.TokenResponse;
 import com.onboarding.payu.provider.payments.IPaymentProvider;
 import com.onboarding.payu.repository.ICreditCardRepository;
-import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.repository.entity.CreditCard;
-import com.onboarding.payu.service.ICustomerService;
+import com.onboarding.payu.repository.entity.Customer;
 import com.onboarding.payu.service.ICreditCard;
+import com.onboarding.payu.service.ICustomerService;
 import com.onboarding.payu.service.impl.mapper.CreditCardMapper;
 import com.onboarding.payu.service.validator.CreditCardValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -28,24 +29,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class CreditCardImpl implements ICreditCard {
 
-	private IPaymentProvider iPaymentProvider;
+	private final IPaymentProvider iPaymentProvider;
 
-	private ICreditCardRepository iCreditCardRepository;
+	private final ICreditCardRepository iCreditCardRepository;
 
-	private ICustomerService iCustomerService;
+	private final ICustomerService iCustomerService;
 
-	private CreditCardValidator creditCardValidator;
+	private final CreditCardValidator creditCardValidator;
+
+	private final CreditCardMapper creditCardMapper;
 
 	@Autowired
 	public CreditCardImpl(final IPaymentProvider iPaymentProvider,
 						  final ICreditCardRepository iCreditCardRepository,
 						  final ICustomerService iCustomerService,
-						  final CreditCardValidator creditCardValidator) {
+						  final CreditCardValidator creditCardValidator,
+						  final CreditCardMapper creditCardMapper) {
 
 		this.iPaymentProvider = iPaymentProvider;
 		this.iCreditCardRepository = iCreditCardRepository;
 		this.iCustomerService = iCustomerService;
 		this.creditCardValidator = creditCardValidator;
+		this.creditCardMapper = creditCardMapper;
 	}
 
 	/**
@@ -53,37 +58,53 @@ public class CreditCardImpl implements ICreditCard {
 	 */
 	@Override public TokenResponse tokenizationCard(final CreditCardRequest creditCardRequest) {
 
-		log.debug("TokenizationCard : ", creditCardRequest.toString());
+		log.info("Start tokenization credit card identificationNumber({}) ", creditCardRequest.getIdentificationNumber());
 		creditCardValidator.runValidations(creditCardRequest);
-		final TokenResponse tokenResponse = iPaymentProvider.tokenizationCard(creditCardRequest);
-		saveCreditCard(tokenResponse);
-		return iPaymentProvider.tokenizationCard(creditCardRequest);
+
+		return saveCreditCard(iPaymentProvider.tokenizationCard(creditCardRequest));
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Service to save a tokenized credit card
+	 *
+	 * @param tokenResponse {@link TokenResponse}
+	 * @return {@link TokenResponse}
 	 */
-	@Override public TokenResponse saveCreditCard(final TokenResponse tokenResponse) {
+	public TokenResponse saveCreditCard(final TokenResponse tokenResponse) {
 
-		log.debug("Save Credit Card", tokenResponse.toString());
-		if (isValidRegistration(tokenResponse)) {
+		Integer idCreditCard = null;
+		if (tokenResponse.getCreditCard() != null) {
+			log.info("Start to save Credit Card token {}", tokenResponse.getCreditCard().getCreditCardTokenId());
 			final Customer customer = iCustomerService.findByDniNumber(tokenResponse.getCreditCard().getIdentificationNumber());
-			final CreditCard creditCard = CreditCardMapper.toCreditCard(tokenResponse, customer);
-			iCreditCardRepository.save(creditCard);
+			final Optional<CreditCard> creditCardOptional = findCreditCardByCustomerAndToken(customer, tokenResponse);
+
+			if (creditCardOptional.isPresent()) {
+				idCreditCard = creditCardOptional.get().getIdCreditCard();
+			} else {
+				final CreditCard creditCard = iCreditCardRepository.save(creditCardMapper.toCreditCard(tokenResponse, customer));
+				idCreditCard = creditCard.getIdCreditCard();
+			}
 		}
-		return tokenResponse;
+
+		return creditCardMapper.buildTokenResponse(tokenResponse, idCreditCard);
 	}
 
 	/**
 	 * Identify if the card should be registered
 	 *
+	 * @param customer      {@link Customer}
 	 * @param tokenResponse {@link TokenResponse}
 	 * @return
 	 */
-	private boolean isValidRegistration(final TokenResponse tokenResponse) {
+	private Optional<CreditCard> findCreditCardByCustomerAndToken(final Customer customer, final TokenResponse tokenResponse) {
 
-		return tokenResponse != null && tokenResponse.getCreditCard() != null
-				&& !iCreditCardRepository.findByToken(tokenResponse.getCreditCard().getCreditCardTokenId().toString()).isPresent();
+		if (tokenResponse != null && tokenResponse.getCreditCard() != null && customer != null && customer.getCreditCardList() != null) {
+			return customer.getCreditCardList().stream()
+						   .filter(creditCard -> creditCard.getToken().equals(tokenResponse.getCreditCard().getCreditCardTokenId()))
+						   .findFirst();
+		}
+
+		return Optional.empty();
 	}
 
 	/**

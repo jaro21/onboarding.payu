@@ -3,6 +3,7 @@ package com.onboarding.payu.client.payu.model.tokenization.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Object for credit card's resquest
@@ -13,6 +14,7 @@ import lombok.Getter;
  */
 @Builder
 @Getter
+@ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CreditCardPayU {
 
@@ -22,4 +24,5 @@ public class CreditCardPayU {
 	private String paymentMethod;
 	private String number;
 	private String expirationDate;
+	private String securityCode;
 }

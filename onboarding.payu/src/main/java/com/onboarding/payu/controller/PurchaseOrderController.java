@@ -1,17 +1,24 @@
 package com.onboarding.payu.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.onboarding.payu.model.purchase.request.PurchaseOrderRequest;
 import com.onboarding.payu.model.purchase.response.PurchaseOrderResponse;
 import com.onboarding.payu.service.IPurchaseOrder;
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -40,10 +47,37 @@ public class PurchaseOrderController {
 		return new ResponseEntity<>(iPurchaseOrder.addPurchaseOrder(purchaseOrderRequest), HttpStatus.CREATED);
 	}
 
-	@PostMapping
-	public ResponseEntity decline(@Valid @NotNull @RequestBody final Integer id){
+	@PutMapping
+	public ResponseEntity<PurchaseOrderResponse> updatePurchaseOrder(
+			@Valid @NotNull @RequestBody final PurchaseOrderRequest purchaseOrderRequest) {
 
-		iPurchaseOrder.decline(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		Validate.notNull(purchaseOrderRequest.getId(), "Purchase order identification cannot be empty");
+		return new ResponseEntity<>(iPurchaseOrder.updatePurchaseOrder(purchaseOrderRequest), HttpStatus.CREATED);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<PurchaseOrderResponse>> getAllPurchaseOrderByStatus(@NotNull @RequestParam("status") String status){
+
+		return new ResponseEntity(iPurchaseOrder.getAllPurchaseOrderByStatus(status), HttpStatus.OK);
+	}
+
+	@PatchMapping("/{id}")
+	public ResponseEntity patchPurchaseOrder(@Valid @NotNull @PathVariable Integer id,
+											 @NotNull @RequestBody final PurchaseOrderRequest purchaseOrderRequest){
+
+		return ResponseEntity.ok(iPurchaseOrder.patch(purchaseOrderRequest, id));
+	}
+
+	@GetMapping("/customer-id/{idCustomer}")
+	public ResponseEntity<List<PurchaseOrderResponse>> getAllPurchaseOrderForCustomer(@NotNull @PathVariable Integer idCustomer) {
+
+		return ResponseEntity.ok(iPurchaseOrder.findByIdCustomer(idCustomer));
+	}
+
+	@GetMapping("/customer-id/{idCustomer}/order-id/{idPurchaseOrder}")
+	public ResponseEntity<PurchaseOrderResponse> getPurchaseOrderForCustomer(@NotNull @PathVariable Integer idCustomer,
+															   @NotNull @PathVariable Integer idPurchaseOrder) {
+
+		return ResponseEntity.ok(iPurchaseOrder.findByIdCustomerAndIdPurchaseOrder(idCustomer, idPurchaseOrder));
 	}
 }

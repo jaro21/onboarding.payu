@@ -14,14 +14,14 @@ import com.onboarding.payu.repository.entity.CreditCard;
  */
 public class CreditCardSample {
 
-	public static List<CreditCard> getCreditCardList() {
+	public static List<CreditCard> buildCreditCardList() {
 		final List<CreditCard> creditCardList = new ArrayList<>();
-		creditCardList.add(getCreditCardMasterCard());
-		creditCardList.add(getCreditCardMasterVisa());
+		creditCardList.add(buildCreditCardMasterCard());
+		creditCardList.add(buildCreditCardMasterVisa());
 		return creditCardList;
 	}
 
-	private static CreditCard getCreditCardMasterCard() {
+	private static CreditCard buildCreditCardMasterCard() {
 		return CreditCard.builder()
 						 .idCreditCard(1)
 						 .maskedNumber("526746******1351")
@@ -30,7 +30,7 @@ public class CreditCardSample {
 						 .build();
 	}
 
-	private static CreditCard getCreditCardMasterVisa() {
+	private static CreditCard buildCreditCardMasterVisa() {
 		return CreditCard.builder()
 						 .idCreditCard(2)
 						 .maskedNumber("411111******1111")

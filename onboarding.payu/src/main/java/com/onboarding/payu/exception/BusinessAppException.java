@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 public class BusinessAppException extends RuntimeException {
 
-	private String code;
+	private final String code;
 
 	/**
 	 * Constructor that receive the exception's message

@@ -1,7 +1,6 @@
 package com.onboarding.payu.service;
 
 import com.onboarding.payu.model.payment.request.PaymentTransactionRequest;
-import com.onboarding.payu.model.payment.request.TransactionRequest;
 import com.onboarding.payu.model.payment.response.PaymentWithTokenResponse;
 import com.onboarding.payu.repository.entity.Payment;
 
@@ -22,9 +21,17 @@ public interface IPaymentService {
 	Payment findById(Integer idPayment);
 
 	/**
+	 * @param idPurchaseOrder {@link Integer}
+	 * @param status {@link String}
+	 * @return {@link Payment}
+	 * @
+	 */
+	Payment findByIdPurchaseOrderStatus(Integer idPurchaseOrder, String status);
+
+	/**
 	 * Service to apply the payment of a purchase order
 	 *
-	 * @param transactionRequest {@link TransactionRequest}
+	 * @param transactionRequest {@link PaymentTransactionRequest}
 	 * @return {@link PaymentWithTokenResponse}
 	 */
 	PaymentWithTokenResponse paymentWithToken(PaymentTransactionRequest transactionRequest);

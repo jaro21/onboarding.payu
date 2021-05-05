@@ -1,0 +1,46 @@
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+.radio-button {
+  margin: 5px;
+}
+
+mat-card-title {
+  text-align: center;
+}
+
+mat-card-actions {
+  text-align: right;
+}
+
+mat-form-field {
+  padding-left: 2rem;
+  width: 45%;
+}
+
+mat-checkbox {
+  padding-left: 2rem;
+}
+
+.line {
+  width: 100%;
+}
+
+.success {
+  padding: 2rem;
+  width: 100%;
+  color: blue;
+}
+
+.card-data {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+}
+
+section {
+  padding-top: 2rem;
+}

@@ -1,0 +1,8 @@
+<mat-card>
+    <mat-card-title>Are you sure to delete the product?</mat-card-title>
+    <mat-error *ngIf="error">{{message}}</mat-error>
+    <mat-card-actions>
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-button mat-flat-button (click)="delete()">Delete</button>
+    </mat-card-actions>
+</mat-card>

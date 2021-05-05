@@ -7,8 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,21 +35,21 @@ public class Product {
 	@Column(name = "id_product", updatable = false, nullable = false)
 	private Integer idProduct;
 
-	@NotBlank(message = "Product name cannot not be empty")
+	@Column(name = "name", length = 25)
 	private String name;
 
-	@NotBlank(message = "Product code cannot not be empty")
+	@Column(name = "code", length = 10)
 	private String code;
 
-	@NotBlank(message = "Product description cannot not be empty")
+	@Column(name = "description", length = 50)
 	private String description;
 
-	@NotNull(message = "Product price cannot not be empty")
+	@Column(name = "price")
 	private BigDecimal price;
 
-	@NotNull(message = "Product stock cannot not be empty")
+	@Column(name = "stock")
 	private Integer stock;
 
-	@Column(name = "active")
-	private Integer active;
+	@Column(name = "photo_url", length = 200)
+	private String photoUrl;
 }

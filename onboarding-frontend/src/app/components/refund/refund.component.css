@@ -1,0 +1,17 @@
+mat-card-title {
+    text-align: center;
+}
+
+mat-card-actions {
+    text-align: right;
+}
+
+mat-card-content, mat-form-field {
+    width: 100%;
+}
+
+.success {
+    padding: 16px;
+    width: 300px;
+    color: blue;
+}

@@ -43,14 +43,8 @@ public class Payment {
 	private String currency;
 
 	@Column(name = "response_json")
-	private String response_json;
+	private String responseJson;
 
 	@Column(name = "status")
 	private String status;
-
-	@Column(name = "order_id")
-	private Long orderId;
-
-	@Column(name = "transaction_id", length = 36)
-	private String transactionId;
 }

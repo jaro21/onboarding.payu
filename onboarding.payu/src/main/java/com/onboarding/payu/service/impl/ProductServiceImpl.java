@@ -1,12 +1,13 @@
 package com.onboarding.payu.service.impl;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.onboarding.payu.exception.BusinessAppException;
 import com.onboarding.payu.exception.ExceptionCodes;
 import com.onboarding.payu.model.product.request.ProductRequest;
+import com.onboarding.payu.model.product.response.ProductResponse;
 import com.onboarding.payu.repository.IProductRepository;
 import com.onboarding.payu.repository.entity.Product;
 import com.onboarding.payu.service.IProductService;
@@ -27,9 +28,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductServiceImpl implements IProductService {
 
-	private IProductRepository iProductRepository;
+	private final IProductRepository iProductRepository;
 
-	private ProductMapper productMapper;
+	private final ProductMapper productMapper;
 
 	@Autowired
 	public ProductServiceImpl(final IProductRepository iProductRepository,
@@ -42,24 +43,19 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product saveProduct(final ProductRequest product) {
+	@Override public ProductResponse saveProduct(final ProductRequest product) {
 
-		log.debug("saveProduct : ", product.toString());
+		log.info("Start saving a new product code({}), name({}) ", product.getCode(), product.getName());
 		productCreateValidation(product);
-		return iProductRepository.save(productMapper.toProduct(product));
+		return productMapper.toProductResponse(iProductRepository.save(productMapper.toProduct(product)));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public List<Product> findProducts() {
+	@Override public List<ProductResponse> findProducts() {
 
-		return iProductRepository.findAll();
-	}
-
-	@Override public List<Product> findByActive() {
-
-		return iProductRepository.findByActive(1).orElse(Collections.emptyList());
+		return iProductRepository.findAll().stream().map(productMapper::toProductResponse).collect(Collectors.toList());
 	}
 
 	/**
@@ -73,10 +69,10 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product findProductById(final Integer id) {
+	@Override public ProductResponse findProductById(final Integer id) {
 
-		return iProductRepository.findById(id).orElseThrow(
-				() -> new BusinessAppException(ExceptionCodes.PRODUCT_ID_NOT_EXIST, id.toString()));
+		return productMapper.toProductResponse(iProductRepository.findById(id).orElseThrow(
+				() -> new BusinessAppException(ExceptionCodes.PRODUCT_ID_NOT_EXIST, id.toString())));
 	}
 
 	/**
@@ -96,11 +92,10 @@ public class ProductServiceImpl implements IProductService {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public Product updateProduct(final ProductRequest product) {
+	@Override public void updateProduct(final ProductRequest product, final Integer id) {
 
-		log.debug("updateProduct : ", product.toString());
 		productValidation(product);
-		return updateProduct(productMapper.toProduct(product));
+		updateProduct(productMapper.toProduct(product, id));
 	}
 
 	/**
@@ -108,14 +103,12 @@ public class ProductServiceImpl implements IProductService {
 	 */
 	@Override public Product updateProduct(final Product product) {
 
-		log.debug("updateProduct : ", product.toString());
 		findProductById(product.getIdProduct());
 		return iProductRepository.save(product);
 	}
 
 	@Override public Integer updateStockById(final Integer stock, final Integer id) {
 
-		log.debug("updateStockById(stock = {}, Id = {}) :", stock, id);
 		return iProductRepository.updateStockById(stock, id);
 	}
 

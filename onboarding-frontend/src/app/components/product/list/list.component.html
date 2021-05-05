@@ -1,0 +1,22 @@
+<mat-card *ngFor="let product of productsView" matBadgeSize="large" [matBadge]="product.quantity">
+    <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title>{{product.name}}</mat-card-title>
+        <mat-card-subtitle>{{product.price}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image [src]="product.image" alt="2" #tooltip="matTooltip" [matTooltip]="product.description"
+        matTooltipPosition="above" matTooltipHideDelay="500">
+    <mat-card-content>
+        Stock {{product.stock}}
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-flat-button color="primary" (click)="onRemoveToCart(product)" 
+            [disabled]="!product.quantity || product.quantity === 0">
+            <mat-icon>remove_shopping_cart</mat-icon>
+        </button>
+        <button mat-flat-button color="primary" (click)="onAddToCart(this.product)"
+            [disabled]="product.quantity === product.stock || product.stock === 0">
+            <mat-icon>add_shopping_cart</mat-icon>
+        </button>
+    </mat-card-actions>
+</mat-card>

@@ -1,0 +1,38 @@
+table {
+  width: 100%;
+}
+
+.example-first-header-row th {
+  border-bottom: none;
+  font-weight: bold;
+}
+
+.example-second-header-row {
+  font-style: italic;
+}
+
+.example-first-footer-row {
+  font-weight: bold;
+}
+
+.example-second-footer-row td {
+  color: #900000;
+  align-content: flex-end;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.title {
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  border: 2rem;
+}
+
+.success {
+  padding: 16px;
+  width: 100%;
+  color: blue;
+}

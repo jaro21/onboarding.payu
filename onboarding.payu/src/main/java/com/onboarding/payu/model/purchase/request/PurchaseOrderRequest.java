@@ -21,8 +21,12 @@ import lombok.ToString;
 public class PurchaseOrderRequest {
 
 	private Integer id;
-	@NotNull(message = "Customer identification cannot not be empty")
-	private CustomerPoRequest customer;
-	@NotEmpty(message = "Product cannot not be empty")
+
+	@NotNull(message = "Customer identification cannot be empty")
+	private Integer idCustomer;
+
+	private String status;
+
+	@NotEmpty(message = "Product cannot be empty")
 	private List<ProductPoDto> productList;
 }

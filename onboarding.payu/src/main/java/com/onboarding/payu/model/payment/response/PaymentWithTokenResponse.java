@@ -1,6 +1,8 @@
 package com.onboarding.payu.model.payment.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.onboarding.payu.model.StatusType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -18,7 +20,11 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PaymentWithTokenResponse {
 
+	private Integer id;
 	private String code;
 	private String error;
-	private TransactionResponse transactionResponse;
+	private StatusType status;
+
+	@JsonIgnore
+	private String transactionResponse;
 }

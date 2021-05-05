@@ -2,6 +2,9 @@ package com.onboarding.payu.repository;
 
 import com.onboarding.payu.repository.entity.OrderProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Repository to manage {@link OrderProduct} instances.
@@ -12,4 +15,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface IOrderProductRepository extends JpaRepository<OrderProduct, Integer> {
 
+	@Modifying
+	@Query("delete OrderProduct where idPurchaseOrder = :id")
+	void deleteByIdPurchaseOrder(@Param("id") Integer id);
 }
